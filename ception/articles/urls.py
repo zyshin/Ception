@@ -1,0 +1,15 @@
+from django.conf.urls import patterns, include, url
+urlpatterns = patterns('ception.articles.views',
+    url(r'^$', 'articles', name='articles'),
+    url(r'^write/$', 'write', name='write'),
+    url(r'^preview/$', 'preview', name='preview'),
+    url(r'^drafts/$', 'drafts', name='drafts'),
+    url(r'^comment/$', 'comment', name='comment'),
+    url(r'^sentence_comment/$', 'sentence_comment', name='sentence_comment'),
+    url(r'^sentence_return/$', 'sentence_return', name='sentence_return'),
+    url(r'^tag/(?P<tag_name>.+)/$', 'tag', name='tag'),
+    url(r'^edit/(?P<id>\d+)/$', 'edit', name='edit_article'),
+    url(r'^edit_logic/(?P<id>\d+)/$', 'edit_logic', name='edit_logic'),
+    url(r'^(?P<slug>[-\w]+)/$', 'article', name='article'),
+)
+

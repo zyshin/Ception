@@ -1,0 +1,11 @@
+{% load staticfiles %}
+
+
+<script>
+  editor = CKEDITOR.replace("{{ textarea }}");
+  editor.on(LITE.Events.INIT, function(e) {
+    editor.lite = e.data.lite;
+    fixLITE(editor);
+    editor.lite.toggleTracking(true);
+  });
+</script>
