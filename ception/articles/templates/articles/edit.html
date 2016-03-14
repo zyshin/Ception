@@ -17,7 +17,6 @@
     <div class="col-md-12">
       <form action="{% url 'edit_logic' form.instance.pk %}" method="post" role="form">
         {% csrf_token %}
-        {{ form.status }}
         <h2><a href="{% url 'article' form.instance.origin.slug %}">{{ form.instance.origin.title }}</a></h2>
         {% for field in form.visible_fields %}
           <div class="form-group{% if field.errors %} has-error{% endif %}">
@@ -58,8 +57,8 @@
       {% endfor %}
     </div>
   <script>
-
     (function () {
+
       var get_sentence_comment = function(version_id, sentence_id, comment_div) {
         $.ajax({
           url: '/articles/sentence_return/',
@@ -147,7 +146,20 @@
         });
       });
       editor.on('key', function (e) {
-        update_comments_and_divs();
+        var key = sanitizeKeyCode(e.data.keyCode);
+        if (key > 36 && key <= 40) {
+          update_comments_and_divs();
+        }
+      });
+
+      editor.on('change', function (e) {
+        var selected = editor.getSelectedSentence();
+        sentence_div.innerHTML = selected.sentence;
+      });
+
+      editor.on('drop', function (e) {
+        console.log("This is drop");
+        e.cancel();
       });
 
     })();
