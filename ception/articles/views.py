@@ -100,6 +100,7 @@ def edit(request, id):
     versions = ArticleVersion.get_versions(article)
     version_jsons = []
     authors = []
+    this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " "))
     for v in versions:
         if v.edit_user == request.user:
             continue
@@ -111,7 +112,12 @@ def edit(request, id):
         # print v_dict
         # print v.content
         # print "*************************************"
-    return render(request, 'articles/edit.html', {'form': form, 'jsons': version_jsons, 'authors': authors})
+    pass_data = {
+        'json': version_jsons,
+        'authors': authors,
+        'counter': this_dict["counter"],
+    }
+    return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
 
 @login_required
 def edit_logic(request, id):

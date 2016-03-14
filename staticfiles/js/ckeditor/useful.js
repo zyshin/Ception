@@ -339,6 +339,7 @@ function insertPDTag (editor, e) {
   var node = editor.getSelection().getRanges()[0].startContainer;
   var stored_pd = node.getNextPDNode();
   if (stored_pd && stored_pd.getAttribute("prev_pd")) {
+    console.log("Here Has Save!");
     var stored_pd_id = stored_pd.getAttribute("prev_pd");
     editor.insertHtml("<pd id='" + stored_pd_id + "'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
     stored_pd.removeAttribute("prev_pd");

@@ -32,6 +32,10 @@
           <span class="glyphicon glyphicon-pencil"></span>
           10 Edits
         </span>
+        <span class="select">
+          <span class="glyphicon glyphicon-search"></span>
+          <div id="selected-id" style="display: inline"></div>
+        </span>
       </div>
 
       <form action="{% url 'edit_logic' form.instance.pk %}" id="edit_form" method="post" role="form">
@@ -50,22 +54,31 @@
       </form>
 
       <div id="selected-sentence" class="selected-div"></div>
-      <div id="selected-id" class="id-div" style="background-color: thistle; height: 20px"></div>
-      {% for a in authors %}
+      {% for a in data.authors %}
         <div id="block-{{ a }}">
-          <div id="c-{{ a }}" class="compare-div"></div>
-          <div class="post-comment clearfix">
-            <form role="form" id="comment-form-{{ a }}">
-              {% csrf_token %}
-              <input type="hidden" name="version_id" id="version_id-{{ a }}" value="{{ form.instance.pk }}">
-              <input type="hidden" name="sentence_id" id="sentence_id-{{ a }}" value="0">
-              <div class="comment-input clearfix">
-                <textarea class="form-control sentence-comment" rows="1" placeholder="{% trans 'Write a comment...' %}"
-                          name="sentence-comment" id="sentence-comment" data-author="{{ a }}"></textarea>
-              </div>
-            </form>
+          <div>
+            <div id="c-{{ a }}" class="compare-div"></div>
+            <button type="button" class="btn btn-default" style="display: inline" onclick="show_comment('{{ a }}')">
+              <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+            </button>
           </div>
-          <div class="well well-sm" id="t-{{ a }}"></div>
+
+          <div class="s-comment-block" id="s-comment-block-{{ a }}" style="display: none">
+            <div class="post-comment clearfix">
+              <form role="form" id="comment-form-{{ a }}">
+                {% csrf_token %}
+                <input type="hidden" name="version_id" id="version_id-{{ a }}" value="{{ form.instance.pk }}">
+                <input type="hidden" name="sentence_id" id="sentence_id-{{ a }}" value="0">
+                <div class="comment-input clearfix">
+                  <textarea class="form-control sentence-comment" rows="1"
+                            placeholder="{% trans 'Write a comment...' %}"
+                            name="sentence-comment" id="sentence-comment" data-author="{{ a }}"></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="well well-sm" id="t-{{ a }}"></div>
+          </div>
+
         </div>
       {% endfor %}
     </div>
@@ -89,14 +102,16 @@
           </ul>
           <div class="tab-content">
             <div id="summary" class="tab-pane fade in active">
-              <h3>HOME</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua.</p>
+              <h3>Summary</h3>
+              <p>This is a brilliant summary written by scyue</p>
+              <p>This summary contains how I implement this great website</p>
+              <p>Bleh Bleh Bleh</p>
             </div>
             <div id="detail" class="tab-pane fade">
-              <h3>Menu 1</h3>
-              <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat.</p>
+              <h3>Detail</h3>
+              <p>Do you want more details? </p>
+              <p>Please call me and I will tell you. </p>
+              <p>But I would not tell you my telephone number! </p>
             </div>
           </div>
         </div>
@@ -105,13 +120,23 @@
     </div>
 
     <script>
-    (function () {
-      var version_id = {{ form.instance.pk }};
-      var current_user = "{{ user }}";
-      var json_str_array = {{ jsons|safe }};
-      initEditPage(version_id, current_user, json_str_array);
-    })();
-  </script>
+      var show_comment = function (author) {
+        var comment_block = document.getElementById("s-comment-block-" + author);
+        if ($(comment_block).css('display') == "none") {
+          $(comment_block).fadeIn('slow');
+        } else {
+          $(comment_block).fadeOut('slow');
+        }
+      };
+
+      (function () {
+        var version_id = {{ form.instance.pk }};
+        var current_user = "{{ user }}";
+        var json_str_array = {{ data.json|safe }};
+        var counter = {{ data.counter }};
+        initEditPage(version_id, current_user, json_str_array, counter);
+      })();
+    </script>
   </div>
 
 

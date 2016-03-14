@@ -2,7 +2,7 @@
  * Created by scyue on 16/3/14.
  */
 
-function initEditPage(version_id, current_user, json_str_array) {
+function initEditPage(version_id, current_user, json_str_array, counter) {
   var get_sentence_comment = function (version_id, sentence_id, comment_div) {
     $.ajax({
       url: '/articles/sentence_return/',
@@ -59,6 +59,7 @@ function initEditPage(version_id, current_user, json_str_array) {
 
 
   var editor = initWithLite("id_content", true, false);
+  editor.sCount = counter;
   var sentence_div = document.getElementById("selected-sentence");
   var id_div = document.getElementById("selected-id");
 
