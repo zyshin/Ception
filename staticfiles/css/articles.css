@@ -101,3 +101,25 @@ article .tags {
 .comment:last-child {
   border-bottom: none;
 }
+
+#summary-window {
+  border: 15px solid transparent;
+  border-top: 55px solid transparent;
+}
+
+.selected-div {
+  font-family: "Georgia", Times, serif;
+  font-size: 20px;
+  vertical-align: middle;
+  line-height: 34px;
+  border: 3px solid #93c6ef;
+  word-wrap: break-word;
+}
+
+.compare-div {
+  font-family: "Georgia", Times, serif;
+  font-size: 20px;
+  vertical-align: middle;
+  line-height: 34px;
+  border: 3px solid #e3c300;
+}

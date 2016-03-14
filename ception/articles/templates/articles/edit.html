@@ -5,6 +5,7 @@
 {% block head %}
   <link href="{% static 'css/articles.css' %}" rel="stylesheet">
   <script src="{% static 'js/articles.js' %}"></script>
+  <script src="{% static 'js/edit.js' %}"></script>
 {% endblock head %}
 
 {% block main %}
@@ -14,10 +15,27 @@
     <li class="active">{% trans 'Edit' %}</li>
   </ol>
   <div class="row">
-    <div class="col-md-12">
-      <form action="{% url 'edit_logic' form.instance.pk %}" method="post" role="form">
+    <div class="col-md-8">
+      <h2><a href="{% url 'article' form.instance.origin.slug %}">{{ form.instance.origin.title }}</a></h2>
+
+      <div class="info">
+        <span class="date">
+          <span class="glyphicon glyphicon-calendar"></span>
+          {{ form.instance.origin.create_date }}
+        </span>
+        <span class="user">
+          <a href="{% url 'profile' form.instance.origin.create_user.username %}"><img
+              src="{{ form.instance.origin.create_user.profile.get_picture }}"></a>
+          <a href="{% url 'profile' form.instance.origin.create_user.username %}">{{ form.instance.origin.create_user.profile.get_screen_name }}</a>
+        </span>
+        <span class="edit">
+          <span class="glyphicon glyphicon-pencil"></span>
+          10 Edits
+        </span>
+      </div>
+
+      <form action="{% url 'edit_logic' form.instance.pk %}" id="edit_form" method="post" role="form">
         {% csrf_token %}
-        <h2><a href="{% url 'article' form.instance.origin.slug %}">{{ form.instance.origin.title }}</a></h2>
         {% for field in form.visible_fields %}
           <div class="form-group{% if field.errors %} has-error{% endif %}">
             {{ field }}
@@ -29,17 +47,13 @@
             {% endfor %}
           </div>
         {% endfor %}
-
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary publish">{% trans 'Save' %}</button>
-          <a href="{% url 'article' form.instance.origin.slug %}" class="btn btn-default">{% trans 'Cancel' %}</a>
-        </div>
       </form>
-      <div id="selected-sentence" style="background-color: #18C0DF; height: 40px"></div>
-      <div id="selected-id" style="background-color: thistle; height: 20px"></div>
+
+      <div id="selected-sentence" class="selected-div"></div>
+      <div id="selected-id" class="id-div" style="background-color: thistle; height: 20px"></div>
       {% for a in authors %}
         <div id="block-{{ a }}">
-          <div id="c-{{ a }}" style="background-color: #a3bde3; height: 40px"></div>
+          <div id="c-{{ a }}" class="compare-div"></div>
           <div class="post-comment clearfix">
             <form role="form" id="comment-form-{{ a }}">
               {% csrf_token %}
@@ -52,116 +66,50 @@
             </form>
           </div>
           <div class="well well-sm" id="t-{{ a }}"></div>
-          <div style="background-color: #2e383c; height: 2px"></div>
         </div>
       {% endfor %}
     </div>
-  <script>
+    <div class="col-md-4">
+      <div class="row">
+        <div class="col-md-6">
+          <a href="javascript:document.getElementById('edit_form').submit()"
+             class="btn btn-primary publish btn-block">{% trans 'Save' %}</a>
+        </div>
+        <div class="col-md-6">
+          <a href="{% url 'article' form.instance.origin.slug %}"
+             class="btn btn-default btn-block">{% trans 'Cancel' %}</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div id="summary-window">
+          <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a data-toggle="pill" href="#summary">Summary</a></li>
+            <li><a data-toggle="pill" href="#detail">Detail</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="summary" class="tab-pane fade in active">
+              <h3>HOME</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.</p>
+            </div>
+            <div id="detail" class="tab-pane fade">
+              <h3>Menu 1</h3>
+              <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
     (function () {
-
-      var get_sentence_comment = function(version_id, sentence_id, comment_div) {
-        $.ajax({
-          url: '/articles/sentence_return/',
-          data: "version_id=" + version_id + "&sentence_id=" + sentence_id,
-          cache: false,
-          type: 'get',
-          success: function (data) {
-{#            console.log(data);#}
-            comment_div.innerHTML = data;
-            var comment_count = $("#comment-list .comment").length;
-            $(".comment-count").text(comment_count);
-            $("#sentence-comment").val("");
-            $("#sentence-comment").blur();
-          }
-        });
-      };
-
-      var update_comments_and_divs = function () {
-        if (previous_selected_id == -1) {
-          for (var i = 0; i < block_array.length; i++) {
-            block_array[i].removeAttribute("hidden");
-          }
-        }
-        var selected = editor.getSelectedSentence();
-        sentence_div.innerHTML = selected.sentence;
-        id_div.innerHTML = selected.id;
-        if (selected.id != previous_selected_id) {
-          for (i = 0; i < sentence_id_form_array.length; i++) {
-            sentence_id_form_array[i].setAttribute("value", selected.id);
-          }
-          for (i = 0; i < json_array.length; i++) {
-            if (json_array[i].author == current_user) continue;
-            var compare_div = document.getElementById("c-" + json_array[i].author);
-            var comment_div = document.getElementById("t-" + json_array[i].author);
-
-            var found_flag = false;
-            for (var j = 0; j < json_array[i].sentence.length; j++) {
-              var s = json_array[i].sentence[j];
-              if (selected.id == s.id) {
-                get_sentence_comment(json_array[i].id, s.id, comment_div);
-                compare_div.innerHTML = s.content;
-                found_flag = true;
-                break;
-              }
-            }
-            if (!found_flag) {
-              compare_div.innerHTML = "Not Found"
-            }
-          }
-        }
-        previous_selected_id = selected.id;
-      };
-
-      CKEDITOR.config.height = 250;
-
       var version_id = {{ form.instance.pk }};
-      var editor = initWithLite("id_content", true, false);
-      var sentence_div = document.getElementById("selected-sentence");
-      var id_div = document.getElementById("selected-id");
-
-      var sentence_id_form_array = [];
-      var block_array = [];
-
       var current_user = "{{ user }}";
       var json_str_array = {{ jsons|safe }};
-      var json_array = [];
-      for (var i = 0; i < json_str_array.length; i++) {
-        json_array.push(JSON.parse(json_str_array[i]));
-      }
-{#      console.log(json_array);#}
-      for (i = 0; i < json_array.length; i++) {
-        var version_id_form = document.getElementById("version_id-" + json_array[i].author);
-        version_id_form.setAttribute("value", json_array[i].id);
-        sentence_id_form_array.push(document.getElementById("sentence_id-" + json_array[i].author));
-        var block = document.getElementById("block-" + json_array[i].author);
-        block.setAttribute("hidden", "hidden");
-        block_array.push(block);
-      }
-
-      var previous_selected_id = -1;
-{#      console.log(sentence_id_form_array);#}
-      editor.on('contentDom', function () {
-        this.document.on('click', function (event){
-          update_comments_and_divs();
-        });
-      });
-      editor.on('key', function (e) {
-        var key = sanitizeKeyCode(e.data.keyCode);
-        if (key > 36 && key <= 40) {
-          update_comments_and_divs();
-        }
-      });
-
-      editor.on('change', function (e) {
-        var selected = editor.getSelectedSentence();
-        sentence_div.innerHTML = selected.sentence;
-      });
-
-      editor.on('drop', function (e) {
-        console.log("This is drop");
-        e.cancel();
-      });
-
+      initEditPage(version_id, current_user, json_str_array);
     })();
   </script>
   </div>
