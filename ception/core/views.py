@@ -109,6 +109,7 @@ def upload_picture(request):
                 destination.write(chunk)    
         im = Image.open(filename)
         width, height = im.size
+        print im
         if width > 350:
             new_width = 350
             new_height = (height * 350) / width

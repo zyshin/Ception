@@ -74,7 +74,7 @@ def drafts(request):
 
 
 def edit_logic(request, version):
-    print "This is edit logic"
+    print "This is edit logi"
     if request.POST:
         form = VersionForm(request.POST, instance=version)
         if form.is_valid():
@@ -94,7 +94,7 @@ def edit_logic(request, version):
         v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
         v_dict['author'] = str(v.edit_user)
         v_dict['id'] = v.pk
-        authors.append(str(v.edit_user))
+        authors.append(v.edit_user)
         version_jsons.append(json.dumps(v_dict))
         # print v_dict
         # print v.content

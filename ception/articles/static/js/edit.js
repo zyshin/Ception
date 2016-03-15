@@ -21,9 +21,8 @@ function initEditPage(version_id, current_user, json_str_array, counter) {
 
   var update_comments_and_divs = function () {
     if (previous_selected_id == -1) {
-      for (var i = 0; i < block_array.length; i++) {
-        block_array[i].removeAttribute("hidden");
-      }
+      var sentence_list = document.getElementById("sentence-list");
+      sentence_list.removeAttribute("hidden");
     }
     var selected = editor.getSelectedSentence();
     sentence_div.innerHTML = selected.sentence;
@@ -64,7 +63,6 @@ function initEditPage(version_id, current_user, json_str_array, counter) {
   var id_div = document.getElementById("selected-id");
 
   var sentence_id_form_array = [];
-  var block_array = [];
 
 
   var json_array = [];
@@ -75,9 +73,6 @@ function initEditPage(version_id, current_user, json_str_array, counter) {
     var version_id_form = document.getElementById("version_id-" + json_array[i].author);
     version_id_form.setAttribute("value", json_array[i].id);
     sentence_id_form_array.push(document.getElementById("sentence_id-" + json_array[i].author));
-    var block = document.getElementById("block-" + json_array[i].author);
-    block.setAttribute("hidden", "hidden");
-    block_array.push(block);
   }
 
   var previous_selected_id = -1;

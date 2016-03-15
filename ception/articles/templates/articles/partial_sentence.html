@@ -1,0 +1,32 @@
+<div id="block-{{ author }}" class="sentence-block">
+  <div class="compare-div" onclick="show_comment('{{ author }}')">
+    <a href="{% url 'profile' author.username %}"><img src="{{ author.profile.get_picture }}" class="sentence-portrait"></a>
+    <div class="comment-text">
+      <h5>
+        <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a>
+        <small>here should be the time</small>
+      </h5>
+      <div id="c-{{ author }}" style="display: inline"></div>
+      {#      <button type="button" class="btn btn-default" style="float: right" onclick="show_comment('{{ author }}')">#}
+      {#        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>#}
+      {#      </button>#}
+    </div>
+
+    <div class="s-comment-block" id="s-comment-block-{{ author }}" style="display: none">
+      <div class="post-comment clearfix">
+        <form role="form" id="comment-form-{{ author }}">
+          {% csrf_token %}
+          <input type="hidden" name="version_id" id="version_id-{{ author }}" value="{{ form.instance.pk }}">
+          <input type="hidden" name="sentence_id" id="sentence_id-{{ author }}" value="0">
+          <div class="comment-input clearfix">
+            <textarea class="form-control sentence-comment" rows="1"
+                      placeholder="Write a comment..."
+                      name="sentence-comment" id="sentence-comment" data-author="{{ author }}"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="well well-sm" id="t-{{ author }}"></div>
+    </div>
+  </div>
+
+</div>

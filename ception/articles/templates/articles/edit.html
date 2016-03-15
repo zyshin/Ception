@@ -52,35 +52,15 @@
           </div>
         {% endfor %}
       </form>
-
-      <div id="selected-sentence" class="selected-div"></div>
-      {% for a in data.authors %}
-        <div id="block-{{ a }}">
-          <div>
-            <div id="c-{{ a }}" class="compare-div"></div>
-            <button type="button" class="btn btn-default" style="display: inline" onclick="show_comment('{{ a }}')">
-              <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
-            </button>
-          </div>
-
-          <div class="s-comment-block" id="s-comment-block-{{ a }}" style="display: none">
-            <div class="post-comment clearfix">
-              <form role="form" id="comment-form-{{ a }}">
-                {% csrf_token %}
-                <input type="hidden" name="version_id" id="version_id-{{ a }}" value="{{ form.instance.pk }}">
-                <input type="hidden" name="sentence_id" id="sentence_id-{{ a }}" value="0">
-                <div class="comment-input clearfix">
-                  <textarea class="form-control sentence-comment" rows="1"
-                            placeholder="{% trans 'Write a comment...' %}"
-                            name="sentence-comment" id="sentence-comment" data-author="{{ a }}"></textarea>
-                </div>
-              </form>
-            </div>
-            <div class="well well-sm" id="t-{{ a }}"></div>
-          </div>
-
+      <div id="sentence-list" hidden="hidden">
+        <div id="sentence-list-head">Focused Sentence</div>
+        <div class="selected-div">
+          <div id="selected-sentence"></div>
         </div>
-      {% endfor %}
+        {% for author in data.authors %}
+          {% include 'articles/partial_sentence.html' with author=author %}
+        {% endfor %}
+      </div>
     </div>
     <div class="col-md-4">
       <div class="row">
