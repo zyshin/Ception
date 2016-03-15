@@ -74,6 +74,7 @@ def drafts(request):
 
 
 def edit_logic(request, version):
+    print "This is edit logic"
     if request.POST:
         form = VersionForm(request.POST, instance=version)
         if form.is_valid():
@@ -109,6 +110,8 @@ def edit_logic(request, version):
 
 @login_required
 def edit(request, id):
+    print "This is edit"
+
     if id:
         article = get_object_or_404(Article, pk=id)
     else:
@@ -122,13 +125,14 @@ def edit(request, id):
         version.save()
     else:
         version = version_set[0]
-    print "===**********++++++++++++"
+    print "-2"
     return edit_logic(request, version)
 
 
 
 @login_required
 def edit_version(request, id):
+    print "This is edit version"
     if id:
         version = get_object_or_404(ArticleVersion, pk=id)
     else:
