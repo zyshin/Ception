@@ -128,3 +128,12 @@ article .tags {
   border: 3px solid #e3c300;
 }
 
+.compare-div del {
+  color: #3399ff;
+  text-line-through-color: #6699ff;
+}
+
+.compare-div ins {
+  color: #ff3366;
+  text-decoration: none;
+}

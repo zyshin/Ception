@@ -47,37 +47,37 @@ function fixSpecificCutBug(editor, e) {
     e.cancel();
   }
 }
-
-function fixSpecificCutBugThirdPhase(editor) {
-  var cutNode = editor.cutNode;
-  var childList =  cutNode.getChildren();
-  var outerNode = cutNode.getParent();
-  console.log(childList.count());
-  while (childList.count() > 0) {
-    outerNode.append(childList.getItem(0));
-  }
-  cutNode.remove();
-}
-
-function fixSpecificCutBugSecondPhase(editor) {
-  editor.on('afterChange', function () {
-    console.log("Here");
-    if (editor.cutMode) {
-      editor.cutMode = false;
-      var cutNode = editor.cutNode;
-      var childList =  cutNode.getChildren();
-      var outerNode = cutNode.getParent();
-      if (childList.count() == 1) {
-        setTimeout(function() {fixSpecificCutBugThirdPhase(editor);}, 300); // Very poor solution
-      } else {
-        while (childList.count() > 0) {
-          outerNode.append(childList.getItem(0));
-        }
-        cutNode.remove();
-      }
-    }
-  });
-}
+//
+//function fixSpecificCutBugThirdPhase(editor) {
+//  var cutNode = editor.cutNode;
+//  var childList =  cutNode.getChildren();
+//  var outerNode = cutNode.getParent();
+//  console.log(childList.count());
+//  while (childList.count() > 0) {
+//    outerNode.append(childList.getItem(0));
+//  }
+//  cutNode.remove();
+//}
+//
+//function fixSpecificCutBugSecondPhase(editor) {
+//  editor.on('afterChange', function () {
+//    console.log("Here");
+//    if (editor.cutMode) {
+//      editor.cutMode = false;
+//      var cutNode = editor.cutNode;
+//      var childList =  cutNode.getChildren();
+//      var outerNode = cutNode.getParent();
+//      if (childList.count() == 1) {
+//        setTimeout(function() {fixSpecificCutBugThirdPhase(editor);}, 300); // Very poor solution
+//      } else {
+//        while (childList.count() > 0) {
+//          outerNode.append(childList.getItem(0));
+//        }
+//        cutNode.remove();
+//      }
+//    }
+//  });
+//}
 
 
 function avoidPDtag(editor, e) {
@@ -357,49 +357,6 @@ function deletePDTag (editor, e) {
       next_pd.setAttribute("prev_pd", pd.getId());
     }
   }
-}
-
-function clone(obj) {
-  if (null == obj || "object" != typeof obj) return obj;
-  var copy = obj.constructor();
-  for (var attr in obj) {
-    if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-  }
-  return copy;
-}
-
-function simulateKey(character) {
-  var keyboardEvent = document.createEvent("KeyboardEvent");
-  var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-  keyboardEvent[initMethod](
-      "keyup", // event type : keydown, keyup, keypress
-      true, // bubbles
-      true, // cancelable
-      window, // viewArg: should be window
-      false, // ctrlKeyArg
-      false, // altKeyArg
-      false, // shiftKeyArg
-      false, // metaKeyArg
-      40, // keyCodeArg : unsigned long the virtual key code, else 0
-      40 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
-  );
-  keyboardEvent.keyCode = 40;
-  keyboardEvent.charCode = 40;
-
-  console.log(keyboardEvent.keyCode);
-  console.log(keyboardEvent.charCode);
-  document.dispatchEvent(keyboardEvent);
-}
-
-function __triggerKeyboardEvent(el, keyCode) {
-  var eventObj = document.createEventObject ?
-      document.createEventObject() : document.createEvent("Events");
-  if(eventObj.initEvent){
-    eventObj.initEvent("keydown", true, true);
-  }
-  eventObj.keyCode = keyCode;
-  eventObj.which = keyCode;
-  el.dispatchEvent ? el.dispatchEvent(eventObj) : el.fireEvent("onkeydown", eventObj);
 }
 
 

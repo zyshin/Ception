@@ -65,6 +65,8 @@ class ContentParser(HTMLParser):
         self.inside_pd_deleted = False
 
     def handle_starttag(self, tag, attrs):
+        if tag == "ins" or tag == "del":
+            self.current_sentence["content"] += start_str(tag, {})
         if tag == "pd" and not self.is_deleted:
             current_id = int(attrs[0][1][1:])
             self.current_sentence["id"] = current_id
@@ -75,7 +77,10 @@ class ContentParser(HTMLParser):
             self.is_deleted = True
             self.inside_pd_deleted = True
 
+
     def handle_endtag(self, tag):
+        if tag == "ins" or tag == "del":
+            self.current_sentence["content"] += end_str(tag)
         if tag == "pd" and not self.inside_pd_deleted:
             self.json['sentence'].append(self.current_sentence)
             self.current_sentence = {
@@ -85,10 +90,9 @@ class ContentParser(HTMLParser):
         elif tag == "del":
             self.is_deleted = False
 
-
     def handle_data(self, data):
-        if not self.is_deleted:
-            self.current_sentence["content"] += data
+        # if not self.is_deleted:
+        self.current_sentence["content"] += data
 
     @staticmethod
     def getJSON(content):
