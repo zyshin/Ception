@@ -72,13 +72,47 @@ def drafts(request):
     drafts = Article.objects.filter(create_user=request.user, status=Article.DRAFT)
     return render(request, 'articles/drafts.html', {'drafts': drafts})
 
+
+def edit_logic(request, version):
+    if request.POST:
+        form = VersionForm(request.POST, instance=version)
+        if form.is_valid():
+            form.save()
+    else:
+        form = VersionForm(instance=version)
+    print "1"
+
+    versions = ArticleVersion.get_versions(version.origin)
+    version_jsons = []
+    authors = []
+    this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " "))
+    print "2"
+    for v in versions:
+        if v.edit_user == request.user:
+            continue
+        v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
+        v_dict['author'] = str(v.edit_user)
+        v_dict['id'] = v.pk
+        authors.append(str(v.edit_user))
+        version_jsons.append(json.dumps(v_dict))
+        # print v_dict
+        # print v.content
+        # print "*************************************"
+    print "3"
+    pass_data = {
+        'json': version_jsons,
+        'authors': authors,
+        'counter': this_dict["counter"],
+    }
+    return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
+
+
 @login_required
 def edit(request, id):
     if id:
         article = get_object_or_404(Article, pk=id)
     else:
-        return Http404()
-
+        return HttpResponseBadRequest(request)
     version_set = ArticleVersion.objects.filter(edit_user=request.user, origin=article)
     if len(version_set) == 0:
         version = ArticleVersion()
@@ -88,66 +122,18 @@ def edit(request, id):
         version.save()
     else:
         version = version_set[0]
+    print "===**********++++++++++++"
+    return edit_logic(request, version)
 
-    if request.POST:
-        form = VersionForm(request.POST, instance=version)
-        if form.is_valid():
-            form.save()
-            return redirect('/articles/')
-    else:
-        form = VersionForm(instance=version)
 
-    versions = ArticleVersion.get_versions(article)
-    version_jsons = []
-    authors = []
-    this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " "))
-    for v in versions:
-        if v.edit_user == request.user:
-            continue
-        v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
-        v_dict['author'] = str(v.edit_user)
-        v_dict['id'] = v.pk
-        authors.append(str(v.edit_user))
-        version_jsons.append(json.dumps(v_dict))
-        # print v_dict
-        # print v.content
-        # print "*************************************"
-    pass_data = {
-        'json': version_jsons,
-        'authors': authors,
-        'counter': this_dict["counter"],
-    }
-    return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
 
 @login_required
-def edit_logic(request, id):
+def edit_version(request, id):
     if id:
         version = get_object_or_404(ArticleVersion, pk=id)
     else:
-        return Http404
-
-    if request.POST:
-        form = VersionForm(request.POST, instance=version)
-        if form.is_valid():
-            form.save()
-    else:
-        form = VersionForm(instance=version)
-
-    versions = ArticleVersion.get_versions(version.origin)
-    version_jsons = []
-    authors = []
-    for v in versions:
-        if v.edit_user == request.user:
-            continue
-        v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
-        v_dict['author'] = str(v.edit_user)
-        v_dict['id'] = v.pk
-        authors.append(str(v.edit_user))
-        version_jsons.append(json.dumps(v_dict))
-        # print v_dict
-        # print v.content
-        # print "*************************************"
-    return render(request, 'articles/edit.html', {'form': form, 'jsons': version_jsons, 'authors': authors})
+        return HttpResponseBadRequest(request)
+    return edit_logic(request, version)
 
 
 @login_required

@@ -38,7 +38,7 @@
         </span>
       </div>
 
-      <form action="{% url 'edit_logic' form.instance.pk %}" id="edit_form" method="post" role="form">
+      <form action="{% url 'edit_version' form.instance.pk %}" id="edit_form" method="post" role="form">
         {% csrf_token %}
         {% for field in form.visible_fields %}
           <div class="form-group{% if field.errors %} has-error{% endif %}">
