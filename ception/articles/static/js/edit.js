@@ -59,6 +59,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
           compare_div.innerHTML = "Not Found"
         }
       }
+      form_current_sentence_id.setAttribute("value", selected.id);
       get_sentence_comment(current_version, selected.id, current_comment_list);
     }
     previous_selected_id = selected.id;
@@ -74,7 +75,10 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
   var current_comment_list = document.getElementById("t-" + current_user);
   document.getElementById("block-" + current_user).className += " selected-block";
   document.getElementById("time-" + current_user).innerHTML = "current selected sentence";
+  document.getElementById("version_id-" + current_user).setAttribute("value", current_version);
+
   var id_div = document.getElementById("selected-id");
+  var form_current_sentence_id = document.getElementById("sentence_id-" + current_user);
 
   var sentence_id_form_array = [];
 

@@ -53,17 +53,17 @@ $(function () {
     }
   });
 
-  $(".sentence-comment").focus(function () {
+  $(".sentence-comment-form").focus(function () {
     $(this).attr("rows", "2");
     $("#comment-helper").fadeIn();
   });
 
-  $(".sentence-comment").blur(function () {
+  $(".sentence-comment-form").blur(function () {
     $(this).attr("rows", "1");
     $("#comment-helper").fadeOut();
   });
 
-  $(".sentence-comment").keydown(function (evt) {
+  $(".sentence-comment-form").keydown(function (evt) {
     var keyCode = evt.which?evt.which:evt.keyCode;
     if (evt.ctrlKey && (keyCode == 10 || keyCode == 13)) {
       //console.log($("#comment-form").serialize());
@@ -78,8 +78,8 @@ $(function () {
           $("#t-" + author).html(data);
           //var comment_count = $("#comment-list .comment").length;
           //$(".comment-count").text(comment_count);
-          $(".sentence-comment").val("");
-          $(".sentence-comment").blur();
+          $(".sentence-comment-form").val("");
+          $(".sentence-comment-form").blur();
         }
       });
     }
