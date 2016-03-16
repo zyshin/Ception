@@ -53,7 +53,7 @@
         {% endfor %}
       </form>
       <div id="sentence-list" hidden="hidden">
-        <div id="sentence-list-head">Focused Sentence</div>
+        {#        <div id="sentence-list-head"><h3>Focused Sentence</h3></div>#}
         {% include 'articles/partial_sentence.html' with author=user %}
         {% for author in data.authors %}
           {% include 'articles/partial_sentence.html' with author=author %}

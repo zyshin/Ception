@@ -65,7 +65,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
     previous_selected_id = selected.id;
   };
 
-  CKEDITOR.config.height = 250;
+  CKEDITOR.config.height = 150;
 
 
   var editor = initWithLite("id_content", true, false);
