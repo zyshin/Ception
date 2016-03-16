@@ -2,7 +2,16 @@
  * Created by scyue on 16/3/14.
  */
 
-function initEditPage(version_id, current_user, json_str_array, counter) {
+var show_comment = function (author) {
+  var comment_block = document.getElementById("s-comment-block-" + author);
+  if ($(comment_block).css('display') == "none") {
+    $(comment_block).fadeIn('slow');
+  } else {
+    $(comment_block).fadeOut('slow');
+  }
+};
+
+function initEditPage(current_version, current_user, json_str_array, counter) {
   var get_sentence_comment = function (version_id, sentence_id, comment_div) {
     $.ajax({
       url: '/articles/sentence_return/',
@@ -50,6 +59,7 @@ function initEditPage(version_id, current_user, json_str_array, counter) {
           compare_div.innerHTML = "Not Found"
         }
       }
+      get_sentence_comment(current_version, selected.id, current_comment_list);
     }
     previous_selected_id = selected.id;
   };
@@ -59,7 +69,11 @@ function initEditPage(version_id, current_user, json_str_array, counter) {
 
   var editor = initWithLite("id_content", true, false);
   editor.sCount = counter;
-  var sentence_div = document.getElementById("selected-sentence");
+
+  var sentence_div = document.getElementById("c-" + current_user);
+  var current_comment_list = document.getElementById("t-" + current_user);
+  document.getElementById("block-" + current_user).className += " selected-block";
+  document.getElementById("time-" + current_user).innerHTML = "current selected sentence";
   var id_div = document.getElementById("selected-id");
 
   var sentence_id_form_array = [];

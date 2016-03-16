@@ -87,6 +87,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     PROJECT_DIR.child('static'),
+    PROJECT_DIR.parent.child('media')
 )
 
 MEDIA_ROOT = PROJECT_DIR.parent.child('media')

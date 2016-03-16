@@ -54,9 +54,7 @@
       </form>
       <div id="sentence-list" hidden="hidden">
         <div id="sentence-list-head">Focused Sentence</div>
-        <div class="selected-div">
-          <div id="selected-sentence"></div>
-        </div>
+        {% include 'articles/partial_sentence.html' with author=user %}
         {% for author in data.authors %}
           {% include 'articles/partial_sentence.html' with author=author %}
         {% endfor %}
@@ -100,15 +98,6 @@
     </div>
 
     <script>
-      var show_comment = function (author) {
-        var comment_block = document.getElementById("s-comment-block-" + author);
-        if ($(comment_block).css('display') == "none") {
-          $(comment_block).fadeIn('slow');
-        } else {
-          $(comment_block).fadeOut('slow');
-        }
-      };
-
       (function () {
         var version_id = {{ form.instance.pk }};
         var current_user = "{{ user }}";

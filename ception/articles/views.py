@@ -185,13 +185,10 @@ def sentence_return(request):
             version_id = request.GET.get('version_id')
             version = ArticleVersion.objects.get(pk=version_id)
             sentence_id = request.GET.get('sentence_id')
-            # print "GET:", version, sentence_id
             html = u''
-            # for v in ArticleSentenceComment.objects.all():
-            #     print v.parent, v.sentence_id
-            # print ArticleSentenceComment.objects.filter(parent=version, sentence_id=sentence_id)
             for comment in ArticleSentenceComment.objects.filter(parent=version, sentence_id=sentence_id):
-                html = u'{0}{1}'.format(html, render_to_string('articles/partial_article_comment.html', {'comment': comment}))
+                html = u"{0}{1}".format(html, render_to_string('articles/partial_sentence_comment.html',
+                                                               {'comment': comment}))
             return HttpResponse(html)
         else:
             return HttpResponseBadRequest()
@@ -203,20 +200,18 @@ def sentence_return(request):
 def sentence_comment(request):
     try:
         if request.method == 'POST':
-
             version_id = request.POST.get('version_id')
             version = ArticleVersion.objects.get(pk=version_id)
             sentence_id = request.POST.get('sentence_id')
-
             comment = request.POST.get('sentence-comment').strip()
-            print "=*=*=*=*"
             if len(comment) > 0:
                 sentence_comment = ArticleSentenceComment(parent=version, sentence_id=sentence_id, user=request.user, comment=comment)
                 print sentence_comment
                 sentence_comment.save()
             html = u''
             for comment in ArticleSentenceComment.objects.filter(parent=version, sentence_id=sentence_id):
-                html = u'{0}{1}'.format(html, render_to_string('articles/partial_article_comment.html', {'comment': comment}))
+                html = u"{0}{1}".format(html, render_to_string('articles/partial_sentence_comment.html',
+                                                               {'comment': comment}))
             return HttpResponse(html)
         else:
             return HttpResponseBadRequest()
