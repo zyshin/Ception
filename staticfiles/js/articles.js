@@ -74,12 +74,10 @@ $(function () {
         cache: false,
         type: 'post',
         success: function (data) {
-          //console.log(data);
           $("#t-" + author).html(data);
-          //var comment_count = $("#comment-list .comment").length;
-          //$(".comment-count").text(comment_count);
-          $(".sentence-comment-form").val("");
-          $(".sentence-comment-form").blur();
+          console.log($("#t-" + author + " .sentence-comment").length);
+          $("#comment-count-" + author).text($("#t-" + author + " .sentence-comment").length);
+          $(".sentence-comment-form").val("").blur();
         }
       });
     }

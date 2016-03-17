@@ -5,25 +5,25 @@
 var show_comment = function (author) {
   var comment_block = document.getElementById("s-comment-block-" + author);
   if ($(comment_block).css('display') == "none") {
-    $(comment_block).fadeIn('slow');
+    $(comment_block).fadeIn('normal');
   } else {
-    $(comment_block).fadeOut('slow');
+    $(comment_block).fadeOut('normal');
   }
 };
 
 function initEditPage(current_version, current_user, json_str_array, counter) {
-  var get_sentence_comment = function (version_id, sentence_id, comment_div) {
+  var get_sentence_comment = function (version_id, sentence_id, author) {
     $.ajax({
       url: '/articles/sentence_return/',
       data: "version_id=" + version_id + "&sentence_id=" + sentence_id,
       cache: false,
       type: 'get',
       success: function (data) {
+        var comment_div = document.getElementById("t-" + author);
+        var comment_count = document.getElementById("comment-count-" + author);
         comment_div.innerHTML = data;
-        var comment_count = $("#comment-list .comment").length;
-        $(".comment-count").text(comment_count);
-        $("#sentence-comment").val("");
-        $("#sentence-comment").blur();
+        comment_count.innerHTML = $("#t-" + author + " .sentence-comment").length;
+        $(".sentence-comment-form").val("").blur();
       }
     });
   };
@@ -43,13 +43,11 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
       for (i = 0; i < json_array.length; i++) {
         if (json_array[i].author == current_user) continue;
         var compare_div = document.getElementById("c-" + json_array[i].author);
-        var comment_div = document.getElementById("t-" + json_array[i].author);
-
         var found_flag = false;
         for (var j = 0; j < json_array[i].sentence.length; j++) {
           var s = json_array[i].sentence[j];
           if (selected.id == s.id) {
-            get_sentence_comment(json_array[i].id, s.id, comment_div);
+            get_sentence_comment(json_array[i].id, s.id, json_array[i].author);
             compare_div.innerHTML = s.content;
             found_flag = true;
             break;
@@ -60,7 +58,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
         }
       }
       form_current_sentence_id.setAttribute("value", selected.id);
-      get_sentence_comment(current_version, selected.id, current_comment_list);
+      get_sentence_comment(current_version, selected.id, current_user);
     }
     previous_selected_id = selected.id;
   };
@@ -72,7 +70,6 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
   editor.sCount = counter;
 
   var sentence_div = document.getElementById("c-" + current_user);
-  var current_comment_list = document.getElementById("t-" + current_user);
   document.getElementById("block-" + current_user).className += " selected-block";
   document.getElementById("time-" + current_user).innerHTML = "current selected sentence";
   document.getElementById("version_id-" + current_user).setAttribute("value", current_version);

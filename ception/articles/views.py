@@ -177,37 +177,23 @@ def comment(request):
         return HttpResponseBadRequest()
 
 
-@login_required
-@ajax_required
-def sentence_return(request):
+def sentence_logic(request, has_comment):
+    request_type = 'POST' if has_comment else "GET"
     try:
-        if request.method == 'GET':
-            version_id = request.GET.get('version_id')
+        if request.method == request_type:
+            if has_comment:
+                version_id = request.POST.get('version_id')
+                sentence_id = request.POST.get('sentence_id')
+            else:
+                version_id = request.GET.get('version_id')
+                sentence_id = request.GET.get('sentence_id')
             version = ArticleVersion.objects.get(pk=version_id)
-            sentence_id = request.GET.get('sentence_id')
-            html = u''
-            for comment in ArticleSentenceComment.objects.filter(parent=version, sentence_id=sentence_id):
-                html = u"{0}{1}".format(html, render_to_string('articles/partial_sentence_comment.html',
-                                                               {'comment': comment}))
-            return HttpResponse(html)
-        else:
-            return HttpResponseBadRequest()
-    except:
-        return HttpResponseBadRequest()
-
-@login_required
-@ajax_required
-def sentence_comment(request):
-    try:
-        if request.method == 'POST':
-            version_id = request.POST.get('version_id')
-            version = ArticleVersion.objects.get(pk=version_id)
-            sentence_id = request.POST.get('sentence_id')
-            comment = request.POST.get('sentence-comment').strip()
-            if len(comment) > 0:
-                sentence_comment = ArticleSentenceComment(parent=version, sentence_id=sentence_id, user=request.user, comment=comment)
-                print sentence_comment
-                sentence_comment.save()
+            if has_comment:
+                comment = request.POST.get('sentence-comment').strip()
+                if len(comment) > 0:
+                    sentence_comment = ArticleSentenceComment(parent=version, sentence_id=sentence_id,
+                                                              user=request.user, comment=comment)
+                    sentence_comment.save()
             html = u''
             for comment in ArticleSentenceComment.objects.filter(parent=version, sentence_id=sentence_id):
                 html = u"{0}{1}".format(html, render_to_string('articles/partial_sentence_comment.html',
@@ -216,7 +202,14 @@ def sentence_comment(request):
         else:
             return HttpResponseBadRequest()
     except Exception, e:
-        print e
         return HttpResponseBadRequest()
 
+@login_required
+@ajax_required
+def sentence_return(request):
+    return sentence_logic(request, False)
 
+@login_required
+@ajax_required
+def sentence_comment(request):
+    return sentence_logic(request, True)
