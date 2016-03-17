@@ -46,8 +46,7 @@ $(function () {
           $("#comment-list").html(data);
           var comment_count = $("#comment-list .comment").length;
           $(".comment-count").text(comment_count);
-          $("#comment").val("");
-          $("#comment").blur();
+          $("#comment").val("").blur();
         }
       });
     }
@@ -75,7 +74,6 @@ $(function () {
         type: 'post',
         success: function (data) {
           $("#t-" + author).html(data);
-          console.log($("#t-" + author + " .sentence-comment").length);
           $("#comment-count-" + author).text($("#t-" + author + " .sentence-comment").length);
           $(".sentence-comment-form").val("").blur();
         }
