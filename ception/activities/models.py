@@ -20,6 +20,9 @@ class Activity(models.Model):
     feed = models.IntegerField(null=True, blank=True)
     question = models.IntegerField(null=True, blank=True)
     answer = models.IntegerField(null=True, blank=True)
+    sentence_id = models.IntegerField(null=True, blank=True)
+    version_id = models.IntegerField(null=True, blank=True)
+
 
     class Meta:
         verbose_name = 'Activity'

@@ -133,7 +133,7 @@ class Tag(models.Model):
 
 class ArticleSentenceComment(models.Model):
     parent = models.ForeignKey(ArticleVersion)
-    sentence_id = models.CharField(max_length=255, blank=False, null=False)
+    sentence_id = models.IntegerField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     comment = models.CharField(max_length=500, blank=False, null=False)
     user = models.ForeignKey(User)

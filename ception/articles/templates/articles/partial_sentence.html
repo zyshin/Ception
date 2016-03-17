@@ -1,6 +1,6 @@
 <div id="block-{{ author }}" class="sentence-block">
   <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-9">
       <a href="{% url 'profile' author.username %}"><img src="{{ author.profile.get_picture }}"
                                                          class="sentence-portrait"></a>
       <div class="comment-text">
@@ -11,21 +11,19 @@
         <div id="c-{{ author }}" style="display: inline"></div>
       </div>
     </div>
-    <div class="col-md-2">
-      <div class="row">
-        <div class="col-md-3">
+    <div class="col-md-3">
+      <div class="sentence-comment-button">
           <button class="btn btn-default" onclick="show_comment('{{ author }}')"
-                  style="display: inline; padding: 6px 10px; margin-left: -30px;">
+                  style="display: inline; padding: 6px 10px; ">
             <span class="glyphicon glyphicon-comment" style="display: inline;"></span>
-            <div id="comment-count-{{ author }}" style="display: inline;">99</div>
+            <div id="comment-count-{{ author }}" style="display: inline;">-</div>
           </button>
         </div>
-        <div class="col-md-9 vote-div">
+      <div class="vote-div">
           <span class="glyphicon glyphicon-thumbs-up sentence-comment-vote-span"></span>
-          <div id="up-vote-count" class="sentence-comment-vote-number">99</div>
+        <div id="up-vote-count" class="sentence-comment-vote-number">-</div>
           <span class="glyphicon glyphicon-thumbs-down sentence-comment-vote-span"></span>
         </div>
-      </div>
 
 
     </div>

@@ -182,11 +182,11 @@ def sentence_logic(request, has_comment):
     try:
         if request.method == request_type:
             if has_comment:
-                version_id = request.POST.get('version_id')
-                sentence_id = request.POST.get('sentence_id')
+                version_id = int(request.POST.get('version_id'))
+                sentence_id = int(request.POST.get('sentence_id'))
             else:
-                version_id = request.GET.get('version_id')
-                sentence_id = request.GET.get('sentence_id')
+                version_id = int(request.GET.get('version_id'))
+                sentence_id = int(request.GET.get('sentence_id'))
             version = ArticleVersion.objects.get(pk=version_id)
             if has_comment:
                 comment = request.POST.get('sentence-comment').strip()

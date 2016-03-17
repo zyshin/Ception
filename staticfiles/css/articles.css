@@ -207,10 +207,18 @@ article .tags {
 }
 
 .vote-div {
+  width: 70%;
+  float: right;
   padding-top: 10px;
   text-align: center;
   padding-left: 0;
   padding-right: 10px;
+}
+
+.sentence-comment-button {
+  text-align: center;
+  width: 30%;
+  float: left;
 }
 
 .sentence-comment-vote-number {
