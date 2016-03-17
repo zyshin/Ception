@@ -1,4 +1,5 @@
-<div id="block-{{ author }}" class="sentence-block">
+<div class="sentence-block" data-author="{{ author }}">
+  {% csrf_token %}
   <div class="row">
     <div class="col-md-9">
       <a href="{% url 'profile' author.username %}"><img src="{{ author.profile.get_picture }}"
@@ -6,38 +7,34 @@
       <div class="comment-text">
         <h5>
           <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a>
-          <small id="time-{{ author }}">here should be the time</small>
+          <small class="time">here should be the time</small>
         </h5>
-        <div id="c-{{ author }}" style="display: inline"></div>
+        <div class="sentence-content" style="display: inline"></div>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="sentence-comment-button">
-          <button class="btn btn-default" onclick="show_comment('{{ author }}')"
-                  style="display: inline; padding: 6px 10px; ">
-            <span class="glyphicon glyphicon-comment" style="display: inline;"></span>
-            <div id="comment-count-{{ author }}" style="display: inline;">-</div>
-          </button>
-        </div>
+      <button class="btn btn-default sentence-comment-button">
+        <span class="glyphicon glyphicon-comment" style="display: inline;"></span>
+        <div class="comment-count" style="display: inline;">-</div>
+      </button>
       <div class="vote-div">
           <span class="glyphicon glyphicon-thumbs-up sentence-comment-vote-span"></span>
-        <div id="up-vote-count" class="sentence-comment-vote-number">-</div>
+        <div class="sentence-comment-vote-number">-</div>
           <span class="glyphicon glyphicon-thumbs-down sentence-comment-vote-span"></span>
         </div>
-
-
     </div>
   </div>
-  <div class="s-comment-block" id="s-comment-block-{{ author }}" style="display: none">
-    <form role="form" id="comment-form-{{ author }}">
+  <div class="sentence-comment-block" style="display: none">
+    <form role="form" class="sentence-comment-form">
       {% csrf_token %}
-      <input type="hidden" name="version_id" id="version_id-{{ author }}" value="{{ form.instance.pk }}">
-      <input type="hidden" name="sentence_id" id="sentence_id-{{ author }}" value="0">
+      <input type="hidden" name="version_id" value="0">
+      <input type="hidden" name="sentence_id" value="0">
       <textarea class="form-control sentence-comment-form" rows="1"
                 placeholder="Write a comment..."
-                name="sentence-comment" data-author="{{ author }}"></textarea>
+                name="sentence-comment">
+      </textarea>
     </form>
-    <div class="sentence-comment-list" id="t-{{ author }}"></div>
+    <div class="sentence-comment-list"></div>
   </div>
 
 

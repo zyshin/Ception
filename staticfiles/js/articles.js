@@ -51,35 +51,4 @@ $(function () {
       });
     }
   });
-
-  $(".sentence-comment-form").focus(function () {
-    $(this).attr("rows", "2");
-    $("#comment-helper").fadeIn();
-  });
-
-  $(".sentence-comment-form").blur(function () {
-    $(this).attr("rows", "1");
-    $("#comment-helper").fadeOut();
-  });
-
-  $(".sentence-comment-form").keydown(function (evt) {
-    var keyCode = evt.which?evt.which:evt.keyCode;
-    if (evt.ctrlKey && (keyCode == 10 || keyCode == 13)) {
-      //console.log($("#comment-form").serialize());
-      var author = $(this).attr("data-author");
-      $.ajax({
-        url: '/articles/sentence_comment/',
-        data: $("#comment-form-" + author).serialize(),
-        cache: false,
-        type: 'post',
-        success: function (data) {
-          $("#t-" + author).html(data);
-          $("#comment-count-" + author).text($("#t-" + author + " .sentence-comment").length);
-          $(".sentence-comment-form").val("").blur();
-        }
-      });
-    }
-  });
-
-
 });

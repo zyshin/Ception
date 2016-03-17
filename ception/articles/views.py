@@ -178,15 +178,10 @@ def comment(request):
 
 
 def sentence_logic(request, has_comment):
-    request_type = 'POST' if has_comment else "GET"
     try:
-        if request.method == request_type:
-            if has_comment:
-                version_id = int(request.POST.get('version_id'))
-                sentence_id = int(request.POST.get('sentence_id'))
-            else:
-                version_id = int(request.GET.get('version_id'))
-                sentence_id = int(request.GET.get('sentence_id'))
+        if request.method == 'POST':
+            version_id = int(request.POST.get('version_id'))
+            sentence_id = int(request.POST.get('sentence_id'))
             version = ArticleVersion.objects.get(pk=version_id)
             if has_comment:
                 comment = request.POST.get('sentence-comment').strip()
@@ -213,3 +208,16 @@ def sentence_return(request):
 @ajax_required
 def sentence_comment(request):
     return sentence_logic(request, True)
+
+
+@login_required
+@ajax_required
+def sentence_vote(request):
+    try:
+        if request.method == 'POST':
+            html = u'0'
+            return HttpResponse(html)
+        else:
+            return HttpResponseBadRequest()
+    except:
+        return HttpResponseBadRequest()
