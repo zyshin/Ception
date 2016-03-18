@@ -3,29 +3,30 @@
  */
 
 $(function () {
-  var class_sentence_comment_form = $(".sentence-comment-form");
-  class_sentence_comment_form.focus(function () {
+  var sentence_comment_content = $(".sentence-comment-content");
+  sentence_comment_content.focus(function () {
     $(this).attr("rows", "2");
     $("#comment-helper").fadeIn();
   });
-  class_sentence_comment_form.blur(function () {
+  sentence_comment_content.blur(function () {
     $(this).attr("rows", "1");
     $("#comment-helper").fadeOut();
   });
-  class_sentence_comment_form.keydown(function (evt) {
+  sentence_comment_content.keydown(function (evt) {
+    var content = $(this);
     var keyCode = evt.which ? evt.which : evt.keyCode;
     if (evt.ctrlKey && (keyCode == 10 || keyCode == 13)) {
       //console.log($("#comment-form").serialize());
       var block = $(this).closest(".sentence-block");
       $.ajax({
-        url: '/articles/sentence_comment/',
+        url: '/articles/sentence_comments/',
         data: $(".sentence-comment-form", block).serialize(),
         cache: false,
         type: 'post',
         success: function (data) {
+          content.val("").blur();
           $(".sentence-comment-list", block).html(data);
-          $(".comment-count", block).text($(".sentence-comment-list", block).length);
-          $(".sentence-comment-form", block).val("").blur();
+          $(".comment-count", block).text($(".sentence-comment-list .sentence-comment", block).length);
         }
       });
     }
@@ -40,6 +41,23 @@ $(function () {
       comment_block.fadeOut('normal');
     }
   });
+
+  $(".sentence-comment-vote-span").click(function () {
+    var vote_block = $(this).closest(".vote-div");
+    var vote = "";
+    if ($(this).hasClass("voted")) {
+      vote = "R";
+    } else if ($(this).hasClass("up-vote")) {
+      vote = "U";
+    } else if ($(this).hasClass("down-vote")) {
+      vote = "D";
+    }
+    $.ajax({
+      url: '/articles/sentence_vote/'
+    });
+
+  });
+
 });
 
 
@@ -47,7 +65,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
   var get_sentence_comment = function (version_id, sentence_id, block) {
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
     $.ajax({
-      url: '/articles/sentence_return/',
+      url: '/articles/sentence_comments/',
       data: {
         'version_id': version_id,
         'sentence_id': sentence_id,
@@ -58,21 +76,24 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
       success: function (data) {
         $(".sentence-comment-list", block).html(data);
         $(".comment-count", block).text($(".sentence-comment-list .sentence-comment", block).length);
-        $(".sentence-comment-form", block).val("").blur();
+        $(".sentence-comment-content", block).val("").blur();
       }
     });
   };
 
-  var get_sentence_vote = function (version_id, sentence_id, author) {
-    var block = $("#block-" + author);
+  var get_sentence_vote = function (version_id, sentence_id, block) {
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
     $.ajax({
       url: '/articles/sentence_vote/',
-      data: {},
+      data: {
+        'version_id': version_id,
+        'sentence_id': sentence_id,
+        'csrfmiddlewaretoken': csrf
+      },
       cache: false,
       type: 'post',
       success: function (data) {
-
+        $(".sentence-comment-vote-number", block).text(data);
       }
     });
   };
@@ -94,6 +115,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
           var s = version.sentence[j];
           if (selected.id == s.id) {
             get_sentence_comment(version.id, s.id, version.block);
+            get_sentence_vote(version.id, s.id, version.block);
             sentence_content.html(s.content);
             found_flag = true;
             break;
@@ -105,6 +127,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
       }
       form_current_sentence_id.attr("value", selected.id);
       get_sentence_comment(current_version, selected.id, current_user_block);
+      get_sentence_vote(current_version, selected.id, current_user_block);
     }
     previous_selected_id = selected.id;
   };
@@ -151,7 +174,6 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
   });
 
   editor.on('drop', function (e) {
-    console.log("This is drop");
     e.cancel();
   });
 

@@ -176,14 +176,15 @@ def comment(request):
     except Exception, e:
         return HttpResponseBadRequest()
 
-
-def sentence_logic(request, has_comment):
+@login_required
+@ajax_required
+def sentence_comments(request):
     try:
         if request.method == 'POST':
             version_id = int(request.POST.get('version_id'))
             sentence_id = int(request.POST.get('sentence_id'))
             version = ArticleVersion.objects.get(pk=version_id)
-            if has_comment:
+            if request.POST.has_key('sentence-comment'):
                 comment = request.POST.get('sentence-comment').strip()
                 if len(comment) > 0:
                     sentence_comment = ArticleSentenceComment(parent=version, sentence_id=sentence_id,
@@ -198,16 +199,6 @@ def sentence_logic(request, has_comment):
             return HttpResponseBadRequest()
     except Exception, e:
         return HttpResponseBadRequest()
-
-@login_required
-@ajax_required
-def sentence_return(request):
-    return sentence_logic(request, False)
-
-@login_required
-@ajax_required
-def sentence_comment(request):
-    return sentence_logic(request, True)
 
 
 @login_required

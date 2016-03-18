@@ -18,9 +18,9 @@
         <div class="comment-count" style="display: inline;">-</div>
       </button>
       <div class="vote-div">
-          <span class="glyphicon glyphicon-thumbs-up sentence-comment-vote-span"></span>
+        <span class="glyphicon glyphicon-thumbs-up sentence-comment-vote-span up-vote"></span>
         <div class="sentence-comment-vote-number">-</div>
-          <span class="glyphicon glyphicon-thumbs-down sentence-comment-vote-span"></span>
+        <span class="glyphicon glyphicon-thumbs-down sentence-comment-vote-span down-vote"></span>
         </div>
     </div>
   </div>
@@ -29,7 +29,7 @@
       {% csrf_token %}
       <input type="hidden" name="version_id" value="0">
       <input type="hidden" name="sentence_id" value="0">
-      <textarea class="form-control sentence-comment-form" rows="1"
+      <textarea class="form-control sentence-comment-content" rows="1"
                 placeholder="Write a comment..."
                 name="sentence-comment">
       </textarea>
