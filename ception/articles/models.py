@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
+from ception.activities.models import Activity
 import markdown
 
 class Article(models.Model):
@@ -95,12 +96,21 @@ class ArticleVersion(models.Model):
             self.slug = slugify(slug_str)
         super(ArticleVersion, self).save(*args, **kwargs)
 
+    def get_votes(self, sentence_id):
+        up_votes = Activity.objects.filter(activity_type=Activity.UP_VOTE, version_id=self.pk,
+                                           sentence_id=sentence_id).count()
+        down_votes = Activity.objects.filter(activity_type=Activity.DOWN_VOTE, version_id=self.pk,
+                                             sentence_id=sentence_id).count()
+        return up_votes - down_votes
+
     @staticmethod
     def get_versions(article):
         versions = ArticleVersion.objects.filter(origin=article)
         return versions
 
-    # def get_comments(self):
+
+
+        # def get_comments(self):
     #     return ArticleComment.objects.filter(article=self)
 
 

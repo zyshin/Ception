@@ -9,6 +9,8 @@ from ception.decorators import ajax_required
 import markdown
 from django.template.loader import render_to_string
 from ception.articles.utils import ContentParser, convert_period_to_pd
+from ception.activities.models import Activity
+from django.db.models import Q
 import json
 
 def _articles(request, articles):
@@ -206,8 +208,26 @@ def sentence_comments(request):
 def sentence_vote(request):
     try:
         if request.method == 'POST':
-            html = u'0'
-            return HttpResponse(html)
+            version_id = request.POST.get('version_id')
+            sentence_id = request.POST.get('sentence_id')
+            version = ArticleVersion.objects.get(pk=version_id)
+            user = request.user
+            activity = Activity.objects.filter(Q(activity_type=Activity.UP_VOTE) | Q(activity_type=Activity.DOWN_VOTE),
+                                               user=user, sentence_id=sentence_id, version_id=version_id)
+            user_state = "N"
+            if request.POST.has_key('vote'):
+                vote = request.POST['vote']
+                if activity:
+                    activity.delete()
+                if vote in [Activity.UP_VOTE, Activity.DOWN_VOTE]:
+                    activity = Activity(activity_type=vote, user=user, sentence_id=sentence_id, version_id=version_id)
+                    activity.save()
+                return HttpResponse(version.get_votes(sentence_id))
+            else:
+                if activity:
+                    print activity
+                    user_state = activity.first().activity_type
+                return HttpResponse(json.dumps({'count': version.get_votes(sentence_id), 'state': user_state}))
         else:
             return HttpResponseBadRequest()
     except:
