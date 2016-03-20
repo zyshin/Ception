@@ -146,7 +146,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
           }
         }
         if (!found_flag) {
-          sentence_content.text("Not Found");
+          sentence_content.text("Deleted");
         }
       }
       form_current_sentence_id.val(selected.id);

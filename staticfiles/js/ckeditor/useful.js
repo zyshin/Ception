@@ -40,6 +40,47 @@ function fixSpecificLineBug(editor, e) {
     }
 }
 
+function fixSpecificBSBug(editor, e) {
+  var keycode = sanitizeKeyCode(e.data.keyCode);
+  var range = editor.getSelection().getRanges()[0];
+  var container = range.startContainer;
+  var parent = container.getParent();
+  if (keycode == CKEDITOR.BACKSPACE && container.getLength && parent.getName() == "ins") {
+    var tar_n = parent && parent.hasNext() && parent.getNext().getName && parent.getNext().getName() == "del";
+    var ending = (range.startOffset == container.getText().length);
+    var tar_p = parent && parent.hasPrevious() && parent.getPrevious().getName && parent.getPrevious().getName() == "del";
+    var beginning = (range.startOffset == 1);
+    var same = (range.startOffset == range.endOffset);
+    var inside_ins = (parent.getName() == "ins");
+    if (inside_ins && same) {
+      if (tar_n && ending) {
+        if (range.startOffset > 1) {
+          container.setText(container.getText().slice(0, -1));
+          range.startOffset -= 1;
+          range.endOffset -= 1;
+        } else {
+          var previous = parent.getPreviousUndergroundNode();
+          range.setStart(previous, previous.getLength());
+          range.setEnd(previous, previous.getLength());
+          container.remove();
+        }
+        editor.getSelection().selectRanges([range]);
+        editor.fire('change');
+        e.cancel();
+      } else if (tar_p && beginning) {
+        var previous = parent.getPreviousUndergroundNode();
+        range.setStart(previous, previous.getLength());
+        range.setEnd(previous, previous.getLength());
+        container.remove();
+        editor.getSelection().selectRanges([range]);
+        editor.fire('change');
+        e.cancel();
+      }
+    }
+  }
+}
+
+
 function fixSpecificCutBug(editor, e) {
   if (e.data.keyCode === CKEDITOR.CUT_KEY) {
     alert("Cut function is disabled due to unsolvable bug. " +
@@ -47,38 +88,6 @@ function fixSpecificCutBug(editor, e) {
     e.cancel();
   }
 }
-//
-//function fixSpecificCutBugThirdPhase(editor) {
-//  var cutNode = editor.cutNode;
-//  var childList =  cutNode.getChildren();
-//  var outerNode = cutNode.getParent();
-//  console.log(childList.count());
-//  while (childList.count() > 0) {
-//    outerNode.append(childList.getItem(0));
-//  }
-//  cutNode.remove();
-//}
-//
-//function fixSpecificCutBugSecondPhase(editor) {
-//  editor.on('afterChange', function () {
-//    console.log("Here");
-//    if (editor.cutMode) {
-//      editor.cutMode = false;
-//      var cutNode = editor.cutNode;
-//      var childList =  cutNode.getChildren();
-//      var outerNode = cutNode.getParent();
-//      if (childList.count() == 1) {
-//        setTimeout(function() {fixSpecificCutBugThirdPhase(editor);}, 300); // Very poor solution
-//      } else {
-//        while (childList.count() > 0) {
-//          outerNode.append(childList.getItem(0));
-//        }
-//        cutNode.remove();
-//      }
-//    }
-//  });
-//}
-
 
 function avoidPDtag(editor, e) {
   //editor = CKEDITOR.editor();
@@ -364,6 +373,7 @@ function ceptArming(editor) {
   editor.on('key', function(e) {
     fixSpecificLineBug(editor, e);
     fixSpecificCutBug(editor, e);
+    fixSpecificBSBug(editor, e);
     if (isVisible(e.data.keyCode)) {
       avoidPDtag(editor, e);
     }
@@ -376,7 +386,6 @@ function ceptArming(editor) {
       deletePDTag(editor, e);
     }
   });
-  //fixSpecificCutBugSecondPhase(editor);
 }
 
 function initWithLite(name, isTracking, isShowing) {
