@@ -39,7 +39,7 @@
         </span>
       </div>
 
-      <form action="{% url 'edit_version' form.instance.pk %}" id="edit_form" method="post" role="form">
+      <form id="edit_form" data-id="{{ form.instance.pk }}">
         {% csrf_token %}
         {% for field in form.visible_fields %}
           <div class="form-group{% if field.errors %} has-error{% endif %}">
@@ -60,15 +60,17 @@
         {% endfor %}
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" id="side-col">
       <div class="row">
-        <div class="col-md-6">
-          <a href="javascript:document.getElementById('edit_form').submit()"
-             class="btn btn-primary publish btn-block">{% trans 'Save' %}</a>
+        <div class="col-md-4">
+          <button class="btn btn-default btn-block" id="cancel-button"
+                  data-url="{{ form.instance.origin.slug }}">{% trans 'Cancel' %}</button>
         </div>
-        <div class="col-md-6">
-          <a href="{% url 'article' form.instance.origin.slug %}"
-             class="btn btn-default btn-block">{% trans 'Cancel' %}</a>
+        <div class="col-md-4">
+          <button class="btn btn-info btn-block disabled" id="save-button">{% trans 'Save' %}</button>
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-primary btn-block" id="commit-button">{% trans 'Commit' %}</button>
         </div>
       </div>
 
@@ -81,15 +83,11 @@
           <div class="tab-content">
             <div id="summary" class="tab-pane fade in active">
               <h3>Summary</h3>
-              <p>This is a brilliant summary written by scyue</p>
-              <p>This summary contains how I implement this great website</p>
-              <p>Bleh Bleh Bleh</p>
+              <p>Not Implemented yet</p>
             </div>
             <div id="detail" class="tab-pane fade">
               <h3>Detail</h3>
-              <p>Do you want more details? </p>
-              <p>Please call me and I will tell you. </p>
-              <p>But I would not tell you my telephone number! </p>
+              <p>Not Implemented yet</p>
             </div>
           </div>
         </div>

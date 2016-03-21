@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from ception.articles.utils import ContentParser, convert_period_to_pd
 from ception.activities.models import Activity
 from django.db.models import Q
+from django.contrib.humanize.templatetags.humanize import naturaltime
 import json
 
 def _articles(request, articles):
@@ -35,9 +36,13 @@ def articles(request):
 
 @login_required
 def article(request, slug):
-    article = get_object_or_404(Article, slug=slug, status=Article.PUBLISHED)
-    versions = ArticleVersion.get_versions(article)
-    return render(request, 'articles/article.html', {'article': article, 'versions': versions})
+    try:
+        article = get_object_or_404(Article, slug=slug, status=Article.PUBLISHED)
+        versions = ArticleVersion.get_versions(article)
+        return render(request, 'articles/article.html', {'article': article, 'versions': versions})
+    except Exception, e:
+        print e
+        return HttpResponseBadRequest()
 
 @login_required
 def tag(request, tag_name):
@@ -76,32 +81,27 @@ def drafts(request):
 
 
 def edit_logic(request, version):
-    print "This is edit logi"
     if request.POST:
         form = VersionForm(request.POST, instance=version)
         if form.is_valid():
             form.save()
     else:
         form = VersionForm(instance=version)
-    print "1"
 
     versions = ArticleVersion.get_versions(version.origin)
     version_jsons = []
     authors = []
     this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " "))
-    print "2"
     for v in versions:
         if v.edit_user == request.user:
             continue
         v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
         v_dict['author'] = str(v.edit_user)
         v_dict['id'] = v.pk
+        v_dict['time'] = naturaltime(v.edit_date)
         authors.append(v.edit_user)
         version_jsons.append(json.dumps(v_dict))
-        # print v_dict
-        # print v.content
-        # print "*************************************"
-    print "3"
+
     pass_data = {
         'json': version_jsons,
         'authors': authors,
@@ -109,37 +109,66 @@ def edit_logic(request, version):
     }
     return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
 
-
 @login_required
 def edit(request, id):
-    print "This is edit"
+    try:
+        if request.method == "POST":
+            action = request.POST.get("action")
+            if action == "save":
+                return HttpResponse("Not Implemented")
+            elif action == "commit":
+                version = get_object_or_404(ArticleVersion, pk=id)
+                form = VersionForm(request.POST, instance=version)
+                if form.is_valid():
+                    print form
+                    form.save()
+                return HttpResponse("Not Implemented")
+        else:
+            article = get_object_or_404(Article, pk=id)
+            version_set = ArticleVersion.objects.filter(edit_user=request.user, origin=article)
+            if len(version_set) == 0:
+                version = ArticleVersion()
+                version.edit_user = request.user
+                version.content = article.content
+                version.origin = article
+                version.save()
+            else:
+                version = version_set[0]
+            form = VersionForm(instance=version)
+            versions = ArticleVersion.get_versions(version.origin)
+            version_jsons = []
+            authors = []
+            this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " "))
+            for v in versions:
+                if v.edit_user == request.user:
+                    continue
+                v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
+                v_dict['author'] = str(v.edit_user)
+                v_dict['id'] = v.pk
+                v_dict['time'] = naturaltime(v.edit_date)
+                authors.append(v.edit_user)
+                version_jsons.append(json.dumps(v_dict))
 
-    if id:
-        article = get_object_or_404(Article, pk=id)
-    else:
-        return HttpResponseBadRequest(request)
-    version_set = ArticleVersion.objects.filter(edit_user=request.user, origin=article)
-    if len(version_set) == 0:
-        version = ArticleVersion()
-        version.edit_user = request.user
-        version.content = article.content
-        version.origin = article
-        version.save()
-    else:
-        version = version_set[0]
-    print "-2"
-    return edit_logic(request, version)
+            pass_data = {
+                'json': version_jsons,
+                'authors': authors,
+                'counter': this_dict["counter"],
+            }
+            return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
+    except Exception, e:
+        print e
+        return HttpResponseBadRequest()
 
 
-
+@ajax_required
 @login_required
-def edit_version(request, id):
-    print "This is edit version"
-    if id:
-        version = get_object_or_404(ArticleVersion, pk=id)
-    else:
-        return HttpResponseBadRequest(request)
-    return edit_logic(request, version)
+def edit_save(request):
+    if request.method == "POST":
+        if request.POST.has_key("action"):
+            action = request.POST.get("action")
+            if action == "save":
+                print "This is save!"
+    return HttpResponse("")
 
 
 @login_required

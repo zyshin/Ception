@@ -21,7 +21,7 @@
           <h2><a href="{% url 'article' article.slug %}">{{ article.title }}</a></h2>
         </div>
         <div class="col-md-6">
-          <a href="{% url 'edit_article' article.id %}" class="btn btn-primary pull-right">
+          <a href="{% url 'edit' article.id %}" class="btn btn-primary pull-right">
             <span class="glyphicon glyphicon-pencil"></span> {% trans 'Edit' %}
           </a>
           <a href="{% url 'drafts' %}" class="btn btn-danger pull-right" style="margin-right: .8em">{% trans 'Delete' %}</a>

@@ -8,8 +8,7 @@ urlpatterns = patterns('ception.articles.views',
                        url(r'^sentence_comments/$', 'sentence_comments', name='sentence_comments'),
                        url(r'^sentence_vote/$', 'sentence_vote', name='sentence_vote'),
                        url(r'^tag/(?P<tag_name>.+)/$', 'tag', name='tag'),
-                       url(r'^edit/(?P<id>\d+)/$', 'edit', name='edit_article'),
-                       url(r'^edit_v/(?P<id>\d+)/$', 'edit_version', name='edit_version'),
+                       url(r'^edit/(?P<id>\d+)/$', 'edit', name='edit'),
                        url(r'^(?P<slug>[-\w]+)/$', 'article', name='article'),
                        )
 

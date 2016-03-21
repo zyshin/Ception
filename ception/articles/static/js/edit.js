@@ -1,6 +1,14 @@
 /**
  * Created by scyue on 16/3/14.
  */
+var global_editor;
+
+function generate_alert(alert_type, content) {
+  return '<div class="alert alert alert-' + alert_type + ' alert-dismissible fade in" role="alert">' +
+      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+      '<span aria-hidden="true">×</span>' + '</button>' +
+      '<strong>' + content + '</strong>' + '</div>'
+}
 
 $(function () {
   var sentence_comment_content = $(".sentence-comment-content");
@@ -75,6 +83,46 @@ $(function () {
       }
     });
   });
+
+  $("#cancel-button").click(function () {
+    self.location = "/articles/" + $("#cancel-button").data("url");
+  });
+
+  $("#save-button").click(function () {
+    var form = $("#edit_form");
+    $.ajax({
+      url: '/articles/edit/' + form.data('id') + '/',
+      data: form.serialize() + "&action=save",
+      cache: false,
+      type: 'post',
+      success: function (data) {
+        console.log("Saved!");
+      }
+    });
+  });
+
+  $("#commit-button").click(function () {
+    var form = $("#edit_form");
+    $.ajax({
+      url: '/articles/edit/' + form.data('id') + '/',
+      data: {
+        'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
+        'content': global_editor.getData(),
+        'action': 'commit'
+      },
+      cache: false,
+      type: 'post',
+      success: function (data) {
+        $("#side-col").prepend(generate_alert('success', 'Successfully Committed!'));
+        $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+          $(".alert").alert('close');
+        });
+      }
+    });
+  });
+
+
+
 });
 
 
@@ -132,6 +180,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
       for (i = 0; i < versions.length; i++) {
         var version = versions[i];
         $("input[name='sentence_id']", version.block).val(selected.id);
+        $(".time", version.block).text(version.time);
         if (version.author == current_user) continue;
         var sentence_content = $(".sentence-content", version.block);
         var found_flag = false;
@@ -160,6 +209,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
 
 
   var editor = initWithLite("id_content", true, false);
+  global_editor = editor;
   editor.sCount = counter;
   var current_user_block = $(".sentence-block[data-author='" + current_user + "']");
   current_user_block.addClass("selected-block");
