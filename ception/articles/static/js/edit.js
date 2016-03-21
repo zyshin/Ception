@@ -1,7 +1,28 @@
 /**
  * Created by scyue on 16/3/14.
  */
-var global_editor;
+var commit_ajax = function () {
+  var form = $("#edit_form");
+  $.ajax({
+    url: '/articles/edit/' + form.data('id') + '/',
+    data: {
+      'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
+      'content': commit_ajax.editor.getData(),
+      'action': 'commit'
+    },
+    cache: false,
+    type: 'post',
+    success: function (data) {
+      $("#side-col").prepend(generate_alert('success', 'Successfully Committed!'));
+      $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+        $(".alert").alert('close');
+      });
+    }
+  });
+};
+
+
+CKEDITOR.SAVE_KEY = 1114195;
 
 function generate_alert(alert_type, content) {
   return '<div class="alert alert alert-' + alert_type + ' alert-dismissible fade in" role="alert">' +
@@ -102,27 +123,15 @@ $(function () {
   });
 
   $("#commit-button").click(function () {
-    var form = $("#edit_form");
-    $.ajax({
-      url: '/articles/edit/' + form.data('id') + '/',
-      data: {
-        'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
-        'content': global_editor.getData(),
-        'action': 'commit'
-      },
-      cache: false,
-      type: 'post',
-      success: function (data) {
-        $("#side-col").prepend(generate_alert('success', 'Successfully Committed!'));
-        $(".alert").fadeTo(2000, 500).slideUp(500, function () {
-          $(".alert").alert('close');
-        });
-      }
-    });
+    commit_ajax();
   });
 
-
-
+  $(document).on('keydown', function (e) {
+    if (e.which == 83 && (e.metaKey || e.ctrlKey)) {
+      commit_ajax();
+      e.preventDefault();
+    }
+  });
 });
 
 
@@ -209,7 +218,7 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
 
 
   var editor = initWithLite("id_content", true, false);
-  global_editor = editor;
+  commit_ajax.editor = editor;
   editor.sCount = counter;
   var current_user_block = $(".sentence-block[data-author='" + current_user + "']");
   current_user_block.addClass("selected-block");
@@ -239,6 +248,10 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
     var key = sanitizeKeyCode(e.data.keyCode);
     if (key > 36 && key <= 40) {
       update_comments_and_divs();
+    }
+    if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
+      commit_ajax();
+      e.cancel();
     }
   });
 
