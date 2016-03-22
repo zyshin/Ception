@@ -4,6 +4,7 @@ from ception.auth.forms import SignUpForm
 from django.contrib.auth.models import User
 from ception.feeds.models import Feed
 
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)

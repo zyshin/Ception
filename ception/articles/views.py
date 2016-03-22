@@ -138,11 +138,13 @@ def edit(request, id):
             versions = ArticleVersion.get_versions(version.origin)
             version_jsons = []
             authors = []
-            this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " "))
+            this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " ").replace("&#39;", "'"))
             for v in versions:
                 if v.edit_user == request.user:
                     continue
-                v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
+                print v.content
+                v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " ").replace("&#39;", "'"))
+                print v_dict
                 v_dict['author'] = str(v.edit_user)
                 v_dict['id'] = v.pk
                 v_dict['time'] = naturaltime(v.edit_date)
