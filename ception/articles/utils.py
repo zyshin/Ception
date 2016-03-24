@@ -55,7 +55,7 @@ def stadardlize_text(text):
 
 
 class ContentParser(HTMLParser):
-    def __init__(self, max_sentence=10):
+    def __init__(self, max_sentence=20):
         HTMLParser.__init__(self)
         self.json = {
             'sentence': [],

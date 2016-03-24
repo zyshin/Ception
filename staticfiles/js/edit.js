@@ -7,7 +7,7 @@ var commit_ajax = function () {
     url: '/articles/edit/' + form.data('id') + '/',
     data: {
       'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
-      'content': commit_ajax.editor.getData(),
+      'content': commit_ajax.editor.getData().replace(/\x00/g, ''),
       'action': 'commit'
     },
     cache: false,
@@ -196,9 +196,15 @@ function init_page(current_version, current_user, json_str_array, counter) {
         for (var j = 0; j < version.sentence.length; j++) {
           var s = version.sentence[j];
           if (selected.id == s.id) {
-            get_sentence_comment(version.id, s.id, version.block);
-            get_sentence_vote(version.id, s.id, version.block);
-            sentence_content.html(s.content);
+
+            if (s.edited) {
+              version.block.removeAttr("hidden");
+              get_sentence_comment(version.id, s.id, version.block);
+              get_sentence_vote(version.id, s.id, version.block);
+              sentence_content.html(s.content);
+            } else {
+              version.block.attr("hidden", "hidden");
+            }
             found_flag = true;
             break;
           }
@@ -214,7 +220,7 @@ function init_page(current_version, current_user, json_str_array, counter) {
     previous_selected_id = selected.id;
   };
 
-  CKEDITOR.config.height = 150;
+  CKEDITOR.config.height = 240;
 
 
   var editor = initWithLite("id_content", true, false);

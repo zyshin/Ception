@@ -114,6 +114,7 @@ def edit(request, id):
             versions = ArticleVersion.get_versions(version.origin)
             origin_dict, origin_edit, origin_delete = ContentParser.get_info(version.origin.content)
             editing_info_dict = origin_dict["sentence"]
+            origin_count = origin_dict["counter"]
             for d in editing_info_dict:
                 d["edit"] = 0
                 d["delete"] = 0
@@ -121,8 +122,8 @@ def edit(request, id):
             authors = []
             this_dict, this_edit, this_delete = ContentParser.get_info(version.content)
             for s in editing_info_dict:
-                if (len(s['content']) > 40):
-                    s['content'] = s['content'][:38] + "..."
+                if len(s['content']) > 45:
+                    s['content'] = s['content'][:42] + "..."
             for v in versions:
                 if v.edit_user == request.user:
                     continue
@@ -130,6 +131,10 @@ def edit(request, id):
                 for i in xrange(origin_dict["counter"]):
                     editing_info_dict[i]["edit"] += v_edit[i]
                     editing_info_dict[i]["delete"] += v_delete[i]
+                for s in v_dict['sentence']:
+                    s["edited"] = v_edit[s["id"]]
+                    if s["id"] >= origin_count:
+                        s["id"] = -5
                 v_dict['author'] = str(v.edit_user)
                 v_dict['id'] = v.pk
                 v_dict['time'] = naturaltime(v.edit_date)
@@ -147,18 +152,6 @@ def edit(request, id):
     except Exception, e:
         print e
         return HttpResponseBadRequest()
-
-
-@ajax_required
-@login_required
-def edit_save(request):
-    if request.method == "POST":
-        if request.POST.has_key("action"):
-            action = request.POST.get("action")
-            if action == "save":
-                print "This is save!"
-    return HttpResponse("")
-
 
 @login_required
 @ajax_required
