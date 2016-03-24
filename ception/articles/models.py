@@ -6,6 +6,7 @@ from django.template.defaultfilters import slugify
 from ception.activities.models import Activity
 import markdown
 
+
 class Article(models.Model):
     DRAFT = 'D'
     PUBLISHED = 'P'
@@ -108,8 +109,6 @@ class ArticleVersion(models.Model):
         versions = ArticleVersion.objects.filter(origin=article)
         return versions
 
-
-
         # def get_comments(self):
     #     return ArticleComment.objects.filter(article=self)
 
@@ -155,7 +154,6 @@ class ArticleSentenceComment(models.Model):
 
     def __unicode__(self):
         return u'{0} - "{1}" - "{2}"'.format(self.user.username, self.parent, self.sentence_id)
-
 
 
 class ArticleComment(models.Model):

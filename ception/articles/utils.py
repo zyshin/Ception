@@ -50,8 +50,12 @@ def convert_period_to_pd (content):
     return parser.text
 
 
+def stadardlize_text(text):
+    return text.replace("&nbsp;", " ").replace("&#39;", "'")
+
+
 class ContentParser(HTMLParser):
-    def __init__(self):
+    def __init__(self, max_sentence=10):
         HTMLParser.__init__(self)
         self.json = {
             'sentence': [],
@@ -63,12 +67,19 @@ class ContentParser(HTMLParser):
         }
         self.is_deleted = False
         self.inside_pd_deleted = False
+        self.current_edited = False
+        self.current_id = -1
+        self.edit_count = [False for x in xrange(max_sentence)]
+        self.delete_count = [False for x in range(max_sentence)]
+
 
     def handle_starttag(self, tag, attrs):
         if tag == "ins" or tag == "del":
             self.current_sentence["content"] += start_str(tag, {})
+            self.current_edited = True
         if tag == "pd" and not self.is_deleted:
             current_id = int(attrs[0][1][1:])
+            self.current_id = current_id
             self.current_sentence["id"] = current_id
             if self.json["counter"] <= current_id:
                 self.json["counter"] = current_id + 1
@@ -81,12 +92,17 @@ class ContentParser(HTMLParser):
     def handle_endtag(self, tag):
         if tag == "ins" or tag == "del":
             self.current_sentence["content"] += end_str(tag)
-        if tag == "pd" and not self.inside_pd_deleted:
-            self.json['sentence'].append(self.current_sentence)
-            self.current_sentence = {
-                'content': "",
-                'id': -1
-            }
+        if tag == "pd":
+            if not self.inside_pd_deleted:
+                self.edit_count[self.current_id] = self.current_edited
+                self.json['sentence'].append(self.current_sentence)
+                self.current_sentence = {
+                    'content': "",
+                    'id': -1
+                }
+            else:
+                self.delete_count[self.current_id] = True
+            self.current_edited = False
         elif tag == "del":
             self.is_deleted = False
 
@@ -95,7 +111,7 @@ class ContentParser(HTMLParser):
         self.current_sentence["content"] += data
 
     @staticmethod
-    def getJSON(content):
+    def get_info(content):
         parser = ContentParser()
-        parser.feed(content)
-        return parser.json
+        parser.feed(stadardlize_text(content))
+        return parser.json, parser.edit_count, parser.delete_count

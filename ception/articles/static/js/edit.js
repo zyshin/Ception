@@ -135,7 +135,7 @@ $(function () {
 });
 
 
-function initEditPage(current_version, current_user, json_str_array, counter) {
+function init_page(current_version, current_user, json_str_array, counter) {
   var get_sentence_comment = function (version_id, sentence_id, block) {
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
     $.ajax({
@@ -263,5 +263,18 @@ function initEditPage(current_version, current_user, json_str_array, counter) {
   editor.on('drop', function (e) {
     e.cancel();
   });
+}
+
+function init_sidebar(info_str_array) {
+  var editing_info_array = [];
+  for (var i = 0; i < info_str_array.length; i++) {
+    editing_info_array.push(JSON.parse(info_str_array[i]));
+  }
+  var sentence_array = $(".side-block");
+  for (var i = 0; i < sentence_array.length; i++) {
+    $(".side-sentence", $(sentence_array[i])).text(editing_info_array[i].content);
+    $(".edit-span", $(sentence_array[i])).text("Edit: " + editing_info_array[i].edit);
+    $(".delete-span", $(sentence_array[i])).text("Delete: " + editing_info_array[i].delete);
+  }
 
 }

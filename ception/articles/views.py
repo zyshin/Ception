@@ -14,6 +14,7 @@ from django.db.models import Q
 from django.contrib.humanize.templatetags.humanize import naturaltime
 import json
 
+
 def _articles(request, articles):
     paginator = Paginator(articles, 10)
     page = request.GET.get('page')
@@ -29,10 +30,12 @@ def _articles(request, articles):
         'popular_tags': popular_tags
     })
 
+
 @login_required
 def articles(request):
     all_articles = Article.get_published()
     return _articles(request, all_articles)
+
 
 @login_required
 def article(request, slug):
@@ -44,6 +47,7 @@ def article(request, slug):
         print e
         return HttpResponseBadRequest()
 
+
 @login_required
 def tag(request, tag_name):
     tags = Tag.objects.filter(tag=tag_name)
@@ -52,6 +56,7 @@ def tag(request, tag_name):
         if tag.article.status == Article.PUBLISHED:
             articles.append(tag.article)
     return _articles(request, articles)
+
 
 @login_required
 def write(request):
@@ -74,40 +79,11 @@ def write(request):
         form = ArticleForm()
     return render(request, 'articles/write.html', {'form': form})
 
+
 @login_required
 def drafts(request):
     drafts = Article.objects.filter(create_user=request.user, status=Article.DRAFT)
     return render(request, 'articles/drafts.html', {'drafts': drafts})
-
-
-def edit_logic(request, version):
-    if request.POST:
-        form = VersionForm(request.POST, instance=version)
-        if form.is_valid():
-            form.save()
-    else:
-        form = VersionForm(instance=version)
-
-    versions = ArticleVersion.get_versions(version.origin)
-    version_jsons = []
-    authors = []
-    this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " "))
-    for v in versions:
-        if v.edit_user == request.user:
-            continue
-        v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " "))
-        v_dict['author'] = str(v.edit_user)
-        v_dict['id'] = v.pk
-        v_dict['time'] = naturaltime(v.edit_date)
-        authors.append(v.edit_user)
-        version_jsons.append(json.dumps(v_dict))
-
-    pass_data = {
-        'json': version_jsons,
-        'authors': authors,
-        'counter': this_dict["counter"],
-    }
-    return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
 
 @login_required
 def edit(request, id):
@@ -136,15 +112,24 @@ def edit(request, id):
                 version = version_set[0]
             form = VersionForm(instance=version)
             versions = ArticleVersion.get_versions(version.origin)
+            origin_dict, origin_edit, origin_delete = ContentParser.get_info(version.origin.content)
+            editing_info_dict = origin_dict["sentence"]
+            for d in editing_info_dict:
+                d["edit"] = 0
+                d["delete"] = 0
             version_jsons = []
             authors = []
-            this_dict = ContentParser.getJSON(version.content.replace("&nbsp;", " ").replace("&#39;", "'"))
+            this_dict, this_edit, this_delete = ContentParser.get_info(version.content)
+            for s in editing_info_dict:
+                if (len(s['content']) > 40):
+                    s['content'] = s['content'][:38] + "..."
             for v in versions:
                 if v.edit_user == request.user:
                     continue
-                print v.content
-                v_dict = ContentParser.getJSON(v.content.replace("&nbsp;", " ").replace("&#39;", "'"))
-                print v_dict
+                v_dict, v_edit, v_delete = ContentParser.get_info(v.content)
+                for i in xrange(origin_dict["counter"]):
+                    editing_info_dict[i]["edit"] += v_edit[i]
+                    editing_info_dict[i]["delete"] += v_delete[i]
                 v_dict['author'] = str(v.edit_user)
                 v_dict['id'] = v.pk
                 v_dict['time'] = naturaltime(v.edit_date)
@@ -155,7 +140,9 @@ def edit(request, id):
                 'json': version_jsons,
                 'authors': authors,
                 'counter': this_dict["counter"],
+                'editing_info': [json.dumps(d) for d in editing_info_dict]
             }
+            print editing_info_dict
             return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
     except Exception, e:
         print e
@@ -188,6 +175,7 @@ def preview(request):
     except Exception, e:
         return HttpResponseBadRequest()
 
+
 @login_required
 @ajax_required
 def comment(request):
@@ -208,6 +196,7 @@ def comment(request):
             return HttpResponseBadRequest()
     except Exception, e:
         return HttpResponseBadRequest()
+
 
 @login_required
 @ajax_required
@@ -256,7 +245,6 @@ def sentence_vote(request):
                 return HttpResponse(version.get_votes(sentence_id))
             else:
                 if activity:
-                    print activity
                     user_state = activity.first().activity_type
                 return HttpResponse(json.dumps({'count': version.get_votes(sentence_id), 'state': user_state}))
         else:

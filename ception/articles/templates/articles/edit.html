@@ -84,7 +84,15 @@
           <div class="tab-content">
             <div id="summary" class="tab-pane fade in active">
               <h3>Summary</h3>
-              <p>Not Implemented yet</p>
+              <div class="list-group">
+                {% for p in data.editing_info %}
+                  <a class="list-group-item side-block">
+                    <p class="list-group-item-text side-sentence">Testtesttesttesttesttesttesttesttesttest</p>
+                    <span class="label label-default edit-span">New</span>
+                    <span class="label label-default delete-span">New</span>
+                  </a>
+                {% endfor %}
+              </div>
             </div>
             <div id="detail" class="tab-pane fade">
               <h3>Detail</h3>
@@ -102,7 +110,10 @@
         var current_user = "{{ user }}";
         var json_str_array = {{ data.json|safe }};
         var counter = {{ data.counter }};
-        initEditPage(version_id, current_user, json_str_array, counter);
+        var info_str_array = {{ data.editing_info|safe }};
+        init_page(version_id, current_user, json_str_array, counter);
+        init_sidebar(info_str_array);
+
       })();
     </script>
   </div>
