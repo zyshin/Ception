@@ -131,10 +131,33 @@ def edit(request, id):
                 for i in xrange(origin_dict["counter"]):
                     editing_info_dict[i]["edit"] += v_edit[i]
                     editing_info_dict[i]["delete"] += v_delete[i]
-                for s in v_dict['sentence']:
+                sentences = v_dict['sentence']
+                size = len(sentences)
+                for i in xrange(size):
+                    s = sentences[i]
                     s["edited"] = v_edit[s["id"]]
+                    s["added"] = False
                     if s["id"] >= origin_count:
-                        s["id"] = -5
+                        s["id"] = -8080
+                        s["added"] = True
+                for i in xrange(size):
+                    s = sentences[i]
+                    if s["added"]:
+                        continue
+                    if i > 0 and sentences[i - 1]["added"]:
+                        s["edited"] = True
+                        index = i - 1
+                        while index >= 0 and sentences[index]["added"]:
+                            s["content"] = "<add>" + sentences[index]["content"] + "</add>" + s["content"]
+                            index -= 1
+                    if i < size - 1 and sentences[i + 1]["added"]:
+                        s["edited"] = True
+                        index = i + 1
+                        while index < size and sentences[index]["added"]:
+                            s["content"] += "<add>" + sentences[index]["content"] + "</add>"
+                            index += 1
+                    print s["content"]
+
                 v_dict['author'] = str(v.edit_user)
                 v_dict['id'] = v.pk
                 v_dict['time'] = naturaltime(v.edit_date)

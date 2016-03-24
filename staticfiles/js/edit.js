@@ -196,7 +196,6 @@ function init_page(current_version, current_user, json_str_array, counter) {
         for (var j = 0; j < version.sentence.length; j++) {
           var s = version.sentence[j];
           if (selected.id == s.id) {
-
             if (s.edited) {
               version.block.removeAttr("hidden");
               get_sentence_comment(version.id, s.id, version.block);

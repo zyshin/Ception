@@ -33,6 +33,12 @@
     text-decoration: none;
 }
 
+.sentence-content add {
+    color: #ff9933;
+    text-decoration: none;
+}
+
+
 .sentence-portrait {
     margin-top: 4px;
     width: 40px;
@@ -133,3 +139,4 @@
 .voted {
     color: #333;
 }
+
