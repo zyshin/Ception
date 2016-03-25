@@ -149,6 +149,7 @@ def process_sentences(sentences, origin_count, v_edit):
             s["id"] = -8080
             s["added"] = True
             s["content"] = s["content"].replace("<ins >", "")
+
     for i in xrange(size):
         s = sentences[i]
         if s["added"]:
@@ -183,7 +184,7 @@ def init_edit_page(request, id):
         for i in xrange(origin_count):
             editing_info_dict[i]["edit"] += v_edit[i]
             editing_info_dict[i]["delete"] += v_delete[i]
-        process_sentences(v_dict['sentence'], origin_count, v_dict)
+        process_sentences(v_dict['sentence'], origin_count, v_edit)
         v_dict['author'] = str(v.edit_user)
         v_dict['id'] = v.pk
         v_dict['time'] = naturaltime(v.edit_date)
@@ -216,7 +217,7 @@ def edit(request, id):
         else:
             return init_edit_page(request, id)
     except Exception, e:
-        print e
+        print "Exception: ", e
         return HttpResponseBadRequest()
 
 
