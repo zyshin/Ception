@@ -71,6 +71,18 @@ class Article(models.Model):
     def get_comments(self):
         return ArticleComment.objects.filter(article=self)
 
+    def get_or_create_version_by_user(self, user):
+        version_set = ArticleVersion.objects.filter(edit_user=user, origin=self)
+        if len(version_set) == 0:
+            version = ArticleVersion()
+            version.edit_user = user
+            version.content = self.content
+            version.origin = self
+            version.save()
+        else:
+            version = version_set[0]
+        return version
+
 
 class ArticleVersion(models.Model):
     origin = models.ForeignKey(Article)
