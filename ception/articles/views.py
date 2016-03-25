@@ -140,6 +140,7 @@ def edit(request, id):
                     if s["id"] >= origin_count:
                         s["id"] = -8080
                         s["added"] = True
+                        s["content"] = s["content"].replace("<ins >", "")
                 for i in xrange(size):
                     s = sentences[i]
                     if s["added"]:
