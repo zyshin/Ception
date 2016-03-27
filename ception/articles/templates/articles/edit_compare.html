@@ -6,6 +6,7 @@
 
 {% block head %}
   <link href="{% static 'css/articles.css' %}" rel="stylesheet">
+  <link href="{% static 'css/callout.css' %}" rel="stylesheet">
   <script src="{% static 'js/articles.js' %}"></script>
   <script src="{% static 'js/edit.js' %}"></script>
 {% endblock head %}
@@ -30,6 +31,21 @@
             <a href="{% url 'profile' form.instance.origin.create_user.username %}">{{ form.instance.origin.create_user.profile.get_screen_name }}</a>
           </span>
         </div>
+
+        <div class="bs-callout bs-callout-info">
+          <h4>
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
+               aria-controls="collapseOne">
+              Description
+            </a>
+          </h4>
+          <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+              {{ form.instance.origin.description | safe }}
+            </div>
+          </div>
+        </div>
+
         <form id="edit_form" data-id="{{ form.instance.pk }}">
           {% csrf_token %}
           <textarea class="content" id="content">{{ form.instance.content|safe }}</textarea>
