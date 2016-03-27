@@ -7,6 +7,8 @@ class ArticleForm(forms.ModelForm):
         max_length=255)
     content = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}), 
         max_length=60000)
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}),
+                                  max_length=5000)
     tags = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),
         max_length=255,
         required=False,
@@ -14,7 +16,7 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['title', 'content', 'tags', 'status']
+        fields = ['title', 'content', 'description', 'tags', 'status']
 
 class VersionForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}),

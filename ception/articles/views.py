@@ -38,17 +38,6 @@ def articles(request):
 
 
 @login_required
-def article(request, slug):
-    try:
-        article = get_object_or_404(Article, slug=slug, status=Article.PUBLISHED)
-        versions = ArticleVersion.get_versions(article)
-        return render(request, 'articles/article.html', {'article': article, 'versions': versions})
-    except Exception, e:
-        print e
-        return HttpResponseBadRequest()
-
-
-@login_required
 def tag(request, tag_name):
     tags = Tag.objects.filter(tag=tag_name)
     articles = []
@@ -68,6 +57,7 @@ def write(request):
             article.title = form.cleaned_data.get('title')
             article.content = form.cleaned_data.get('content').replace('\n', '').replace("'", "\\'").replace("\r", "")
             article.content = convert_period_to_pd(article.content)
+            article.description = markdown.markdown(form.cleaned_data.get('description'))
             status = form.cleaned_data.get('status')
             if status in [Article.PUBLISHED, Article.DRAFT]:
                 article.status = form.cleaned_data.get('status')
@@ -77,7 +67,11 @@ def write(request):
             return redirect('/articles/')
     else:
         form = ArticleForm()
-    return render(request, 'articles/write.html', {'form': form})
+    try:
+        return render(request, 'articles/write.html', {'form': form})
+    except Exception, e:
+        print e
+        return HttpResponseBadRequest()
 
 
 @login_required
@@ -168,7 +162,7 @@ def process_sentences(sentences, origin_count, v_edit):
                 index += 1
 
 
-def init_edit_page(request, id):
+def init_edit_page(request, id, compare=False):
     article = get_object_or_404(Article, pk=id)
     version = article.get_or_create_version_by_user(request.user)
     editing_info_dict, origin_count = get_origin_info(version)
@@ -188,6 +182,7 @@ def init_edit_page(request, id):
         v_dict['author'] = str(v.edit_user)
         v_dict['id'] = v.pk
         v_dict['time'] = naturaltime(v.edit_date)
+        v_dict['content'] = v.content
         authors.append(v.edit_user)
         version_jsons.append(json.dumps(v_dict))
 
@@ -198,7 +193,10 @@ def init_edit_page(request, id):
         'origin_count': origin_count,
         'editing_info': [json.dumps(d) for d in editing_info_dict]
     }
-    return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
+    if not compare:
+        return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
+    else:
+        return render(request, 'articles/edit_compare.html', {'form': form, 'data': pass_data})
 
 
 @login_required
@@ -216,6 +214,26 @@ def edit(request, id):
                 return HttpResponse("Success")
         else:
             return init_edit_page(request, id)
+    except Exception, e:
+        print "Exception: ", e
+        return HttpResponseBadRequest()
+
+
+@login_required
+def edit_compare(request, id):
+    try:
+        if request.method == "POST":
+            action = request.POST.get("action")
+            if action == "save":
+                return HttpResponse("Not Implemented")
+            elif action == "commit":
+                version = get_object_or_404(ArticleVersion, pk=id)
+                form = VersionForm(request.POST, instance=version)
+                if form.is_valid():
+                    form.save()
+                return HttpResponse("Success")
+        else:
+            return init_edit_page(request, id, True)
     except Exception, e:
         print "Exception: ", e
         return HttpResponseBadRequest()

@@ -135,7 +135,7 @@ $(function () {
 });
 
 
-function init_page(current_version, current_user, json_str_array, counter) {
+function init_page(current_version, current_user, json_str_array, counter, origin_count) {
   var get_sentence_comment = function (version_id, sentence_id, block) {
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
     $.ajax({
@@ -183,35 +183,47 @@ function init_page(current_version, current_user, json_str_array, counter) {
     if (previous_selected_id == -1) $("#sentence-list").removeAttr("hidden");
 
     var selected = editor.getSelectedSentence();
-    current_sentence.html(selected.sentence);
+    if (selected.id < origin_count) {
+      current_sentence.html(selected.sentence);
+    } else {
+      current_sentence.html("<add>" + selected.sentence + "</add>")
+    }
+
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
-      for (i = 0; i < versions.length; i++) {
-        var version = versions[i];
-        $("input[name='sentence_id']", version.block).val(selected.id);
-        $(".time", version.block).text(version.time);
-        if (version.author == current_user) continue;
-        var sentence_content = $(".sentence-content", version.block);
-        var found_flag = false;
-        for (var j = 0; j < version.sentence.length; j++) {
-          var s = version.sentence[j];
-          if (selected.id == s.id) {
-            if (s.edited) {
-              version.block.removeAttr("hidden");
-              get_sentence_comment(version.id, s.id, version.block);
-              get_sentence_vote(version.id, s.id, version.block);
-              sentence_content.html(s.content);
-            } else {
-              version.block.attr("hidden", "hidden");
+      if (selected.id < origin_count) {
+        for (i = 0; i < versions.length; i++) {
+          var version = versions[i];
+          $("input[name='sentence_id']", version.block).val(selected.id);
+          $(".time", version.block).text(version.time);
+          if (version.author == current_user) continue;
+          var sentence_content = $(".sentence-content", version.block);
+          var found_flag = false;
+          for (var j = 0; j < version.sentence.length; j++) {
+            var s = version.sentence[j];
+            if (selected.id == s.id) {
+              if (s.edited) {
+                version.block.removeAttr("hidden");
+                get_sentence_comment(version.id, s.id, version.block);
+                get_sentence_vote(version.id, s.id, version.block);
+                sentence_content.html(s.content);
+              } else {
+                version.block.attr("hidden", "hidden");
+              }
+              found_flag = true;
+              break;
             }
-            found_flag = true;
-            break;
+          }
+          if (!found_flag) {
+            sentence_content.text("Deleted");
           }
         }
-        if (!found_flag) {
-          sentence_content.text("Deleted");
+      } else {
+        for (i = 0; i < versions.length; i++) {
+          versions[i].block.attr("hidden", "hidden");
         }
       }
+
       form_current_sentence_id.val(selected.id);
       get_sentence_comment(current_version, selected.id, current_user_block);
       get_sentence_vote(current_version, selected.id, current_user_block);
@@ -220,7 +232,6 @@ function init_page(current_version, current_user, json_str_array, counter) {
   };
 
   CKEDITOR.config.height = 240;
-
 
   var editor = initWithLite("id_content", true, false);
   commit_ajax.editor = editor;
@@ -232,17 +243,14 @@ function init_page(current_version, current_user, json_str_array, counter) {
   $("input[name='version_id']", current_user_block).val(current_version);
   var id_div = $("#selected-id");
   var form_current_sentence_id = $("input[name='sentence_id']", current_user_block);
-
   var versions = [];
   for (var i = 0; i < json_str_array.length; i++) {
     versions.push(JSON.parse(json_str_array[i]));
   }
-
   for (i = 0; i < versions.length; i++) {
     versions[i].block = $(".sentence-block[data-author='" + versions[i].author + "']");
     $("input[name='version_id']", versions[i].block).val(versions[i].id);
   }
-
   var previous_selected_id = -1;
   editor.on('contentDom', function () {
     this.document.on('click', function (event) {
@@ -252,19 +260,20 @@ function init_page(current_version, current_user, json_str_array, counter) {
   editor.on('key', function (e) {
     var key = sanitizeKeyCode(e.data.keyCode);
     if (key > 36 && key <= 40) {
-      update_comments_and_divs();
+      setTimeout(function () {
+        update_comments_and_divs();
+      }, 100);
+
     }
     if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
       commit_ajax();
       e.cancel();
     }
   });
-
   editor.on('change', function (e) {
     var selected = editor.getSelectedSentence();
     current_sentence.text(selected.sentence);
   });
-
   editor.on('drop', function (e) {
     e.cancel();
   });

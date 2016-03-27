@@ -1,3 +1,8 @@
+h2 {
+  margin-top: 10px;
+  color: #337ab7;
+}
+
 .articles article {
   padding-bottom: 1.4em;
   border-bottom: 1px solid #eeeeee;

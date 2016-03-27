@@ -17,7 +17,9 @@ class Article(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, null=True, blank=True)
     content = models.TextField(max_length=60000)
+    description = models.TextField(max_length=5000)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
+
     create_user = models.ForeignKey(User)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(blank=True, null=True)

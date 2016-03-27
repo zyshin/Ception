@@ -17,12 +17,10 @@
     {% for field in form.visible_fields %}
       <div class="form-group{% if field.errors %} has-error{% endif %}">
         <label for="{{ field.label }}" class="control-label">{{ field.label }}</label>
-        {{ field }}
-        {% if field.label == 'Content' %}
-          <script>
-            initWithLite("id_content", false);
-          </script>
+        {% if field.label == 'Description' %}
+          {% include 'markdown_editor.html' with textarea='id_description' %}
         {% endif %}
+        {{ field }}
         {% if field.help_text %}
           <span class="help-block">{{ field.help_text }}</span>
         {% endif %}
@@ -53,5 +51,8 @@
       </div>
     </div>
   </div>
+  <script>
+    initWithLite("id_content", false);
+  </script>
 
 {% endblock main %}
