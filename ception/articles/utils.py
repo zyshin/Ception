@@ -55,7 +55,7 @@ def stadardlize_text(text):
 
 
 class ContentParser(HTMLParser):
-    def __init__(self, max_sentence=20):
+    def __init__(self, max_sentence=50):
         HTMLParser.__init__(self)
         self.json = {
             'sentence': [],
@@ -78,7 +78,10 @@ class ContentParser(HTMLParser):
             self.current_sentence["content"] += start_str(tag, {})
             self.current_edited = True
         if tag == "pd" and not self.is_deleted:
-            current_id = int(attrs[0][1][1:])
+            try:
+                current_id = int(attrs[0][1][1:])
+            except:
+                current_id = 49
             self.current_id = current_id
             self.current_sentence["id"] = current_id
             if self.json["counter"] <= current_id:

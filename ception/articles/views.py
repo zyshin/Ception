@@ -171,9 +171,11 @@ def init_edit_page(request, id, compare=False):
     this_dict, this_edit, this_delete = ContentParser.get_info(version.content)
     version_jsons = []
     authors = []
+    version_array = []
     for v in versions:
         if v.edit_user == request.user:
             continue
+        print v.content
         v_dict, v_edit, v_delete = ContentParser.get_info(v.content)
         for i in xrange(origin_count):
             editing_info_dict[i]["edit"] += v_edit[i]
@@ -182,16 +184,17 @@ def init_edit_page(request, id, compare=False):
         v_dict['author'] = str(v.edit_user)
         v_dict['id'] = v.pk
         v_dict['time'] = naturaltime(v.edit_date)
-        v_dict['content'] = v.content
         authors.append(v.edit_user)
         version_jsons.append(json.dumps(v_dict))
+        version_array.append(v)
 
     pass_data = {
         'json': version_jsons,
         'authors': authors,
         'counter': this_dict["counter"],
         'origin_count': origin_count,
-        'editing_info': [json.dumps(d) for d in editing_info_dict]
+        'editing_info': [json.dumps(d) for d in editing_info_dict],
+        'versions': version_array
     }
     if not compare:
         return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
@@ -215,7 +218,7 @@ def edit(request, id):
         else:
             return init_edit_page(request, id)
     except Exception, e:
-        print "Exception: ", e
+        print "Exception-Edit: ", e
         return HttpResponseBadRequest()
 
 
@@ -235,7 +238,7 @@ def edit_compare(request, id):
         else:
             return init_edit_page(request, id, True)
     except Exception, e:
-        print "Exception: ", e
+        print "Exception-EditCompare: ", e
         return HttpResponseBadRequest()
 
 

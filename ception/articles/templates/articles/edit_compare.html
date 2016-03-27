@@ -48,7 +48,7 @@
         </div>
       </div>
       <div>
-      {% for version in versions %}
+        {% for version in data.versions %}
         <h5>{{ version.edit_user.profile.get_screen_name }}'s Version</h5>
         <textarea class="content" id="{{ version.id }}" disabled>
           {{ version.content }}
@@ -69,7 +69,15 @@
       CKEDITOR.config.height = 300;
       var editor = initWithLite('content', true, true);
       commit_ajax.editor = editor;
+      editor.sCount = {{ data.origin_count }};
+      editor.on('key', function (e) {
+        if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
+          commit_ajax();
+          e.cancel();
+        }
+      });
     })();
+
   </script>
 
 
