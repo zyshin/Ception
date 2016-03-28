@@ -9,7 +9,7 @@ CKEDITOR.CUT_KEY = 1114200;
 CKEDITOR.SHIFT_MAC = 2228240;
 
 function sanitizeKeyCode(keyCode) {
-    return keyCode & (~CKEDITOR.SHIFT) & (~CKEDITOR.ALT);
+  return keyCode & (~CKEDITOR.SHIFT) & (~CKEDITOR.ALT) & (~CKEDITOR.CTRL);
 }
 
 function isModifier(keyCode, modifier) {
@@ -19,6 +19,15 @@ function isModifier(keyCode, modifier) {
 function isVisible(keyCode) {
   var trueKeyCode = sanitizeKeyCode(keyCode);
   return (trueKeyCode >= 48 && trueKeyCode < 300) || trueKeyCode == 32;
+}
+
+function fixSpecificDeleteBug(editor, e) {
+  var keycode = e.data.keyCode;
+  if (sanitizeKeyCode(keycode) == CKEDITOR.BACKSPACE) {
+    if (isModifier(keycode, CKEDITOR.CTRL)) {
+      e.cancel();
+    }
+  }
 }
 
 function fixSpecificLineBug(editor, e) {
@@ -373,6 +382,7 @@ function ceptArming(editor) {
     fixSpecificLineBug(editor, e);
     fixSpecificCutBug(editor, e);
     fixSpecificBSBug(editor, e);
+    fixSpecificDeleteBug(editor, e);
     if (isVisible(e.data.keyCode)) {
       avoidPDtag(editor, e);
     }
