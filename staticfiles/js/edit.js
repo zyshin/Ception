@@ -281,7 +281,7 @@ function init_page(current_version, current_user, json_str_array, counter, origi
   });
   editor.on('change', function (e) {
     var selected = editor.getSelectedSentence();
-    current_sentence.text(selected.sentence);
+    current_sentence.html(selected.sentence);
   });
   editor.on('drop', function (e) {
     e.cancel();

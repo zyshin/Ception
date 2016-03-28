@@ -165,7 +165,8 @@ CKEDITOR.dom.node.prototype.getUndergroundFirstNode = function() {
         //console.log("This is normal PD");
         return this;
       } else if (isPD(this) == -1) {
-        return this.getNextUndergroundNode();
+        //return this.getNextUndergroundNode();
+        return this;
       } else {
         return this.getFirst().getUndergroundFirstNode();
       }
@@ -189,7 +190,8 @@ CKEDITOR.dom.node.prototype.getUndergroundLastNode = function() {
         //console.log("This is normal PD");
         return this;
       } else if (isPD(this) == -1) {
-        return this.getPreviousUndergroundNode();
+        //return this.getPreviousUndergroundNode();
+        return this;
       } else {
         return this.getLast().getUndergroundLastNode();
       }
@@ -225,11 +227,11 @@ CKEDITOR.dom.node.prototype.getNextUndergroundNode = function () {
   //console.log(next_big_node);
   var next_underground_node = next_big_node.getUndergroundFirstNode();
   //console.log(next_underground_node);
-  if (next_underground_node && next_underground_node.getName && next_underground_node.getName() == "del") {
-    return next_underground_node.getNextUndergroundNode();
-  } else {
+  //if (next_underground_node && next_underground_node.getName && next_underground_node.getName() == "del") {
+  //  return next_underground_node.getNextUndergroundNode();
+  //} else {
     return next_underground_node;
-  }
+  //}
 };
 
 CKEDITOR.dom.node.prototype.getPreviousUndergroundNode = function () {
@@ -255,11 +257,11 @@ CKEDITOR.dom.node.prototype.getPreviousUndergroundNode = function () {
   //console.log(previous_big_node);
   var previous_underground_node = previous_big_node.getUndergroundLastNode();
   //console.log(previous_underground_node);
-  if (previous_underground_node && previous_underground_node.getName && previous_underground_node.getName() == "del") {
-    return previous_underground_node.getPreviousUndergroundNode();
-  } else {
-    return previous_underground_node;
-  }
+  //if (previous_underground_node && previous_underground_node.getName && previous_underground_node.getName() == "del") {
+  //  return previous_underground_node.getPreviousUndergroundNode();
+  //} else {
+  return previous_underground_node;
+  //}
 };
 
 CKEDITOR.dom.node.prototype.getNextPDNode = function () {
@@ -304,7 +306,16 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
   var text = "";
   for (var i = 0; i < node_list.length; i++) {
     //console.log(node_list[i]);
-    text += node_list[i].getText();
+    if (node_list[i].getName && node_list[i].getName() == "del") {
+      text += "<del>" + node_list[i].getText() + "</del>";
+    } else {
+      if (node_list[i].getParent() && node_list[i].getParent().getName && node_list[i].getParent().getName() == "ins") {
+        text += "<ins>" + node_list[i].getText() + "</ins>";
+      } else {
+        text += node_list[i].getText();
+      }
+
+    }
   }
 
   return {
@@ -313,26 +324,6 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
   };
 };
 
-CKEDITOR.editor.prototype.getIDofSelectedSentence = function() {
-  var node = this.getSelection().getRanges()[0].startContainer;
-  var sentenceID;
-  if (node instanceof CKEDITOR.dom.text) {
-    while (node && node.getName && node.getName() != "pd") {
-      node = node.getNext();
-    }
-    if (node && node.getName() == "pd") {
-      sentenceID = parseInt(node.getId().substring(1));
-    } else {
-      alert("Error! No PD next");
-    }
-  } else if (node.getName() == "pd") {
-    sentenceID = parseInt(node.getId().substring(1));
-  } else {
-    alert("No PD exist");
-  }
-  console.log("Sentence ID: " + sentenceID);
-  return sentenceID;
-};
 
 CKEDITOR.editor.prototype.feedVersion = function (content) {
 

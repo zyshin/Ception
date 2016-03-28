@@ -177,7 +177,6 @@ def init_edit_page(request, id, compare=False):
             continue
         if v.edit_user.username == "Apple":
             continue
-        print v.content
         v_dict, v_edit, v_delete = ContentParser.get_info(v.content)
         for i in xrange(origin_count):
             editing_info_dict[i]["edit"] += v_edit[i]
