@@ -162,6 +162,9 @@ def process_sentences(sentences, origin_count, v_edit):
                 index += 1
 
 
+authors = ["scyue", "ZYShin", "shawn"]
+
+
 def init_edit_page(request, id, compare=False):
     article = get_object_or_404(Article, pk=id)
     version = article.get_or_create_version_by_user(request.user)
@@ -175,7 +178,7 @@ def init_edit_page(request, id, compare=False):
     for v in versions:
         if v.edit_user == request.user:
             continue
-        if v.edit_user.username == "Apple":
+        if v.edit_user.username not in authors:
             continue
         v_dict, v_edit, v_delete = ContentParser.get_info(v.content)
         for i in xrange(origin_count):
