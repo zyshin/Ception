@@ -206,7 +206,7 @@ CKEDITOR.dom.node.prototype.getNextUndergroundNode = function () {
         //console.log("There: " + next_big_node);
         break;
       }
-      if (node.getName() == "p") break;
+      //if (node.getName() == "p") break;
       node = node.getParent();
     }
   }
@@ -309,7 +309,6 @@ CKEDITOR.editor.prototype.getIDofSelectedSentence = function() {
   var sentenceID;
   if (node instanceof CKEDITOR.dom.text) {
     while (node && node.getName && node.getName() != "pd") {
-      console.log(node);
       node = node.getNext();
     }
     if (node && node.getName() == "pd") {

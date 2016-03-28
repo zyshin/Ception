@@ -264,10 +264,19 @@ function init_page(current_version, current_user, json_str_array, counter, origi
         update_comments_and_divs();
       }, 100);
 
-    }
-    if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
+    } else if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
       commit_ajax();
       e.cancel();
+    } else if (e.data.keyCode == CKEDITOR.BACKSPACE) {
+      var current_node = editor.getSelection().getRanges()[0].endContainer;
+      if (current_node instanceof CKEDITOR.dom.text) {
+        var parent = current_node.getParent();
+        if (parent.getName && parent.getName() == "pd") {
+          if (parent.getNextPDNode() == null) {
+            e.cancel();
+          }
+        }
+      }
     }
   });
   editor.on('change', function (e) {
