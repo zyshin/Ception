@@ -299,5 +299,4 @@ function init_sidebar(info_str_array) {
     $(".edit-span", $(sentence_array[i])).text("Edit: " + editing_info_array[i].edit);
     $(".delete-span", $(sentence_array[i])).text("Delete: " + editing_info_array[i].delete);
   }
-
 }
