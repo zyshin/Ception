@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Editor</title>
+  <script src="ckeditor/ckeditor.js"></script>
+  <script src="ckeditor/useful.js"></script>
+  <script src="ckeditor/dom-functions.js"></script>
+  <script src="ckeditor/test_example.js"></script>
+  <script type="text/javascript" src="ckeditor/plugins/lite/lite-interface.js"></script>
+</head>
+<body>
+
+<div id="editor">
+  <p>
+    This is the combination of CKEditor and LITE plugin
+    <pd sid='0'>.</pd>
+    And we would like to modify it
+    <pd sid='1'>.</pd>
+    Right now I am testing its functionality and APIs
+    <pd sid='2'>.</pd>
+    I think it is ok for our purposes
+    <pd sid='3'>.</pd>
+    Although it has some bugs but it doesn't matter
+    <pd sid='4'>.</pd>
+    We can use some tricks to cover it
+    <pd sid='5'>.</pd>
+  </p>
+</div>
+<div id="selected-sentence" style="background-color: #18C0DF; min-height: 20px"></div>
+<div id="selected-id" style="background-color: #a3bde3; min-height: 20px"></div>
+<div id="origin-text" style="background-color: silver; min-height: 20px;"></div>
+<script>text_function();</script>
+
+
+</body>
+</html>

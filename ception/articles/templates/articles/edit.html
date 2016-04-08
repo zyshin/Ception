@@ -17,7 +17,7 @@
     <li class="active">{% trans 'Edit' %}</li>
   </ol>
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
       <h2>{{ form.instance.origin.title }}</h2>
 
       <div class="info">
@@ -71,6 +71,19 @@
           </div>
         {% endfor %}
       </form>
+    </div>
+
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-6">
+          <a class="btn btn-default btn-block" id="cancel-button" style="margin-top: 10px;"
+             href="{% url 'articles' %}">{% trans 'Cancel' %}</a>
+        </div>
+        <div class="col-md-6">
+          <button class="btn btn-primary btn-block" id="commit-button"
+                  style="margin-top: 10px;">{% trans 'Commit' %}</button>
+        </div>
+        </div>
       <div id="sentence-list" hidden="hidden">
         {% include 'articles/partial_sentence.html' with author=user %}
         {% for author in data.authors %}
@@ -78,50 +91,6 @@
         {% endfor %}
       </div>
       <div style="min-height: 300px"></div>
-    </div>
-    <div class="col-md-4" id="side-col">
-      <div class="row">
-        <div class="col-md-6">
-          <a class="btn btn-default btn-block" id="cancel-button" style="margin-top: 10px;"
-             href="{% url 'articles' %}">{% trans 'Cancel' %}</a>
-        </div>
-        {#        <div class="col-md-4">#}
-        {#          <button class="btn btn-info btn-block disabled" id="save-button">{% trans 'Save' %}</button>#}
-        {#        </div>#}
-        <div class="col-md-6">
-          <button class="btn btn-primary btn-block" id="commit-button"
-                  style="margin-top: 10px;">{% trans 'Commit' %}</button>
-        </div>
-
-        <h3 style="margin-top: 58px;">Summary</h3>
-        <div class="list-group">
-          {% for p in data.editing_info %}
-            <a class="list-group-item side-block">
-              <p class="list-group-item-text side-sentence"></p>
-              <span class="label label-default edit-span"></span>
-              <span class="label label-default delete-span"></span>
-            </a>
-          {% endfor %}
-        </div>
-      </div>
-      {#      <div class="row">#}
-      {#        <div id="summary-window">#}
-      {#          <ul class="nav nav-tabs nav-justified">#}
-      {#            <li class="active"><a data-toggle="pill" href="#summary">Summary</a></li>#}
-      {#            <li><a data-toggle="pill" href="#detail">Detail</a></li>#}
-      {#          </ul>#}
-      {#          <div class="tab-content">#}
-      {#            <div id="summary" class="tab-pane fade in active">#}
-      {##}
-      {#            </div>#}
-      {#            <div id="detail" class="tab-pane fade">#}
-      {#              <h3>Detail</h3>#}
-      {#              <p>Not Implemented yet</p>#}
-      {#            </div>#}
-      {#          </div>#}
-      {#        </div>#}
-      {#      </div>#}
-
     </div>
 
     <script>
