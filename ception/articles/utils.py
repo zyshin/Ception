@@ -32,7 +32,7 @@ class PDAdder(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == "pd":
-            attrs.append(('id', 's' + str(self.counter)))
+            attrs.append(('sid', str(self.counter)))
             self.counter += 1
         self.text += start_str(tag, attrs)
 
@@ -77,16 +77,24 @@ class ContentParser(HTMLParser):
         if tag == "ins" or tag == "del":
             self.current_sentence["content"] += start_str(tag, {})
             self.current_edited = True
-        if tag == "pd" and not self.is_deleted:
-            try:
-                current_id = int(attrs[0][1][1:])
-            except:
-                current_id = 49
-            self.current_id = current_id
-            self.current_sentence["id"] = current_id
-            if self.json["counter"] <= current_id:
-                self.json["counter"] = current_id + 1
-            self.inside_pd_deleted = False
+        if tag == "pd":
+            if not self.is_deleted:
+                for pair in attrs:
+                    self.current_sentence[pair[0]] = pair[1]
+                current_id = int(self.current_sentence["sid"])
+                self.current_id = current_id
+                self.current_sentence["sid"] = current_id
+                if self.json["counter"] <= current_id:
+                    self.json["counter"] = current_id + 1
+                self.inside_pd_deleted = False
+            else:
+                if not self.current_sentence.has_key("deleted"):
+                    self.current_sentence["deleted"] = []
+                pd_dict = {}
+                for pair in attrs:
+                    pd_dict[pair[0]] = pair[1]
+                pd_dict["sid"] = int(pd_dict["sid"])
+                self.current_sentence["deleted"].push(pd_dict)
         elif tag == "del":
             self.is_deleted = True
             self.inside_pd_deleted = True
@@ -97,6 +105,10 @@ class ContentParser(HTMLParser):
             self.current_sentence["content"] += end_str(tag)
         if tag == "pd":
             if not self.inside_pd_deleted:
+                self.current_sentence["related"] = []
+                # for s in self.current_sentence["deleted"]:
+                # self.current_sentence["related"].push(s["sid"])
+                # TODO: aaa
                 self.edit_count[self.current_id] = self.current_edited
                 self.json['sentence'].append(self.current_sentence)
                 self.current_sentence = {

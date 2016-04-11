@@ -140,7 +140,7 @@ def process_sentences(sentences, origin_count, v_edit):
         s["edited"] = v_edit[s["id"]]
         s["added"] = False
         if s["id"] >= origin_count:
-            s["id"] = -8080
+            s["id"] = -10
             s["added"] = True
             s["content"] = s["content"].replace("<ins >", "")
 
@@ -181,6 +181,7 @@ def init_edit_page(request, id, compare=False):
         # if v.edit_user.username not in origin_authors:
         #     continue
         v_dict, v_edit, v_delete = ContentParser.get_info(v.content)
+        print origin_count
         for i in xrange(origin_count):
             editing_info_dict[i]["edit"] += v_edit[i]
             editing_info_dict[i]["delete"] += v_delete[i]
@@ -188,6 +189,7 @@ def init_edit_page(request, id, compare=False):
         v_dict['author'] = str(v.edit_user)
         v_dict['id'] = v.pk
         v_dict['time'] = naturaltime(v.edit_date)
+        print v_dict
         authors.append(v.edit_user)
         version_jsons.append(json.dumps(v_dict))
         version_array.append(v)

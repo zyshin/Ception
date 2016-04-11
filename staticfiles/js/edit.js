@@ -262,7 +262,7 @@ function init_page(current_version, current_user, json_str_array, counter, origi
     if (key > 36 && key <= 40) {
       setTimeout(function () {
         update_comments_and_divs();
-      }, 100);
+      }, 50);
 
     } else if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
       commit_ajax();
@@ -299,5 +299,4 @@ function init_sidebar(info_str_array) {
     $(".edit-span", $(sentence_array[i])).text("Edit: " + editing_info_array[i].edit);
     $(".delete-span", $(sentence_array[i])).text("Delete: " + editing_info_array[i].delete);
   }
-
 }
