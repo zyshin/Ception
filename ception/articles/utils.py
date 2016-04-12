@@ -1,7 +1,9 @@
 from HTMLParser import HTMLParser
 import types
 
+
 NO_TAG = "Text"
+
 
 def start_str(tag, attrs):
     if tag == NO_TAG:
@@ -9,11 +11,11 @@ def start_str(tag, attrs):
     attr_str = ""
     if type(attrs) == types.ListType:
         for attr in attrs:
-            if (not(tag == "ins" or tag == "del") or attr[0] != "class"):
+            if not (tag == "ins" or tag == "del") or attr[0] != "class":
                 attr_str += attr[0] + "=" + "\"" + attr[1] + "\" "
     elif type(attrs) == types.DictionaryType:
         for (key, value) in attrs.items():
-            if (not(tag == "ins" or tag == "del") or key[0] != "class"):
+            if not (tag == "ins" or tag == "del") or key[0] != "class":
                 attr_str += key + "=" + "\"" + value + "\" "
     return "<" + tag + " " + attr_str + ">"
 
@@ -32,8 +34,8 @@ class PDAdder(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == "pd":
-            attrs.append(('sid', str(self.counter)))
             self.counter += 1
+            attrs.append(('sid', str(self.counter)))
         self.text += start_str(tag, attrs)
 
     def handle_endtag(self, tag):
@@ -42,12 +44,12 @@ class PDAdder(HTMLParser):
     def handle_data(self, data):
         self.text += data
 
+
 def convert_period_to_pd (content):
-    count = 0
     content = content.replace('.', '<pd>.</pd>').replace('?', '<pd>?</pd>').replace('!', '<pd>!</pd>')
     parser = PDAdder()
     parser.feed(content)
-    return parser.text
+    return parser.text, parser.counter
 
 
 def stadardlize_text(text):

@@ -19,6 +19,7 @@ class Article(models.Model):
     content = models.TextField(max_length=60000)
     description = models.TextField(max_length=5000)
     status = models.CharField(max_length=1, choices=STATUS, default=DRAFT)
+    sentence_count = models.IntegerField(default=-1)
 
     create_user = models.ForeignKey(User)
     create_date = models.DateTimeField(auto_now_add=True)

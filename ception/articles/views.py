@@ -55,8 +55,8 @@ def write(request):
             article = Article()
             article.create_user = request.user
             article.title = form.cleaned_data.get('title')
-            article.content = form.cleaned_data.get('content').replace('\n', '').replace("'", "\\'").replace("\r", "")
-            article.content = convert_period_to_pd(article.content)
+            article.content = form.cleaned_data.get('content').replace('\n', '').replace("\r", "")
+            article.content, article.sentence_count = convert_period_to_pd(article.content)
             article.description = markdown.markdown(form.cleaned_data.get('description'))
             status = form.cleaned_data.get('status')
             if status in [Article.PUBLISHED, Article.DRAFT]:
