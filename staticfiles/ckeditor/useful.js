@@ -177,7 +177,7 @@ function insertPDTag (editor, e) {
   }
   var rsid_array;
   if (next_pd && (rsid_array = eval(next_pd.getAttribute("rsid"))) && rsid_array.length > 0) {
-    editor.insertHtml("<pd sid='" + rsid_array.pop() + "'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
+    editor.insertHtml("<pd sid='" + rsid_array.pop() + "' replaced='true'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
     next_pd.setAttribute("rsid", "[" + rsid_array + "]");
   } else if (next_pd) {
     var sid = next_pd.getSentenceID();

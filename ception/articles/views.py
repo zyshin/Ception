@@ -8,11 +8,12 @@ from django.contrib.auth.decorators import login_required
 from ception.decorators import ajax_required
 import markdown
 from django.template.loader import render_to_string
-from ception.articles.utils import ContentParser, convert_period_to_pd
 from ception.activities.models import Activity
 from django.db.models import Q
 from django.contrib.humanize.templatetags.humanize import naturaltime
 import json
+from ception.articles.utils import convert_period_to_pd
+from ception.articles.new_parser import get_mapping_array
 
 
 def _articles(request, articles):
@@ -120,57 +121,13 @@ def comment(request):
 
 # ========================== Editing View ==================================
 
-
-def get_origin_info(version):
-    origin_dict, origin_edit, origin_delete = ContentParser.get_info(version.origin.content)
-    editing_info_dict = origin_dict["sentence"]
-    origin_count = origin_dict["counter"]
-    for d in editing_info_dict:
-        d["edit"] = 0
-        d["delete"] = 0
-        if len(d['content']) > 45:
-            d['content'] = d['content'][:42] + "..."
-    return editing_info_dict, origin_count
-
-
-def process_sentences(sentences, origin_count, v_edit):
-    size = len(sentences)
-    for i in xrange(size):
-        s = sentences[i]
-        s["edited"] = v_edit[s["id"]]
-        s["added"] = False
-        if s["id"] >= origin_count:
-            s["id"] = -10
-            s["added"] = True
-            s["content"] = s["content"].replace("<ins >", "")
-
-    for i in xrange(size):
-        s = sentences[i]
-        if s["added"]:
-            continue
-        if i > 0 and sentences[i - 1]["added"]:
-            s["edited"] = True
-            index = i - 1
-            while index >= 0 and sentences[index]["added"]:
-                s["content"] = "<add>" + sentences[index]["content"] + "</add>" + s["content"]
-                index -= 1
-        if i < size - 1 and sentences[i + 1]["added"]:
-            s["edited"] = True
-            index = i + 1
-            while index < size and sentences[index]["added"]:
-                s["content"] += "<add>" + sentences[index]["content"] + "</add>"
-                index += 1
-
-
 origin_authors = ["scyue", "ZYShin", "shawn"]
 
 def init_edit_page(request, id, compare=False):
     article = get_object_or_404(Article, pk=id)
     version = article.get_or_create_version_by_user(request.user)
-    editing_info_dict, origin_count = get_origin_info(version)
     form = VersionForm(instance=version)
     versions = ArticleVersion.get_versions(version.origin)
-    this_dict, this_edit, this_delete = ContentParser.get_info(version.content)
     version_jsons = []
     authors = []
     version_array = []
@@ -180,16 +137,14 @@ def init_edit_page(request, id, compare=False):
             continue
         # if v.edit_user.username not in origin_authors:
         #     continue
-        v_dict, v_edit, v_delete = ContentParser.get_info(v.content)
-        print origin_count
-        for i in xrange(origin_count):
-            editing_info_dict[i]["edit"] += v_edit[i]
-            editing_info_dict[i]["delete"] += v_delete[i]
-        process_sentences(v_dict['sentence'], origin_count, v_edit)
-        v_dict['author'] = str(v.edit_user)
-        v_dict['id'] = v.pk
-        v_dict['time'] = naturaltime(v.edit_date)
-        print v_dict
+        mapping_info = get_mapping_array(v.content)
+        v_dict = {
+            'info': mapping_info,
+            'author': v.edit_user.profile.get_screen_name(),
+            'id': v.pk,
+            'time': naturaltime(v.edit_date)
+        }
+        # print v_dict
         authors.append(v.edit_user)
         version_jsons.append(json.dumps(v_dict))
         version_array.append(v)
@@ -197,10 +152,7 @@ def init_edit_page(request, id, compare=False):
     pass_data = {
         'json': version_jsons,
         'authors': authors,
-        'counter': this_dict["counter"],
-        'origin_count': origin_count,
-        'editing_info': [json.dumps(d) for d in editing_info_dict],
-        'versions': version_array
+        'versions': version_array,
     }
     if not compare:
         return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})

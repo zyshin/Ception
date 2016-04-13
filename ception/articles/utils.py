@@ -5,7 +5,9 @@ import types
 NO_TAG = "Text"
 
 
-def start_str(tag, attrs):
+def start_str(tag, attrs=None):
+    if not attrs:
+        attrs = {}
     if tag == NO_TAG:
         return ""
     attr_str = ""

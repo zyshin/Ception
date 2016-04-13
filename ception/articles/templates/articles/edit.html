@@ -73,7 +73,7 @@
       </form>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-6" id="sidebar">
       <div class="row">
         <div class="col-md-6">
           <a class="btn btn-default btn-block" id="cancel-button" style="margin-top: 10px;"
@@ -98,11 +98,7 @@
         var version_id = {{ form.instance.pk }};
         var current_user = "{{ user }}";
         var json_str_array = {{ data.json|safe }};
-        var counter = {{ data.counter }};
-        var info_str_array = {{ data.editing_info|safe }};
-        var origin_count = {{ data.origin_count }};
-        init_page(version_id, current_user, json_str_array, counter, origin_count);
-        init_sidebar(info_str_array);
+        init_page(version_id, current_user, json_str_array);
       })();
     </script>
   </div>

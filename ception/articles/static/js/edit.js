@@ -13,7 +13,7 @@ var commit_ajax = function () {
     cache: false,
     type: 'post',
     success: function (data) {
-      $("#side-col").prepend(generate_alert('success', 'Successfully Committed!'));
+      $("#sidebar").prepend(generate_alert('success', 'Successfully Committed!'));
       $(".alert").fadeTo(2000, 500).slideUp(500, function () {
         $(".alert").alert('close');
       });
@@ -135,7 +135,7 @@ $(function () {
 });
 
 
-function init_page(current_version, current_user, json_str_array, counter, origin_count) {
+function init_page(current_version, current_user, json_str_array) {
   var get_sentence_comment = function (version_id, sentence_id, block) {
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
     $.ajax({
@@ -183,7 +183,7 @@ function init_page(current_version, current_user, json_str_array, counter, origi
     if (previous_selected_id == -1) $("#sentence-list").removeAttr("hidden");
 
     var selected = editor.getSelectedSentence();
-    if (selected.id < origin_count) {
+    if (selected.id > 0) {
       current_sentence.html(selected.sentence);
     } else {
       current_sentence.html("<add>" + selected.sentence + "</add>")
@@ -191,31 +191,21 @@ function init_page(current_version, current_user, json_str_array, counter, origi
 
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
-      if (selected.id < origin_count) {
+      if (selected.id > 0) {
         for (i = 0; i < versions.length; i++) {
           var version = versions[i];
           $("input[name='sentence_id']", version.block).val(selected.id);
           $(".time", version.block).text(version.time);
           if (version.author == current_user) continue;
           var sentence_content = $(".sentence-content", version.block);
-          var found_flag = false;
-          for (var j = 0; j < version.sentence.length; j++) {
-            var s = version.sentence[j];
-            if (selected.id == s.id) {
-              if (s.edited) {
-                version.block.removeAttr("hidden");
-                get_sentence_comment(version.id, s.id, version.block);
-                get_sentence_vote(version.id, s.id, version.block);
-                sentence_content.html(s.content);
-              } else {
-                version.block.attr("hidden", "hidden");
-              }
-              found_flag = true;
-              break;
-            }
-          }
-          if (!found_flag) {
-            sentence_content.text("Deleted");
+          var s = version.info[selected.id];
+          if (s.edited) {
+            version.block.removeAttr("hidden");
+            get_sentence_comment(version.id, s.id, version.block);
+            get_sentence_vote(version.id, s.id, version.block);
+            sentence_content.html(s.content);
+          } else {
+            version.block.attr("hidden", "hidden");
           }
         }
       } else {
@@ -235,7 +225,6 @@ function init_page(current_version, current_user, json_str_array, counter, origi
 
   var editor = initWithLite("id_content", true, false);
   commit_ajax.editor = editor;
-  editor.sCount = counter;
   var current_user_block = $(".sentence-block[data-author='" + current_user + "']");
   current_user_block.addClass("selected-block");
   var current_sentence = $(".sentence-content", current_user_block);
