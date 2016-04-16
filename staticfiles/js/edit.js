@@ -21,7 +21,6 @@ var commit_ajax = function () {
   });
 };
 
-
 CKEDITOR.SAVE_KEY = 1114195;
 
 function generate_alert(alert_type, content) {
