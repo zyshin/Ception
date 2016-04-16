@@ -140,3 +140,12 @@
     color: #333;
 }
 
+highlight {
+    background-color: #FFFF88;
+    font-weight: bold
+}
+
+.highlight {
+    background-color: #FFFF88;
+    font-weight: bold
+}

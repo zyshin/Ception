@@ -33,6 +33,7 @@ class SentenceInfo(object):
 
     def __init__(self):
         self.sid = 0
+        self.origin_sid = 0
         self.related = []
         self.content = ""
         self.status = SentenceInfo.UNCHANGED
@@ -147,31 +148,46 @@ def eliminate_replace(info_array):
             info_array[i - 1].content += "<del>" + s.content + "</del>"
             info_array[i + 1].content = "<ins>" + s.content + "</ins>" + info_array[i + 1].content
             s.status = SentenceInfo.REMOVED
+        if s.sid < 0:
+            ii = i
+            while ii < len(info_array) - 1 and info_array[ii].sid < 0:
+                ii += 1
+            s.origin_sid = info_array[ii].sid
+
     return origin_count
 
 
 def set_mapping_array(info_array, origin_count):
     mapping_array = ["Error"]
     mapping_array.extend(["" for x in range(origin_count)])
-    current_sentence = ""
     current_related_sid = []
+    current_sentence_array = []
     for s in info_array:
         if s.status == SentenceInfo.REMOVED:
             continue
-        current_sentence += "<part sid='" + str(s.sid) + "'>" + s.content + "</part>"
+        current_sentence_array.append(s)
         current_related_sid.append(s.sid)
         if s.sid > 0 and s.status != SentenceInfo.DELETED:
-            sentence_info_dict = {
-                'content': current_sentence,
-                'id': s.sid,
-                'edited': not s.status == SentenceInfo.UNCHANGED
-            }
+            positive_sentence_count = 0
+            for ss in current_sentence_array:
+                if ss.sid > 0:
+                    positive_sentence_count += 1
             for i in current_related_sid:
                 if i > 0:
+                    content = ""
+                    for ss in current_sentence_array:
+                        if positive_sentence_count > 1 and (ss.sid == i or (ss.sid < 0 and ss.origin_sid == i)):
+                            content += "<highlight>" + ss.content + "</highlight>"
+                        else:
+                            content += ss.content
+                    sentence_info_dict = {
+                        'content': content,
+                        'id': s.sid,
+                        'edited': not s.status == SentenceInfo.UNCHANGED
+                    }
                     mapping_array[i] = sentence_info_dict
-
-            current_sentence = ""
             current_related_sid = []
+            current_sentence_array = []
     return mapping_array
 
 
