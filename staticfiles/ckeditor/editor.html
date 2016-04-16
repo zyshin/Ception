@@ -22,6 +22,11 @@
     color: #3366ff;
   }
 
+  .highlight {
+    background-color: #FFFF88;
+    font-weight: bold
+  }
+
 </style>
 <body>
 
@@ -47,26 +52,17 @@
 <div id="selected-sentence" style="border: #18C0DF solid 2px; font-size: 1.2em;"></div>
 <div id="origin-text" style="border: silver solid 2px; font-size: 1.2em;"></div>
 
-
-<div id="selected-id-original" style="border: #a3bde3 solid 2px; font-size: 1.2em;"></div>
-<div id="original">
-  <p>
-    This is the combination of CKEditor and LITE plugin
-    <pd sid='0'>.</pd>
-    And we would like to modify it
-    <pd sid='1'>.</pd>
-    Right now I am testing its functionality and APIs
-    <pd sid='2'>.</pd>
-    I think it is ok for our purposes
-    <pd sid='3'>.</pd>
-    Although it has some bugs but it doesn't matter
-    <pd sid='4'>.</pd>
-    We can use some tricks to cover it
-    <pd sid='5'>.</pd>
-  </p>
+<div id="test-area" class="highlight">
+  There is
+  <ins>some</ins>
+  <del>text</del>
+  <pd>.</pd>
 </div>
-<div id="display" style="border: #8a8a8a solid 2px; font-size: 1.2em;"></div>
-<script>text_function();</script>
+
+<script>
+  text_function();
+</script>
+
 
 </body>
 </html>

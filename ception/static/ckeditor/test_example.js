@@ -24,7 +24,4 @@ function text_function() {
 
   var editor = initWithLite('editor', true, false);
   editor.update_functions.push(update_information);
-
-  var original = initWithLite('original', true, true);
-  original.update_functions.push(update_original);
 }

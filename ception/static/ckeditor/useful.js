@@ -135,22 +135,6 @@ function avoidPDtag(editor, e) {
 }
 
 
-function getPDNodeIfExist(node) {
-  if (node instanceof CKEDITOR.dom.element && node.getName && node.getName() == "pd") {
-    if (node.getChildren().getItem(0) instanceof CKEDITOR.dom.text) {
-      return node;
-    } else {
-      return undefined;
-    }
-  } else if (node instanceof CKEDITOR.dom.text) {
-    var p = node.getParent();
-    if (p.getName && p.getName() == "pd") {
-      return p;
-    }
-  } else {
-    return undefined;
-  }
-}
 
 
 function sentenceEnding (keyCode) {
@@ -191,7 +175,7 @@ function insertPDTag (editor, e) {
 // We treat all the delete as merge
 function deletePDTag (editor, e) {
   var node = editor.getSelection().getRanges()[0].startContainer;
-  var pd = getPDNodeIfExist(node);
+  var pd = node.getPDNodeIfExist();
   if (pd) {
     var sid = pd.getSentenceID();
     if (sid >= 0) {

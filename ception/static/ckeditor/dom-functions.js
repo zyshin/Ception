@@ -121,27 +121,89 @@ CKEDITOR.dom.node.prototype.getSentenceID = function () {
   return sentence_id;
 };
 
+CKEDITOR.dom.node.prototype.getPDNodeIfExist = function () {
+  if (this instanceof CKEDITOR.dom.element && this.getName && this.getName() == "pd") {
+    if (this.getChildren().getItem(0) instanceof CKEDITOR.dom.text) {
+      return this;
+    } else {
+      return undefined;
+    }
+  } else if (this instanceof CKEDITOR.dom.text) {
+    var p = this.getParent();
+    if (p.getName && p.getName() == "pd") {
+      return p;
+    }
+  } else {
+    return undefined;
+  }
+};
+
+
+CKEDITOR.dom.node.prototype.highlight = function (range, selection) {
+  if (!this.isPD() && this instanceof CKEDITOR.dom.text && this.getParent().getName() == "p") {
+    var span_node = new CKEDITOR.dom.element("highlight");
+    var next_node = this.getNext();
+    span_node.insertBefore(next_node);
+    this.appendTo(span_node);
+    return span_node;
+  } else {
+    if (this instanceof CKEDITOR.dom.text) {
+      var parent = this.getParent();
+      if (parent.getName() != "pd") parent.addClass("highlight");
+      return this.getParent();
+    } else {
+      if (this.getName() != "pd") this.addClass("highlight");
+      return this;
+    }
+  }
+};
+
+CKEDITOR.dom.node.prototype.unhighlight = function (range, selection) {
+  if (this.getName() == "highlight") {
+    var node_list = this.getChildren();
+    for (var i = node_list.count() - 1; i >= 0; i--) {
+      var node = node_list.getItem(i);
+      node.insertAfter(this);
+    }
+    this.remove()
+  } else if (this.removeClass) {
+    this.removeClass("highlight");
+  }
+};
 
 CKEDITOR.editor.prototype.getSelectedSentence = function () {
+  var selection = this.getSelection();
+  var range = this.getSelection().getRanges()[0];
   var node = this.getSelection().getRanges()[0].startContainer;
+  //if (CKEDITOR.editor.prototype.getSelectedSentence.lastSelection) {
+  //  var prev_list = CKEDITOR.editor.prototype.getSelectedSentence.lastSelection;
+  //  for (var i = 0; i < prev_list.length; i++) {
+  //    prev_list[i].unhighlight(range, selection);
+  //  }
+  //}
   var node_list = [];
   var forward_node = node;
   var backward_node = node.getPreviousUndergroundNode();
   while (backward_node && !(backward_node.isPD() == 1)) {
+    //node_list.unshift(backward_node.highlight(range, selection));
     node_list.unshift(backward_node);
     backward_node = backward_node.getPreviousUndergroundNode();
   }
   while (forward_node && !(forward_node.isPD() == 1)) {
+    //node_list.push(forward_node.highlight(range, selection));
     node_list.push(forward_node);
     forward_node = forward_node.getNextUndergroundNode();
   }
   var sentence_id = undefined;
   if (forward_node) {
     node_list.push(forward_node);
+    //node_list.push(forward_node.highlight(range, selection));
     sentence_id = forward_node.getSentenceID();
   }
+  selection.selectRanges([range]);
   var text = "";
   for (var i = 0; i < node_list.length; i++) {
+    //node_list[i].addClass("highlight");
     if ((node_list[i].getName && node_list[i].getName() == "del") || node_list[i].isPD() < 0) {
       text += "<del>" + node_list[i].getText() + "</del>";
     } else {
@@ -152,6 +214,7 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
       }
     }
   }
+  CKEDITOR.editor.prototype.getSelectedSentence.lastSelection = node_list;
   return {
     sentence: text,
     id: sentence_id

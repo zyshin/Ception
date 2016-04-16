@@ -36,32 +36,41 @@ ins.ice-no-decoration, del.ice-no-decoration {
 	/*background-color: #e5ffcd !important;*/
 }
 
-.ICE-Tracking .ice-ins, .ICE-Tracking .ice-ins>*  {
-	/*color: #ff3366;*/
-	/*background-color: #e5ffcd !important;*/
+/*.ICE-Tracking .ice-ins, .ICE-Tracking .ice-ins>*  {*/
+/*!*color: #ff3366;*!*/
+/*!*background-color: #e5ffcd !important;*!*/
+/*}*/
+
+/*.ICE-Tracking .ice-ins.ice-cts-1, .ICE-Tracking .ice-ins.ice-cts-1>*  {*/
+/*!*background-color: #e5ffcd !important;*!*/
+/*}*/
+
+/*.ICE-Tracking .ice-ins.ice-cts-2, .ICE-Tracking .ice-ins.ice-cts-2>*  {*/
+/*!*background-color: #e3ffff !important;*!*/
+/*}*/
+
+/*.ICE-Tracking .ice-ins.ice-cts-3, .ICE-Tracking .ice-ins.ice-cts-3>*  {*/
+/*!*background-color: #ffdddd !important;*!*/
+/*}*/
+
+/*.ICE-Tracking .ice-del.ice-cts-1 {*/
+/*!*background-color: #e5ffcd !important;*!*/
+/*}*/
+
+/*.ICE-Tracking .ice-del.ice-cts-2 {*/
+/*!*background-color: #e3ffff !important;*!*/
+/*}*/
+
+/*.ICE-Tracking .ice-del.ice-cts-3 {*/
+/*!*background-color: #ffdddd !important;*!*/
+/*}*/
+
+highlight {
+	background-color: #FFFF88;
+	font-weight: bold
 }
 
-.ICE-Tracking .ice-ins.ice-cts-1, .ICE-Tracking .ice-ins.ice-cts-1>*  {
-	/*background-color: #e5ffcd !important;*/
+.highlight {
+	background-color: #FFFF88;
+	font-weight: bold
 }
-
-.ICE-Tracking .ice-ins.ice-cts-2, .ICE-Tracking .ice-ins.ice-cts-2>*  {
-	/*background-color: #e3ffff !important;*/
-}
-
-.ICE-Tracking .ice-ins.ice-cts-3, .ICE-Tracking .ice-ins.ice-cts-3>*  {
-	/*background-color: #ffdddd !important;*/
-}
-
-.ICE-Tracking .ice-del.ice-cts-1 {
-	/*background-color: #e5ffcd !important;*/
-}
-
-.ICE-Tracking .ice-del.ice-cts-2 {
-	/*background-color: #e3ffff !important;*/
-}
-
-.ICE-Tracking .ice-del.ice-cts-3 {
-	/*background-color: #ffdddd !important;*/
-}
-
