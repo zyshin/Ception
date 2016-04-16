@@ -139,6 +139,7 @@ def init_edit_page(request, id, compare=False):
         #     continue
         mapping_info = get_mapping_array(v.content)
         v_dict = {
+            'origin_count'
             'info': mapping_info,
             'author': v.edit_user.profile.get_screen_name(),
             'id': v.pk,

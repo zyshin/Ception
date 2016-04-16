@@ -85,7 +85,6 @@
       CKEDITOR.config.height = 300;
       var editor = initWithLite('content', true, true);
       commit_ajax.editor = editor;
-      editor.sCount = {{ data.origin_count }};
       editor.on('key', function (e) {
         if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
           commit_ajax();
