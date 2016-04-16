@@ -112,8 +112,8 @@
 
 .sentence-comment-button {
     text-align: center;
-    width: 30%;
-    float: left;
+    /*width: 30%;*/
+    /*float: left;*/
     min-width: 50px;
 }
 

@@ -40,6 +40,20 @@
         </span>
       </div>
 
+      <form id="edit_form" data-id="{{ form.instance.pk }}">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+          <div class="form-group{% if field.errors %} has-error{% endif %}">
+            {{ field }}
+            {% if field.help_text %}
+              <span class="help-block">{{ field.help_text }}</span>
+            {% endif %}
+            {% for error in field.errors %}
+              <label class="control-label">{{ error }}</label>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </form>
 
       <div class="bs-callout bs-callout-info">
         <h4>
@@ -56,21 +70,6 @@
 
       </div>
 
-
-      <form id="edit_form" data-id="{{ form.instance.pk }}">
-        {% csrf_token %}
-        {% for field in form.visible_fields %}
-          <div class="form-group{% if field.errors %} has-error{% endif %}">
-            {{ field }}
-            {% if field.help_text %}
-              <span class="help-block">{{ field.help_text }}</span>
-            {% endif %}
-            {% for error in field.errors %}
-              <label class="control-label">{{ error }}</label>
-            {% endfor %}
-          </div>
-        {% endfor %}
-      </form>
     </div>
 
     <div class="col-md-6" id="sidebar">

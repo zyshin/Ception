@@ -8,15 +8,14 @@
         <h5>
           <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a>
           <small class="time">here should be the time</small>
+          <a class="glyphicon glyphicon-comment sentence-comment-button" style="display: inline;"></a>
+          <div class="comment-count" style="display: inline;">-</div>
         </h5>
         <div class="sentence-content" style="display: inline"></div>
       </div>
     </div>
     <div class="col-md-3">
-      <button class="btn btn-default sentence-comment-button">
-        <span class="glyphicon glyphicon-comment" style="display: inline;"></span>
-        <div class="comment-count" style="display: inline;">-</div>
-      </button>
+
       <div class="vote-div">
         <span class="glyphicon glyphicon-thumbs-up sentence-vote up-vote"></span>
         <div class="sentence-comment-vote-number">-</div>

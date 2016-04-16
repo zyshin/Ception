@@ -54,7 +54,7 @@ $(function () {
         type: 'post',
         success: function (data) {
           content.val("").blur();
-          $(".sentence-comment-list", block).html(data);
+          $(".sentence-comment-list", block).html(data).removeAttr("hidden");
           $(".comment-count", block).text($(".sentence-comment-list .sentence-comment", block).length);
         }
       });
@@ -148,9 +148,16 @@ function init_page(current_version, current_user, json_str_array) {
       cache: false,
       type: 'post',
       success: function (data) {
-        $(".sentence-comment-list", block).html(data);
-        $(".comment-count", block).text($(".sentence-comment-list .sentence-comment", block).length);
+        var list = $(".sentence-comment-list", block);
+        list.html(data);
+        var count = $(".sentence-comment-list .sentence-comment", block).length;
+        $(".comment-count", block).text(count);
         $(".sentence-comment-content", block).val("").blur();
+        if (count == 0) {
+          list.attr("hidden", "hidden");
+        } else {
+          list.removeAttr("hidden");
+        }
       }
     });
   };
