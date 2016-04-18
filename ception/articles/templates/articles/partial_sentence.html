@@ -1,25 +1,22 @@
 <div class="sentence-block" data-author="{{ author }}">
   {% csrf_token %}
   <div class="row">
-    <div class="col-md-10" style="padding-right: 0;">
-      <a href="{% url 'profile' author.username %}"><img src="{{ author.profile.get_picture }}"
-                                                         class="sentence-portrait"></a>
-      <div class="comment-text">
-        <h5>
-          <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a>
-          <small class="time">here should be the time</small>
-          <a class="btn btn-sm glyphicon glyphicon-comment sentence-comment-button" style="display: inline;"></a>
-          <div class="comment-count" style="display: inline;">-</div>
-        </h5>
-        <div class="sentence-content" style="display: inline"></div>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="vote-div">
-        <span class="glyphicon glyphicon-thumbs-up sentence-vote up-vote"></span>
-        <div class="sentence-comment-vote-number">-</div>
-        <span class="glyphicon glyphicon-thumbs-down sentence-vote down-vote"></span>
+    {#      <a href="{% url 'profile' author.username %}"><img src="{{ author.profile.get_picture }}" class="sentence-portrait"></a>#}
+    <div class="comment-text">
+      <h5>
+        <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a>
+        <small class="time">here should be the time</small>
+        <div style="display: inline-block; padding-right: 20px">
+          <span class="glyphicon glyphicon-comment sentence-comment-button sentence-vote"></span>
+          <span class="comment-count">-</span>
         </div>
+        <div class="vote-div" style="display: inline-block;">
+          <span class="glyphicon glyphicon-thumbs-up sentence-vote up-vote"></span>
+          <span class="sentence-comment-vote-number">-</span>
+          <span class="glyphicon glyphicon-thumbs-down sentence-vote down-vote"></span>
+        </div>
+      </h5>
+      <div class="sentence-content" style="display: inline"></div>
     </div>
   </div>
   <div class="sentence-comment-block" style="display: none">

@@ -81,7 +81,8 @@ article .tags {
 }
 
 .comment-text {
-  margin-left: 50px;
+  margin-left: 30px;
+  margin-right: 30px;
 }
 
 .comment-text h5 {

@@ -32,6 +32,14 @@
           </span>
         </div>
 
+
+
+        <form id="edit_form" data-id="{{ form.instance.pk }}">
+          {% csrf_token %}
+          <textarea class="content" id="content">{{ form.instance.content|safe }}</textarea>
+        </form>
+
+
         <div class="bs-callout bs-callout-info">
           <h4>
             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
@@ -46,10 +54,6 @@
           </div>
         </div>
 
-        <form id="edit_form" data-id="{{ form.instance.pk }}">
-          {% csrf_token %}
-          <textarea class="content" id="content">{{ form.instance.content|safe }}</textarea>
-        </form>
       </article>
     </div>
     <div class="col-md-5 popular-tags" id="side-col">
