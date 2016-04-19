@@ -8,7 +8,8 @@ from decouple import config
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
 SECRET_KEY = 's2kc$kemt)h%z&4^5=5oj$vo6jqhs7&f_)#mo73b5i0!w*pl3^'
 
@@ -87,11 +88,11 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     PROJECT_DIR.child('static'),
-    PROJECT_DIR.parent.child('media')
+    # PROJECT_DIR.parent.child('media')
 )
 
-MEDIA_ROOT = PROJECT_DIR.parent.child('media')
-MEDIA_URL = '/media/'
+# MEDIA_ROOT = PROJECT_DIR.parent.child('media')
+# MEDIA_URL = '/media/'
 
 TEMPLATE_DIRS = (
     PROJECT_DIR.child('templates'),
