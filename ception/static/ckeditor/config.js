@@ -23,13 +23,12 @@ CKEDITOR.editorConfig = function( config ) {
 		//{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
 		//{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
 		//{ name: 'styles', groups: [ 'styles' ] },
-		'/',
 		{ name: 'colors', groups: [ 'colors' ] },
 		{ name: 'lite', groups: [ 'lite' ] }
 	];
 	config.allowedContent = true;
 	config.removePlugins = "elementspath";
-	config.removeButtons = 'Underline,Subscript,Superscript,Anchor,Image,Table,lite-toggletracking,lite-toggleshow,lite-acceptall,lite-rejectall,lite-acceptone,lite-rejectone';
+	config.removeButtons = 'Underline,Subscript,Superscript,Anchor,Image,Table,lite-toggletracking,lite-acceptall,lite-rejectall,lite-acceptone,lite-rejectone';
 	config.extraPlugins = 'lite';
 	config.format_tags = 'p;h1;h2;h3;pre';
 	config.removeDialogTabs = 'image:advanced;link:advanced';

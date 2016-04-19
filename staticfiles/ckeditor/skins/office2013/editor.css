@@ -89,7 +89,8 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
     display: block;
     -webkit-touch-callout: none;
     background: #fff;
-    padding: 0
+    padding: 0;
+    border-radius: 5px;
 }
 
 .cke_float {
@@ -106,6 +107,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
 }
 
 .cke_top {
+    border-radius: 5px 5px 0 0;
     border-bottom: 1px solid #e1e1e1;
     padding: 6px 8px 2px;
     white-space: normal;
@@ -120,7 +122,15 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
 .cke_bottom {
     /*padding: 6px 8px 2px;*/
     /*position: relative;*/
-    background: #2b579a
+    background: #e3e3e3;
+    margin: 2px;
+    border-radius: 5px;
+    margin-left: -moz-calc(50% - 20px);
+    margin-left: -webkit-calc(50% - 20px);
+    margin-left: calc(50% - 20px);
+    margin-right: -moz-calc(50% - 20px);
+    margin-right: -webkit-calc(50% - 20px);
+    margin-right: calc(50% - 20px);
 }
 
 .cke_browser_ios .cke_contents {
@@ -822,6 +832,7 @@ a.cke_path_item:hover, a.cke_path_item:focus, a.cke_path_item:active {
 }
 
 .cke_chrome {
+    border-radius: 5px;
     visibility: inherit
 }
 

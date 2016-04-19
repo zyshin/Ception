@@ -212,7 +212,7 @@ function init_page(current_version, current_user, json_str_array) {
             sentence_content.html(s.content);
             var author_editor = CKEDITOR.instances["editor-" + version.author];
             author_editor.setData(s.content);
-            var range = new CKEDITOR.dom.range( editor.document );
+            var range = new CKEDITOR.dom.range(editor.document);
             var element = author_editor.document.findOne("#current");
             var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
             range.moveToElementEditStart(element);
