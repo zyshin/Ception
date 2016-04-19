@@ -50,6 +50,7 @@
 }
 
 .selected-block {
+    border-radius: 3px 3px 0 0;
     background-color: #e7f7f7;
 }
 

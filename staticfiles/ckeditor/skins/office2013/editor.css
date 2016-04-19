@@ -132,7 +132,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
     width: 100%;
     height: 0;
     overflow: hidden;
-    border-width: 10px 10px 0 0;
+    border-width: 5px 0 0 0;
     border-color: transparent #fff transparent transparent;
     border-style: dashed solid dashed dashed;
     font-size: 0;
@@ -1227,4 +1227,18 @@ legend.cke_voice_label {
 .cke_hidpi .cke_button__spellchecker_icon {
     background: url(icons_hidpi.png) no-repeat 0 -1032px !important;
     background-size: 16px !important;
+}
+
+.cke_concise {
+    border: 0;
+    box-shadow: 0 0 0 0;
+}
+
+.cke_concise {
+    border: 0;
+    box-shadow: 0 0 0 0;
+}
+
+.cke_concise .cke_bottom {
+    background: 0;
 }

@@ -162,30 +162,47 @@ def set_mapping_array(info_array, origin_count):
     mapping_array.extend(["" for x in range(origin_count)])
     current_related_sid = []
     current_sentence_array = []
-    for s in info_array:
+    former_sentence_array = []
+    for j in range(len(info_array)):
+        s = info_array[j]
         if s.status == SentenceInfo.REMOVED:
             continue
         current_sentence_array.append(s)
         current_related_sid.append(s.sid)
         if s.sid > 0 and s.status != SentenceInfo.DELETED:
+
             positive_sentence_count = 0
             for ss in current_sentence_array:
                 if ss.sid > 0:
                     positive_sentence_count += 1
+
+            former_content = "<span class='context'>"
+            for ss in former_sentence_array:
+                former_content += ss.content
+            former_content += "</span>"
+
+            latter_content = "<span class='context'>"
+            for jj in range(j + 1, len(info_array)):
+                latter_content += info_array[jj].content
+            latter_content += "</span>"
+
+
             for i in current_related_sid:
                 if i > 0:
-                    content = ""
+                    content = "<span id='current'>"
                     for ss in current_sentence_array:
                         if positive_sentence_count > 1 and (ss.sid == i or (ss.sid < 0 and ss.origin_sid == i)):
-                            content += "<highlight>" + ss.content + "</highlight>"
+                            content += "<span class='highlight'>" + ss.content + "</span>"
                         else:
                             content += ss.content
+                    content += "</span>"
                     sentence_info_dict = {
-                        'content': content,
+                        'content': former_content + content + latter_content,
                         'id': s.sid,
                         'edited': not s.status == SentenceInfo.UNCHANGED
                     }
                     mapping_array[i] = sentence_info_dict
+            former_sentence_array.extend(current_sentence_array)
             current_related_sid = []
             current_sentence_array = []
     return mapping_array

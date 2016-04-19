@@ -16,7 +16,24 @@
           <span class="glyphicon glyphicon-thumbs-down sentence-vote down-vote"></span>
         </div>
       </h5>
-      <div class="sentence-content" style="display: inline"></div>
+      {% ifnotequal author user %}
+        <div class="sentence-content" style="display: none"></div>
+        <textarea id="editor-{{ author }}" disabled></textarea>
+        <script>
+          var editor_instance = CKEDITOR.replace("editor-{{ author }}", {
+                removePlugins: 'toolbar, elementspath, lite',
+                allowedContent: true,
+                height: 50,
+              }
+          );
+          editor_instance.on("instanceReady", function (event) {
+            $("#cke_editor-{{ author }}").addClass("cke_concise");
+          });
+
+        </script>
+      {% else %}
+        <div class="sentence-content" style="display: inline"></div>
+      {% endifnotequal %}
     </div>
   </div>
   <div class="sentence-comment-block" style="display: none">

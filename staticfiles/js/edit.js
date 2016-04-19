@@ -194,7 +194,7 @@ function init_page(current_version, current_user, json_str_array) {
     } else {
       current_sentence.html("<add>" + selected.sentence + "</add>")
     }
-
+    var backup_scoll = window.pageYOffset || document.documentElement.scrollTop;
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
       if (selected.id > 0) {
@@ -210,6 +210,26 @@ function init_page(current_version, current_user, json_str_array) {
             get_sentence_comment(version.id, s.id, version.block);
             get_sentence_vote(version.id, s.id, version.block);
             sentence_content.html(s.content);
+            var author_editor = CKEDITOR.instances["editor-" + version.author];
+            author_editor.setData(s.content);
+            var range = new CKEDITOR.dom.range( editor.document );
+            var element = author_editor.document.findOne("#current");
+            var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
+            range.moveToElementEditStart(element);
+            range.scrollIntoView();
+            var p1 = iframe_window.pageYOffset;
+            range.moveToElementEditEnd(element);
+            range.scrollIntoView();
+            var p2 = iframe_window.pageYOffset;
+            if (p1 == 0) {
+              iframe_window.scrollTo(0, 0);
+            } else {
+              iframe_window.scrollTo(0, (p1 + p2) / 2);
+            }
+            author_editor.getSelection().selectRanges([range]);
+
+
+            $("iframe", "#cke_editor-" + version.author).contents().find("body").addClass("cke_concise_body");
           } else {
             version.block.attr("hidden", "hidden");
           }
@@ -219,7 +239,7 @@ function init_page(current_version, current_user, json_str_array) {
           versions[i].block.attr("hidden", "hidden");
         }
       }
-
+      window.scrollTo(0, backup_scoll);
       form_current_sentence_id.val(selected.id);
       get_sentence_comment(current_version, selected.id, current_user_block);
       get_sentence_vote(current_version, selected.id, current_user_block);
