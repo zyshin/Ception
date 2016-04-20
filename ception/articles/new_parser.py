@@ -197,7 +197,8 @@ def set_mapping_array(info_array, origin_count):
                             content += ss.content
                     content += "</span>"
                     sentence_info_dict = {
-                        'content': former_content + content + latter_content,
+                        'context': former_content + content + latter_content,
+                        'sentence': content,
                         'id': s.sid,
                         'edited': not s.status == SentenceInfo.UNCHANGED
                     }

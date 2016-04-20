@@ -131,6 +131,20 @@ $(function () {
       e.preventDefault();
     }
   });
+
+
+  $("#toggle-sentence-view").change(function () {
+
+    if ($(this).prop('checked')) {
+      console.log($(".sentence-content-others"));
+      $(".sentence-content-others").css("display", "none");
+      $(".cke_concise").css("display", "inline");
+    } else {
+      $(".sentence-content-others").css("display", "inline");
+      $(".cke_concise").css("display", "none");
+    }
+  });
+
 });
 
 
@@ -209,9 +223,9 @@ function init_page(current_version, current_user, json_str_array) {
             version.block.removeAttr("hidden");
             get_sentence_comment(version.id, s.id, version.block);
             get_sentence_vote(version.id, s.id, version.block);
-            sentence_content.html(s.content);
+            sentence_content.html(s.sentence);
             var author_editor = CKEDITOR.instances["editor-" + version.author];
-            author_editor.setData(s.content);
+            author_editor.setData(s.context);
             var range = new CKEDITOR.dom.range(editor.document);
             var element = author_editor.document.findOne("#current");
             var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;

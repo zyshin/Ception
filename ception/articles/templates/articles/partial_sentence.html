@@ -20,7 +20,7 @@
         </div>
       </h5>
       {% ifnotequal author user %}
-        <div class="sentence-content" style="display: none"></div>
+        <div class="sentence-content sentence-content-others"></div>
         <textarea id="editor-{{ author }}" disabled></textarea>
         <script>
           var editor_instance = CKEDITOR.replace("editor-{{ author }}", {
@@ -30,7 +30,7 @@
               }
           );
           editor_instance.on("instanceReady", function (event) {
-            $("#cke_editor-{{ author }}").addClass("cke_concise");
+            $("#cke_editor-{{ author }}").addClass("cke_concise").css("display", "none");
           });
 
         </script>
