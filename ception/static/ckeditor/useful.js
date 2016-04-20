@@ -4,6 +4,7 @@
 
 CKEDITOR.ENTER = 13;
 CKEDITOR.BACKSPACE = 8;
+CKEDITOR.DELETE = 46;
 CKEDITOR.INVISIABLECHAR = String.fromCharCode(0);
 CKEDITOR.CUT_KEY = 1114200;
 CKEDITOR.SHIFT_MAC = 2228240;
@@ -25,12 +26,20 @@ function isVisible(keyCode) {
   return (trueKeyCode >= 48 && trueKeyCode < 300) || trueKeyCode == 32;
 }
 
-function fixSpecificDeleteBug(editor, e) {
+function fixSpecificCtrlBsBug(editor, e) {
   var keycode = e.data.keyCode;
   if (sanitizeKeyCode(keycode) == CKEDITOR.BACKSPACE) {
     if (isModifier(keycode, CKEDITOR.CTRL)) {
       e.cancel();
     }
+  }
+}
+
+//TODO: Naive fix of Delete Bug
+function fixSpecificDeleteBug(editor, e) {
+  var keycode = e.data.keyCode;
+  if (keycode == CKEDITOR.DELETE) {
+    e.cancel();
   }
 }
 
@@ -54,7 +63,7 @@ function fixSpecificLineBug(editor, e) {
 }
 
 // TODO: Bug when deleting a PD tag before a INS tag
-function fixSpecificBSBug(editor, e) {
+function fixSpecificBsBug(editor, e) {
   var keycode = sanitizeKeyCode(e.data.keyCode);
   var range = editor.getSelection().getRanges()[0];
   var container = range.startContainer;
@@ -197,7 +206,8 @@ function ceptArming(editor) {
   editor.on('key', function(e) {
     fixSpecificLineBug(editor, e);
     fixSpecificCutBug(editor, e);
-    fixSpecificBSBug(editor, e);
+    fixSpecificBsBug(editor, e);
+    fixSpecificCtrlBsBug(editor, e);
     fixSpecificDeleteBug(editor, e);
     if (isVisible(e.data.keyCode)) {
       avoidPDtag(editor, e);
