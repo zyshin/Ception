@@ -6,18 +6,20 @@
       <h5>
         <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a>
         <small class="time">here should be the time</small>
-        <div style="display: inline-block; padding-right: 20px">
+        <div style="display: inline-block; padding-right: 20px;">
           <span class="glyphicon glyphicon-comment sentence-comment-button sentence-vote"></span>
           <span class="comment-count">-</span>
         </div>
-        <div class="vote-div" style="display: inline-block;">
+        <div class="vote-div">
           <span class="glyphicon glyphicon-thumbs-up sentence-vote up-vote"></span>
           <span class="sentence-comment-vote-number">-</span>
           <span class="glyphicon glyphicon-thumbs-down sentence-vote down-vote"></span>
         </div>
-        <div style="display: inline-block">
-          <span class="glyphicon glyphicon-ok"> </span>
+        {% ifnotequal author user %}
+          <div style="display: inline-block; float: right; margin-right: 10px;">
+            <span class="glyphicon glyphicon-ok accept-button"></span>
         </div>
+        {% endifnotequal %}
       </h5>
       {% ifnotequal author user %}
         <div class="sentence-content sentence-content-others"></div>
@@ -26,16 +28,15 @@
           var editor_instance = CKEDITOR.replace("editor-{{ author }}", {
                 removePlugins: 'toolbar, elementspath, lite',
                 allowedContent: true,
-                height: 50,
+            height: 50
               }
           );
           editor_instance.on("instanceReady", function (event) {
             $("#cke_editor-{{ author }}").addClass("cke_concise").css("display", "none");
           });
-
         </script>
       {% else %}
-        <div class="sentence-content" style="display: inline"></div>
+        <div class="sentence-content" id="current_sentence"></div>
       {% endifnotequal %}
     </div>
   </div>

@@ -29,6 +29,11 @@
     text-line-through-color: #6699ff;
 }
 
+.hide-del-class del {
+    display: none;
+}
+
+
 .sentence-content ins {
     color: #ff3366;
     text-decoration: none;
@@ -103,12 +108,10 @@
 }
 
 .vote-div {
-    /*width: 70%;*/
-    /*float: right;*/
-    /*padding-top: 10px;*/
     text-align: center;
     padding-left: 0;
-    padding-right: 0;
+    display: inline-block;
+    padding-right: 20px;
     /*margin-left: -20px;*/
 }
 
@@ -136,6 +139,15 @@
     color: #333;
 }
 
+.accept-button {
+    color: #bbb;
+}
+
+.accept-button:hover {
+    cursor: pointer;
+    color: #428bca;
+}
+
 
 .highlight {
     background-color: #FFFF88;
@@ -144,3 +156,5 @@
 .context {
     opacity: 0.2;
 }
+
+

@@ -1,6 +1,7 @@
 /**
  * Created by scyue on 16/3/14.
  */
+
 var commit_ajax = function () {
   var form = $("#edit_form");
   $.ajax({
@@ -20,6 +21,15 @@ var commit_ajax = function () {
     }
   });
 };
+
+
+//TODO: @ssy cherry_pick
+var cherry_pick = function (author, other_sentence, other_all, my_sentence, my_all) {
+  alert("This is cherry pick function!" + "\n\n" + author + "\n\n" + other_sentence + "\n\n" + other_all + "\n\n" + my_sentence + "\n\n" + my_all);
+  var new_all = my_all;
+  return new_all;
+};
+
 
 CKEDITOR.SAVE_KEY = 1114195;
 
@@ -134,15 +144,31 @@ $(function () {
 
 
   $("#toggle-sentence-view").change(function () {
-
     if ($(this).prop('checked')) {
-      console.log($(".sentence-content-others"));
       $(".sentence-content-others").css("display", "none");
       $(".cke_concise").css("display", "inline");
     } else {
       $(".sentence-content-others").css("display", "inline");
       $(".cke_concise").css("display", "none");
     }
+  });
+
+  $("#hide-del-toggle").change(function () {
+    if ($(this).prop('checked')) {
+      $(".sentence-content-others").removeClass("hide-del-class");
+      $("iframe", ".cke_concise").contents().find("body").removeClass("hide-del-class");
+    } else {
+      $(".sentence-content-others").addClass("hide-del-class");
+      $("iframe", ".cke_concise").contents().find("body").addClass("hide-del-class");
+    }
+  });
+
+  $(".accept-button").click(function () {
+    var block = $(this).closest(".sentence-block");
+    var author = block.data("author");
+    var current = $("#current_sentence").html();
+    var this_content = CKEDITOR.instances["id_content"].getData();
+    cherry_pick(author, block.data("sentence"), block.data("context"), current, this_content);
   });
 
 });
@@ -224,6 +250,8 @@ function init_page(current_version, current_user, json_str_array) {
             get_sentence_comment(version.id, s.id, version.block);
             get_sentence_vote(version.id, s.id, version.block);
             sentence_content.html(s.sentence);
+            version.block.data("sentence", s.sentence_without_span);
+            version.block.data("context", s.context_without_span);
             var author_editor = CKEDITOR.instances["editor-" + version.author];
             author_editor.setData(s.context);
             var range = new CKEDITOR.dom.range(editor.document);
@@ -241,8 +269,6 @@ function init_page(current_version, current_user, json_str_array) {
               iframe_window.scrollTo(0, (p1 + p2) / 2);
             }
             author_editor.getSelection().selectRanges([range]);
-
-
             $("iframe", "#cke_editor-" + version.author).contents().find("body").addClass("cke_concise_body");
           } else {
             version.block.attr("hidden", "hidden");

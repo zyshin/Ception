@@ -166,3 +166,7 @@ ins {
 .context {
 	opacity: 0.2;
 }
+
+.hide-del-class del {
+	display: none;
+}

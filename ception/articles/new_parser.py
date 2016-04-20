@@ -157,7 +157,7 @@ def eliminate_replace(info_array):
     return origin_count
 
 
-def set_mapping_array(info_array, origin_count):
+def set_mapping_array(info_array, origin_count, text):
     mapping_array = ["Error"]
     mapping_array.extend(["" for x in range(origin_count)])
     current_related_sid = []
@@ -176,29 +176,32 @@ def set_mapping_array(info_array, origin_count):
                 if ss.sid > 0:
                     positive_sentence_count += 1
 
-            former_content = "<span class='context'>"
+            former_content = ""
             for ss in former_sentence_array:
                 former_content += ss.content
-            former_content += "</span>"
 
-            latter_content = "<span class='context'>"
+            latter_content = ""
             for jj in range(j + 1, len(info_array)):
                 latter_content += info_array[jj].content
-            latter_content += "</span>"
-
 
             for i in current_related_sid:
                 if i > 0:
-                    content = "<span id='current'>"
+                    sentence = ""
+                    sentence_without_span = ""
                     for ss in current_sentence_array:
+                        sentence_without_span += ss.content
                         if positive_sentence_count > 1 and (ss.sid == i or (ss.sid < 0 and ss.origin_sid == i)):
-                            content += "<span class='highlight'>" + ss.content + "</span>"
+                            sentence += "<span class='highlight'>" + ss.content + "</span>"
                         else:
-                            content += ss.content
-                    content += "</span>"
+                            sentence += ss.content
+
                     sentence_info_dict = {
-                        'context': former_content + content + latter_content,
-                        'sentence': content,
+                        'context': "<span class='context'>" + former_content + "</span>" +
+                                   "<span id='current'>" + sentence + "</span>" +
+                                   "<span class='context'>" + latter_content + "</span>",
+                        'context_without_span': text,
+                        'sentence': sentence,
+                        'sentence_without_span': sentence_without_span,
                         'id': s.sid,
                         'edited': not s.status == SentenceInfo.UNCHANGED
                     }
@@ -212,7 +215,7 @@ def set_mapping_array(info_array, origin_count):
 def get_mapping_array(text):
     info_array = ContentParser.get_info(text)
     origin_count = eliminate_replace(info_array)
-    return set_mapping_array(info_array, origin_count)
+    return set_mapping_array(info_array, origin_count, text)
 
 
 if __name__ == '__main__':
