@@ -36,6 +36,16 @@ function fixSpecificCtrlBsBug(editor, e) {
 }
 
 //TODO: Naive fix of Delete Bug
+function fixSpecificCtrlDeleteBug(editor, e) {
+  var keycode = e.data.keyCode;
+  if (sanitizeKeyCode(keycode) == CKEDITOR.DELETE) {
+    if (isModifier(keycode, CKEDITOR.CTRL)) {
+      e.cancel();
+    }
+  }
+}
+
+//TODO: Naive fix of Ctrl+Delete Bug
 function fixSpecificDeleteBug(editor, e) {
 
 }
@@ -200,6 +210,7 @@ function ceptArming(editor) {
     fixSpecificBsBug(editor, e);
     fixSpecificCtrlBsBug(editor, e);
     fixSpecificDeleteBug(editor, e);
+    fixSpecificCtrlDeleteBug(editor, e);
     if (isVisible(e.data.keyCode)) {
       avoidPDtag(editor, e);
     }
