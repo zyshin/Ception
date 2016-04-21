@@ -114,9 +114,9 @@ $(function () {
     });
   });
 
-  $("#cancel-button").click(function () {
-    self.location = "/articles/" + $("#cancel-button").data("url");
-  });
+  //$("#cancel-button").click(function () {
+  //  self.location = "/articles/" + $("#cancel-button").data("url");
+  //});
 
   $("#save-button").click(function () {
     var form = $("#edit_form");
