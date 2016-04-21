@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.template.defaultfilters import slugify
 from ception.activities.models import Activity
+from ception.articles.simple_parser import SimpleParser
 import markdown
 
 
@@ -74,6 +75,11 @@ class Article(models.Model):
     def get_comments(self):
         return ArticleComment.objects.filter(article=self)
 
+    def get_sentences(self):
+        parser = SimpleParser()
+        parser.feed(self.content)
+        return parser.sentence_array
+
     def get_or_create_version_by_user(self, user):
         version_set = ArticleVersion.objects.filter(edit_user=user, origin=self)
         if len(version_set) == 0:
@@ -90,6 +96,7 @@ class Article(models.Model):
 class ArticleVersion(models.Model):
     origin = models.ForeignKey(Article)
     content = models.TextField(max_length=60000)
+    diff_content = models.TextField(max_length=60000)
     edit_date = models.DateTimeField(auto_now_add=True)
     edit_user = models.ForeignKey(User)
     slug = models.SlugField(max_length=255, null=True, blank=True)

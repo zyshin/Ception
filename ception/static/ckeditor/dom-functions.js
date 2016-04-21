@@ -53,6 +53,8 @@ CKEDITOR.dom.node.prototype.getUndergroundLastNode = function () {
       if (this.getName() == "del" || this.isPD()) {
         return this;
       } else {
+        // TODO: Bug here
+        console.log(this.getName());
         return this.getLast().getUndergroundLastNode();
       }
     } else {
@@ -97,6 +99,7 @@ CKEDITOR.dom.node.prototype.getPreviousUndergroundNode = function () {
     }
   }
   if (!previous_big_node) return null;
+  console.log(previous_big_node);
   return previous_big_node.getUndergroundLastNode();
 };
 

@@ -39,7 +39,7 @@ function fixSpecificCtrlBsBug(editor, e) {
 function fixSpecificDeleteBug(editor, e) {
   var keycode = e.data.keyCode;
   if (keycode == CKEDITOR.DELETE) {
-    e.cancel();
+    //e.cancel();
   }
 }
 
