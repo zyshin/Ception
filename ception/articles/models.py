@@ -5,8 +5,9 @@ from datetime import datetime
 from django.template.defaultfilters import slugify
 from ception.activities.models import Activity
 from ception.articles.simple_parser import SimpleParser
+from ception.articles.diff_parser import DiffParser
 import markdown
-import diff_match_patch as dmp_module
+
 
 
 class Article(models.Model):
@@ -97,11 +98,10 @@ class Article(models.Model):
 class ArticleVersion(models.Model):
     origin = models.ForeignKey(Article)
     content = models.TextField(max_length=60000)
-    diff_content = models.TextField(max_length=60000)
+    diff_content = models.TextField(max_length=60000, null=True, blank=True)
     edit_date = models.DateTimeField(auto_now_add=True)
     edit_user = models.ForeignKey(User)
     slug = models.SlugField(max_length=255, null=True, blank=True)
-    dmp = dmp_module.diff_match_patch()
 
     class Meta:
         verbose_name = _("Version")
@@ -128,11 +128,17 @@ class ArticleVersion(models.Model):
                                              sentence_id=sentence_id).count()
         return up_votes - down_votes
 
-    @classmethod
-    def diff(cls, s1, s2):
-        d = cls.dmp.diff_main(s1, s2)
-        cls.dmp.diff_cleanupSemantic(d)
-        return cls.dmp.diff_html(d)
+    def compute_diff(self):
+        sp = SimpleParser()
+        sp.feed(self.origin.content)
+        parser = DiffParser(sp.sentence_array)
+        print sp.sentence_array
+        parser.feed(self.content)
+        print parser.diff_content
+        self.diff_content = parser.diff_content
+        self.save()
+
+
 
     @staticmethod
     def get_versions(article):

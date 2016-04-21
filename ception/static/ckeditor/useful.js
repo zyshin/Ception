@@ -37,10 +37,7 @@ function fixSpecificCtrlBsBug(editor, e) {
 
 //TODO: Naive fix of Delete Bug
 function fixSpecificDeleteBug(editor, e) {
-  var keycode = e.data.keyCode;
-  if (keycode == CKEDITOR.DELETE) {
-    //e.cancel();
-  }
+
 }
 
 function fixSpecificLineBug(editor, e) {
@@ -90,8 +87,6 @@ function fixSpecificBsBug(editor, e) {
           container.remove();
         }
         editor.getSelection().selectRanges([range]);
-        editor.fire('change');
-        editor.fire('scyue_event');
         e.cancel();
       } else if (tar_p && beginning) {
         if (container.getLength() == 1) {
@@ -107,11 +102,11 @@ function fixSpecificBsBug(editor, e) {
         range.setStart(previous, previous.getLength());
         range.setEnd(previous, previous.getLength());
         editor.getSelection().selectRanges([range]);
-        editor.fire('scyue_event');
         e.cancel();
       }
     }
   }
+  editor.fire('scyue_event');
 }
 
 function fixSpecificCutBug(editor, e) {

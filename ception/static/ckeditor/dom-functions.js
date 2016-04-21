@@ -99,7 +99,6 @@ CKEDITOR.dom.node.prototype.getPreviousUndergroundNode = function () {
     }
   }
   if (!previous_big_node) return null;
-  console.log(previous_big_node);
   return previous_big_node.getUndergroundLastNode();
 };
 
@@ -177,13 +176,10 @@ CKEDITOR.dom.node.prototype.unhighlight = function (range, selection) {
 CKEDITOR.editor.prototype.getSelectedSentence = function () {
   var selection = this.getSelection();
   var range = this.getSelection().getRanges()[0];
-  var node = this.getSelection().getRanges()[0].startContainer;
-  //if (CKEDITOR.editor.prototype.getSelectedSentence.lastSelection) {
-  //  var prev_list = CKEDITOR.editor.prototype.getSelectedSentence.lastSelection;
-  //  for (var i = 0; i < prev_list.length; i++) {
-  //    prev_list[i].unhighlight(range, selection);
-  //  }
-  //}
+  var node = range.getBoundaryNodes().startNode;
+  if (node.getParent().getName && node.getParent().getName() == "del") {
+    node = node.getPreviousUndergroundNode();
+  }
   var node_list = [];
   var forward_node = node;
   var backward_node = node.getPreviousUndergroundNode();
