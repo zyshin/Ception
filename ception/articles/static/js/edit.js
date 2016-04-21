@@ -290,6 +290,7 @@ function init_page(current_version, current_user, json_str_array) {
   CKEDITOR.config.height = 240;
 
   var editor = initWithLite("id_content", true, false);
+  $("iframe", ".cke_concise").contents().find("body").addClass("hide-del-class");
   commit_ajax.editor = editor;
   var current_user_block = $(".sentence-block[data-author='" + current_user + "']");
   current_user_block.addClass("selected-block");

@@ -172,6 +172,7 @@ def edit(request, id):
                 form = VersionForm(request.POST, instance=version)
                 if form.is_valid():
                     form.save()
+                version.compute_diff()
                 return HttpResponse("Success")
         else:
             return init_edit_page(request, id)
@@ -192,6 +193,7 @@ def edit_compare(request, id):
                 form = VersionForm(request.POST, instance=version)
                 if form.is_valid():
                     form.save()
+                version.compute_diff()
                 return HttpResponse("Success")
         else:
             return init_edit_page(request, id, True)
@@ -253,3 +255,4 @@ def sentence_vote(request):
             return HttpResponseBadRequest()
     except:
         return HttpResponseBadRequest()
+
