@@ -53,8 +53,6 @@ CKEDITOR.dom.node.prototype.getUndergroundLastNode = function () {
       if (this.getName() == "del" || this.isPD()) {
         return this;
       } else {
-        // TODO: Bug here
-        console.log(this.getName());
         return this.getLast().getUndergroundLastNode();
       }
     } else {

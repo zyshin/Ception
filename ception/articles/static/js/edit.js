@@ -255,21 +255,27 @@ function init_page(current_version, current_user, json_str_array) {
             var author_editor = CKEDITOR.instances["editor-" + version.author];
             author_editor.setData(s.context);
             var range = new CKEDITOR.dom.range(editor.document);
-            var element = author_editor.document.findOne("#current");
-            var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
-            range.moveToElementEditStart(element);
-            range.scrollIntoView();
-            var p1 = iframe_window.pageYOffset;
-            range.moveToElementEditEnd(element);
-            range.scrollIntoView();
-            var p2 = iframe_window.pageYOffset;
-            if (p1 == 0) {
-              iframe_window.scrollTo(0, 0);
-            } else {
-              iframe_window.scrollTo(0, (p1 + p2) / 2);
+            //var element = author_editor.document.findOne("#current");
+            //var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
+            //range.moveToElementEditStart(element);
+            //range.scrollIntoView();
+            //var p1 = iframe_window.pageYOffset;
+            //range.moveToElementEditEnd(element);
+            try {
+              $("iframe", "#cke_editor-" + version.author).contents().find("body").addClass("cke_concise_body").addClass("hide_del_class");
+              range.scrollIntoView();
+              author_editor.getSelection().selectRanges([range]);
+            } catch (e) {
+              //TODO: ignore it
             }
-            author_editor.getSelection().selectRanges([range]);
-            $("iframe", "#cke_editor-" + version.author).contents().find("body").addClass("cke_concise_body");
+            //var p2 = iframe_window.pageYOffset;
+            //if (p1 == 0) {
+            //  iframe_window.scrollTo(0, 0);
+            //} else {
+            //  iframe_window.scrollTo(0, (p1 + p2) / 2);
+            //}
+
+
           } else {
             version.block.attr("hidden", "hidden");
           }
@@ -290,7 +296,6 @@ function init_page(current_version, current_user, json_str_array) {
   CKEDITOR.config.height = 240;
 
   var editor = initWithLite("id_content", true, false);
-  $("iframe", ".cke_concise").contents().find("body").addClass("hide-del-class");
   commit_ajax.editor = editor;
   var current_user_block = $(".sentence-block[data-author='" + current_user + "']");
   current_user_block.addClass("selected-block");

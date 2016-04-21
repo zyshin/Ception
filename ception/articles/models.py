@@ -132,9 +132,7 @@ class ArticleVersion(models.Model):
         sp = SimpleParser()
         sp.feed(self.origin.content)
         parser = DiffParser(sp.sentence_array)
-        print sp.sentence_array
         parser.feed(self.content)
-        print parser.diff_content
         self.diff_content = parser.diff_content
         self.save()
 

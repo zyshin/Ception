@@ -50,8 +50,8 @@ class DiffParser(HTMLParser):
             self.in_del = False
         elif tag == 'pd':
             self.in_pd = False
-            if self.current.sid >= 0 and self.current.status != SentenceInfo.REPLACE:
-                self.diff_content += DiffParser.diff(self.origin_array[self.current.sid], self.current.content)
+            if self.current.sid > 0 and self.current.status != SentenceInfo.REPLACE:
+                self.diff_content += DiffParser.diff(self.origin_array[self.current.sid - 1], self.current.content)
                 self.diff_content += start_str('pd', self.pd_attr)
                 if self.in_pd_delete:
                     self.diff_content += start_str('del')
