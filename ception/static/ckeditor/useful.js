@@ -69,24 +69,12 @@ function fixSpecificBsBug(editor, e) {
   var container = range.startContainer;
   var parent = container.getParent();
   if (keycode == CKEDITOR.BACKSPACE && container.getLength && parent.getName() == "ins") {
-    var tar_n = (parent && parent.hasNext && parent.hasNext() && parent.getNext().getName && parent.getNext().getName() == "del");
+    var tar_n = parent && parent.hasNext() && parent.getNext().getName && parent.getNext().getName() == "del";
     var ending = (range.startOffset == container.getText().length);
-    var tar_p = (parent && parent.hasPrevious && parent.hasPrevious() && parent.getPrevious().getName && parent.getPrevious().getName() == "del");
+    var tar_p = parent && parent.hasPrevious() && parent.getPrevious().getName && parent.getPrevious().getName() == "del";
     var beginning = (range.startOffset == 1);
     var same = (range.startOffset == range.endOffset);
     var inside_ins = (parent.getName() == "ins");
-    if (!String.format) {
-      String.format = function (format) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        return format.replace(/{(\d+)}/g, function (match, number) {
-          return typeof args[number] != 'undefined'
-              ? args[number]
-              : match
-              ;
-        });
-      };
-    }
-    console.log(String.format("{0},{1}: {2},{3} //  {4},{5}", same, inside_ins, tar_n + " ", ending, tar_p + " ", beginning));
     if (inside_ins && same) {
       if (tar_n && ending) {
         if (range.startOffset > 1) {
@@ -95,6 +83,9 @@ function fixSpecificBsBug(editor, e) {
           range.endOffset -= 1;
         } else {
           var previous = parent.getPreviousUndergroundNode();
+          while (previous.getName && previous.getName() == "del") {
+            previous = previous.getPrevious();
+          }
           range.setStart(previous, previous.getLength());
           range.setEnd(previous, previous.getLength());
           container.remove();
@@ -104,19 +95,24 @@ function fixSpecificBsBug(editor, e) {
         editor.fire('scyue_event');
         e.cancel();
       } else if (tar_p && beginning) {
+        if (container.getLength() == 1) {
+          container.remove();
+        } else {
+          container.setText(container.getText().slice(1));
+        }
         var previous = parent.getPreviousUndergroundNode();
+        while (previous.getName && previous.getName() == "del") {
+          previous = previous.getPrevious();
+        }
         range.setStart(previous, previous.getLength());
         range.setEnd(previous, previous.getLength());
-        container.remove();
         editor.getSelection().selectRanges([range]);
-        editor.fire('change');
         editor.fire('scyue_event');
         e.cancel();
       }
     }
   }
 }
-
 
 function fixSpecificCutBug(editor, e) {
   if (e.data.keyCode === CKEDITOR.CUT_KEY) {
