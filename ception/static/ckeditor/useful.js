@@ -62,7 +62,6 @@ function fixSpecificLineBug(editor, e) {
     }
 }
 
-// TODO: Bug when deleting a PD tag before a INS tag
 function fixSpecificBsBug(editor, e) {
   var keycode = sanitizeKeyCode(e.data.keyCode);
   var range = editor.getSelection().getRanges()[0];
@@ -83,7 +82,7 @@ function fixSpecificBsBug(editor, e) {
           range.endOffset -= 1;
         } else {
           var previous = parent.getPreviousUndergroundNode();
-          while (previous.getName && previous.getName() == "del") {
+          while ((previous.getName && previous.getName() == "del") || previous.isPD() == -1) {
             previous = previous.getPrevious();
           }
           range.setStart(previous, previous.getLength());
@@ -101,7 +100,8 @@ function fixSpecificBsBug(editor, e) {
           container.setText(container.getText().slice(1));
         }
         var previous = parent.getPreviousUndergroundNode();
-        while (previous.getName && previous.getName() == "del") {
+        while ((previous.getName && previous.getName() == "del") || previous.isPD() == -1) {
+          console.log(previous.getName());
           previous = previous.getPrevious();
         }
         range.setStart(previous, previous.getLength());
