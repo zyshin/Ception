@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, include, url
+
+
 urlpatterns = patterns('ception.articles.views',
                        url(r'^$', 'articles', name='articles'),
                        url(r'^write/$', 'write', name='write'),
