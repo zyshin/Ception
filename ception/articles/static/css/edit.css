@@ -157,4 +157,9 @@
     opacity: 0.2;
 }
 
-
+.alert {
+    position: fixed;
+    left: 43%;
+    top: 0px;
+    z-index: 2000;
+}

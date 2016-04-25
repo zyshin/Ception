@@ -16,7 +16,7 @@ var commit_ajax = function () {
     cache: false,
     type: 'post',
     success: function (data) {
-      $("#sidebar").prepend(generate_alert('success', 'Successfully Committed!'));
+      $("header").append(generate_alert('success', 'Successfully Committed!'));
       $(".alert").fadeTo(2000, 500).slideUp(500, function () {
         $(".alert").alert('close');
       });
