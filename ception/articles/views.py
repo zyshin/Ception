@@ -131,28 +131,29 @@ def init_edit_page(request, id, compare=False):
     version_jsons = []
     authors = []
     version_array = []
-
+    current_version_dict = {}
     for v in versions:
-        if v.edit_user == request.user:
-            continue
-        # if v.edit_user.username not in origin_authors:
-        #     continue
-        mapping_info = get_mapping_array(v.content)
-        v_dict = {
-            'info': mapping_info,
+        dict_data = {
+            'comments': v.get_sentence_comments(),
+            'vote': v.get_sentence_vote(request.user),
+            'info': get_mapping_array(v.content),
             'author': v.edit_user.profile.get_screen_name(),
             'id': v.pk,
             'time': naturaltime(v.edit_date)
         }
-        # print v_dict
-        authors.append(v.edit_user)
-        version_jsons.append(json.dumps(v_dict))
-        version_array.append(v)
+        if v.edit_user == request.user:
+            current_version_dict = dict_data
+        else:
+            v_dict = dict_data
+            authors.append(v.edit_user)
+            version_jsons.append(json.dumps(v_dict))
+            version_array.append(v)
 
     pass_data = {
         'json': version_jsons,
         'authors': authors,
         'versions': version_array,
+        'current_version_json': json.dumps(current_version_dict),
     }
     if not compare:
         return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})

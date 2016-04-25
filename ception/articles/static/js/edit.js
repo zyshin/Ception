@@ -2,6 +2,8 @@
  * Created by scyue on 16/3/14.
  */
 
+var versions = [];
+
 var commit_ajax = function () {
   var form = $("#edit_form");
   $.ajax({
@@ -21,7 +23,6 @@ var commit_ajax = function () {
     }
   });
 };
-
 
 //TODO: @ssy cherry_pick
 var cherry_pick = function (author, other_sentence, other_all, my_sentence, my_all) {
@@ -62,9 +63,19 @@ $(function () {
         cache: false,
         type: 'post',
         success: function (data) {
+          var version_id = $("input[name='version_id']", block).val();
+          var sentence_id = $("input[name='sentence_id']", block).val();
+          var version = undefined;
+          for (var i = 0; i < versions.length; i++) {
+            if (versions[i].id == version_id) {
+              version = versions[i];
+            }
+          }
           content.val("").blur();
           $(".sentence-comment-list", block).html(data).removeAttr("hidden");
-          $(".comment-count", block).text($(".sentence-comment-list .sentence-comment", block).length);
+          version.comments[sentence_id]['html'] = data;
+          version.comments[sentence_id]['count'] = $(".sentence-comment-list .sentence-comment", block).length;
+          $(".comment-count", block).text(version.comments[sentence_id]['count']);
         }
       });
     }
@@ -105,11 +116,20 @@ $(function () {
       cache: false,
       type: 'post',
       success: function (data) {
+        var version = undefined;
+        for (var i = 0; i < versions.length; i++) {
+          if (versions[i].id == version_id) {
+            version = versions[i];
+          }
+        }
         $(".sentence-vote", block).removeClass("voted");
         if (vote == "U" || vote == "D") {
           this_span.addClass("voted");
         }
+        version.vote[sentence_id]['state'] = vote;
         $(".sentence-comment-vote-number", block).text(data);
+        version.vote[sentence_id]['count'] = data;
+
       }
     });
   });
@@ -175,54 +195,28 @@ $(function () {
 
 
 function init_page(current_version, current_user, json_str_array) {
-  var get_sentence_comment = function (version_id, sentence_id, block) {
-    var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
-    $.ajax({
-      url: '/articles/sentence_comments/',
-      data: {
-        'version_id': version_id,
-        'sentence_id': sentence_id,
-        'csrfmiddlewaretoken': csrf
-      },
-      cache: false,
-      type: 'post',
-      success: function (data) {
-        var list = $(".sentence-comment-list", block);
-        list.html(data);
-        var count = $(".sentence-comment-list .sentence-comment", block).length;
-        $(".comment-count", block).text(count);
-        $(".sentence-comment-content", block).val("").blur();
-        if (count == 0) {
-          list.attr("hidden", "hidden");
-        } else {
-          list.removeAttr("hidden");
-        }
-      }
-    });
+  var get_sentence_comment = function (version, sentence_id) {
+    var list = $(".sentence-comment-list", version.block);
+    list.html(version.comments[sentence_id]['html']);
+    var count = version.comments[sentence_id]['count'];
+    $(".comment-count", version.block).text(count);
+    $(".sentence-comment-content", version.block).val("").blur();
+    if (count == 0) {
+      list.attr("hidden", "hidden");
+    } else {
+      list.removeAttr("hidden");
+    }
   };
 
-  var get_sentence_vote = function (version_id, sentence_id, block) {
-    var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
-    $.ajax({
-      url: '/articles/sentence_vote/',
-      data: {
-        'version_id': version_id,
-        'sentence_id': sentence_id,
-        'csrfmiddlewaretoken': csrf
-      },
-      cache: false,
-      type: 'post',
-      success: function (data) {
-        var data_json = JSON.parse(data);
-        $(".sentence-comment-vote-number", block).text(data_json.count);
-        $(".sentence-vote", block).removeClass("voted");
-        if (data_json.state == "U") {
-          $(".up-vote", block).addClass("voted");
-        } else if (data_json.state == "D") {
-          $(".down-vote", block).addClass("voted");
-        }
-      }
-    });
+  var get_sentence_vote = function (version, sentence_id) {
+    var data = version.vote[sentence_id];
+    $(".sentence-comment-vote-number", version.block).text(data.count);
+    $(".sentence-vote", version.block).removeClass("voted");
+    if (data.state == "U") {
+      $(".up-vote", version.block).addClass("voted");
+    } else if (data.state == "D") {
+      $(".down-vote", version.block).addClass("voted");
+    }
   };
 
   var update_comments_and_divs = function () {
@@ -247,8 +241,8 @@ function init_page(current_version, current_user, json_str_array) {
           var s = version.info[selected.id];
           if (s.edited) {
             version.block.removeAttr("hidden");
-            get_sentence_comment(version.id, s.id, version.block);
-            get_sentence_vote(version.id, s.id, version.block);
+            get_sentence_comment(version, s.id);
+            get_sentence_vote(version, s.id);
             sentence_content.html(s.sentence);
             version.block.data("sentence", s.sentence_without_span);
             version.block.data("context", s.context_without_span);
@@ -287,8 +281,8 @@ function init_page(current_version, current_user, json_str_array) {
       }
       window.scrollTo(0, backup_scoll);
       form_current_sentence_id.val(selected.id);
-      get_sentence_comment(current_version, selected.id, current_user_block);
-      get_sentence_vote(current_version, selected.id, current_user_block);
+      get_sentence_comment(current_version, selected.id);
+      get_sentence_vote(current_version, selected.id);
     }
     previous_selected_id = selected.id;
   };
@@ -297,14 +291,18 @@ function init_page(current_version, current_user, json_str_array) {
 
   var editor = initWithLite("id_content", true, false);
   commit_ajax.editor = editor;
-  var current_user_block = $(".sentence-block[data-author='" + current_user + "']");
-  current_user_block.addClass("selected-block");
-  var current_sentence = $(".sentence-content", current_user_block);
-  $(".time", current_user_block).text("current selected sentence");
-  $("input[name='version_id']", current_user_block).val(current_version);
+
+
+  current_version.block = $(".sentence-block[data-author='" + current_user + "']");
+  current_version.block.addClass("selected-block");
+  var current_sentence = $(".sentence-content", current_version.block);
+  $(".time", current_version.block).text("current selected sentence");
+  $("input[name='version_id']", current_version.block).val(current_version.id);
   var id_div = $("#selected-id");
-  var form_current_sentence_id = $("input[name='sentence_id']", current_user_block);
-  var versions = [];
+  var form_current_sentence_id = $("input[name='sentence_id']", current_version.block);
+
+
+
   for (var i = 0; i < json_str_array.length; i++) {
     versions.push(JSON.parse(json_str_array[i]));
   }

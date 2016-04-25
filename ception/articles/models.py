@@ -7,7 +7,8 @@ from ception.activities.models import Activity
 from ception.articles.simple_parser import SimpleParser
 from ception.articles.diff_parser import DiffParser
 import markdown
-
+from django.template.loader import render_to_string
+from django.db.models import Q
 
 
 class Article(models.Model):
@@ -136,6 +137,29 @@ class ArticleVersion(models.Model):
         self.diff_content = parser.diff_content
         self.save()
 
+    def get_sentence_comments(self):
+        sentence_comments_array = [{'html': u'Error', 'count': -1}]
+        for i in range(1, self.origin.sentence_count + 1):
+            comment_dict = {
+                'html': u'',
+                'count': 0
+            }
+            for comment in ArticleSentenceComment.objects.filter(parent=self, sentence_id=i):
+                comment_dict['html'] += render_to_string('articles/partial_sentence_comment.html', {'comment': comment})
+                comment_dict['count'] += 1
+            sentence_comments_array.append(comment_dict)
+        return sentence_comments_array
+
+    def get_sentence_vote(self, user):
+        sentence_comment_array = [{'count': 0, 'state': "N"}]
+        for i in range(1, self.origin.sentence_count + 1):
+            activity = Activity.objects.filter(Q(activity_type=Activity.UP_VOTE) | Q(activity_type=Activity.DOWN_VOTE),
+                                               user=user, sentence_id=i, version_id=self.pk)
+            user_state = "N"
+            if activity:
+                user_state = activity.first().activity_type
+            sentence_comment_array.append({'count': self.get_votes(i), 'state': user_state})
+        return sentence_comment_array
 
 
     @staticmethod
