@@ -10,6 +10,7 @@ urlpatterns = patterns('ception.articles.views',
                        url(r'^tag/(?P<tag_name>.+)/$', 'tag', name='tag'),
                        url(r'^edit/(?P<id>\d+)/$', 'edit', name='edit'),
                        url(r'^edit_compare/(?P<id>\d+)/$', 'edit_compare', name='edit_compare'),
+                       url(r'^diff_test/$', 'diff_test', name='diff_test'),
                        # url(r'^(?P<slug>[-\w]+)/$', 'article', name='article'),
                        )
 

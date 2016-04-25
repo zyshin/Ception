@@ -134,10 +134,6 @@ $(function () {
     });
   });
 
-  //$("#cancel-button").click(function () {
-  //  self.location = "/articles/" + $("#cancel-button").data("url");
-  //});
-
   $("#save-button").click(function () {
     var form = $("#edit_form");
     $.ajax({
@@ -162,11 +158,10 @@ $(function () {
     }
   });
 
-
   $("#toggle-sentence-view").change(function () {
     if ($(this).prop('checked')) {
       $(".sentence-content-others").css("display", "none");
-      $(".cke_concise").css("display", "inline");
+      $(".cke_concise").css("display", "block");
     } else {
       $(".sentence-content-others").css("display", "inline");
       $(".cke_concise").css("display", "none");
@@ -232,6 +227,7 @@ function init_page(current_version, current_user, json_str_array) {
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
       if (selected.id > 0) {
+        //$(".cke_concise").css("display", "block");
         for (i = 0; i < versions.length; i++) {
           var version = versions[i];
           $("input[name='sentence_id']", version.block).val(selected.id);
@@ -247,33 +243,36 @@ function init_page(current_version, current_user, json_str_array) {
             version.block.data("sentence", s.sentence_without_span);
             version.block.data("context", s.context_without_span);
             var author_editor = CKEDITOR.instances["editor-" + version.author];
-            author_editor.setData(s.context);
-            var range = new CKEDITOR.dom.range(editor.document);
-            //var element = author_editor.document.findOne("#current");
-            //var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
-            //range.moveToElementEditStart(element);
-            //range.scrollIntoView();
-            //var p1 = iframe_window.pageYOffset;
-            //range.moveToElementEditEnd(element);
+            //author_editor.setData(s.context);
+            $("iframe", "#cke_editor-" + version.author).contents().find("body").addClass("cke_concise_body").addClass("hide-del-class").html(s.context);
             try {
-              $("iframe", "#cke_editor-" + version.author).contents().find("body").addClass("cke_concise_body").addClass("hide_del_class");
+              var range = new CKEDITOR.dom.range(editor.document);
+              var element = author_editor.document.findOne("#current");
+              var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
+              //range.moveToElementEditStart(element);
+              //range.scrollIntoView();
+              //var p1 = iframe_window.pageYOffset;
+              //range.moveToElementEditEnd(element);
+              range.selectNodeContents(element);
               range.scrollIntoView();
-              author_editor.getSelection().selectRanges([range]);
+              //var p2 = iframe_window.pageYOffset;
+              //if (p1 == 0) {
+              //  iframe_window.scrollTo(0, 0);
+              //} else {
+              //  iframe_window.scrollTo(0, (p1 + p2) / 2);
+              //}
             } catch (e) {
+              console.log(e);
               //TODO: ignore it
             }
-            //var p2 = iframe_window.pageYOffset;
-            //if (p1 == 0) {
-            //  iframe_window.scrollTo(0, 0);
-            //} else {
-            //  iframe_window.scrollTo(0, (p1 + p2) / 2);
-            //}
+
 
 
           } else {
             version.block.attr("hidden", "hidden");
           }
         }
+        //if (! $("#toggle-sentence-view").prop('checked')) $(".cke_concise").css("display", "none");
       } else {
         for (i = 0; i < versions.length; i++) {
           versions[i].block.attr("hidden", "hidden");

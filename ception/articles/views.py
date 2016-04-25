@@ -14,7 +14,8 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 import json
 from ception.articles.utils import convert_period_to_pd
 from ception.articles.new_parser import get_mapping_array
-
+from diff_parser import DiffParser
+from simple_parser import CleanParser
 
 def _articles(request, articles):
     paginator = Paginator(articles, 10)
@@ -257,3 +258,14 @@ def sentence_vote(request):
     except:
         return HttpResponseBadRequest()
 
+
+@login_required
+def diff_test(request):
+    test_str = "This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin."
+    if request.method == 'POST':
+        cp = CleanParser()
+        cp.feed(request.POST["content"])
+        result = DiffParser.diff(test_str, cp.clean_sentence)
+        return HttpResponse(result)
+    else:
+        return render(request, 'articles/diff_test.html', {'content': test_str})

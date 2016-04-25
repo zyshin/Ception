@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+
+{% block head %}
+  <link href="{% static 'css/articles.css' %}" rel="stylesheet">
+  <link href="{% static 'css/edit.css' %}" rel="stylesheet">
+  <link href="{% static 'css/callout.css' %}" rel="stylesheet">
+  <link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
+  <script src="{% static 'js/articles.js' %}"></script>
+  <script src="{% static 'js/edit.js' %}"></script>
+  <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
+
+{% endblock head %}
+
+{% block main %}
+
+  <form id="diff_form">
+    {% csrf_token %}
+    <textarea id="editor" name="content" class="form-control">{{ content }}</textarea>
+  </form>
+  <button class="btn btn-primary" id="diff_button" style="margin-top: 20px">Compute Diff</button>
+
+
+  <h3>Diff Version</h3>
+  <div class="sentence-content" id="diff_content">
+    This is
+    <del>diff</del>
+    <ins>version</ins>
+    .
+  </div>
+
+
+  <script>
+
+    var editor = initWithLite("editor", true, true);
+    $(function () {
+      $("#diff_button").click(function () {
+        var csrf = $("input[name='csrfmiddlewaretoken']").val();
+
+        $.ajax({
+          url: '/articles/diff_test/',
+          data: {
+            'csrfmiddlewaretoken': csrf,
+            'content': editor.getData(),
+          },
+          cache: false,
+          type: 'post',
+          success: function (data) {
+            $("#diff_content").html(data);
+          }
+        });
+      });
+    });
+
+
+  </script>
+
+
+{% endblock main %}
