@@ -93,20 +93,20 @@
           // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
           var pk = $(e.currentTarget).data('pk');
           var return_menu = {};
-          $.each(bank[pk], function (index, word) {
+          $.each(bank[pk], function (index, bundle) {
             if (index != 0) {
-              return_menu['<del>' + bank[pk][0] + '</del><ins>' + word + '</ins>'] = {
-                name: word,
+              return_menu['<del>' + bank[pk][0].word + '</del><ins>' + bundle.word + '</ins>'] = {
+                name: bundle.word,
                 icon: function (opt, $itemElement, itemKey, item) {
-                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">10</span>' + word + opt.selector);
+                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
                   $itemElement.css('padding', '3px 12px');
                 }
               }
             } else {
-              return_menu[word] = {
-                name: word,
+              return_menu[bundle.word] = {
+                name: bundle.word,
                 icon: function (opt, $itemElement, itemKey, item) {
-                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">10</span>' + word + opt.selector);
+                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
                   $itemElement.css('padding', '3px 12px');
                 }
               }
@@ -116,7 +116,6 @@
           });
           console.log(return_menu);
           return {
-
             callback: function (key, options) {
               this.html(key);
             },

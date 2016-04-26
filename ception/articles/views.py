@@ -1,22 +1,25 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseForbidden, HttpResponseBadRequest, HttpResponse, Http404
-from ception.articles.models import Article, Tag, ArticleComment, ArticleVersion, ArticleSentenceComment
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from ception.articles.forms import ArticleForm, VersionForm
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-from ception.decorators import ajax_required
-import markdown
-from django.template.loader import render_to_string
-from ception.activities.models import Activity
-from django.db.models import Q
-from django.contrib.humanize.templatetags.humanize import naturaltime
 import json
-from ception.articles.utils import convert_period_to_pd
+
+import markdown
+from django.contrib.auth.decorators import login_required
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+from django.http import HttpResponseBadRequest, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+
+from ception.activities.models import Activity
+from ception.articles.forms import ArticleForm, VersionForm
+from ception.articles.models import Article, Tag, ArticleComment, ArticleVersion, ArticleSentenceComment
 from ception.articles.new_parser import get_mapping_array
+from ception.articles.utils import convert_period_to_pd
+from ception.decorators import ajax_required
 from diff_parser import DiffParser
 from simple_parser import CleanParser
 from utils import stadardlize_text
+
 
 def _articles(request, articles):
     paginator = Paginator(articles, 10)
@@ -261,9 +264,11 @@ def sentence_vote(request):
 
 
 def dummy_function(str1, str2):
+    print str1
+    print str2
     data = {
-        '0': ['text', 'sentence'],
-        '1': ['Shichao Yue', 'scyue']
+        '0': [{'word': 'text', 'count': 1}, {'word': 'sentence', 'count': 2}],
+        '1': [{'word': 'Shichao Yue', 'count': 3}, {'word': 'scyue', 'count': 4}]
     }
     html_str = 'This is a normal <div class="replace" data-pk="0">text</div> written by <div class="replace" data-pk="1">Shichao Yue</div>.'
     return html_str, data
