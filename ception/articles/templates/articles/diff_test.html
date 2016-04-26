@@ -7,42 +7,49 @@
   <link href="{% static 'css/edit.css' %}" rel="stylesheet">
   <link href="{% static 'css/callout.css' %}" rel="stylesheet">
   <link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
+  <link href="{% static 'contextmenu/jquery.contextMenu.min.css' %}" rel="stylesheet">
   <script src="{% static 'js/articles.js' %}"></script>
   <script src="{% static 'js/edit.js' %}"></script>
   <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
+  <script src="{% static 'contextmenu/jquery.contextMenu.min.js' %}"></script>
+  <script src="{% static 'contextmenu/jquery.ui.position.min.js' %}"></script>
+  <style>
+    .replace {
+      font-weight: bold;
+      text-decoration: underline;
+      display: inline-block;
+    }
+  </style>
 
 {% endblock head %}
 
 {% block main %}
-
-  <form id="diff_form">
-    {% csrf_token %}
-    <textarea id="editor" name="content" class="form-control">{{ content }}</textarea>
-  </form>
+  {% csrf_token %}
+  <textarea id="editor-A" name="content" class="form-control">{{ content }}</textarea>
   <button class="btn btn-primary" id="diff_button" style="margin-top: 20px">Compute Diff</button>
 
-
   <h3>Diff Version</h3>
-  <div class="sentence-content" id="diff_content">
-    This is
-    <del>diff</del>
-    <ins>version</ins>
-    .
-  </div>
+  <div class="sentence-content" id="diff_content"></div>
 
+  <textarea id="editor-B" name="content" class="form-control">{{ content }}</textarea>
+  <button class="btn btn-primary" id="cherry-pick-button" style="margin-top: 20px">Cherry Pick</button>
+
+  <h3>Context Menu Test</h3>
+  <div class="sentence-content" id="pick-content"></div>
 
   <script>
-
-    var editor = initWithLite("editor", true, true);
+    CKEDITOR.config.height = 100;
+    var editorA = initWithLite("editor-A", true, true);
+    var editorB = initWithLite("editor-B", true, true);
+    var bank = null;
     $(function () {
       $("#diff_button").click(function () {
         var csrf = $("input[name='csrfmiddlewaretoken']").val();
-
         $.ajax({
           url: '{% url "diff_test" %}',
           data: {
             'csrfmiddlewaretoken': csrf,
-            'content': editor.getData(),
+            'content': editorA.getData(),
           },
           cache: false,
           type: 'post',
@@ -51,9 +58,74 @@
           }
         });
       });
+      $("#cherry-pick-button").click(function () {
+        var csrf = $("input[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+          url: '{% url "cherry_pick_api" %}',
+          data: {
+            'csrfmiddlewaretoken': csrf,
+            'sen_A': editorA.getData(),
+            'sen_B': editorB.getData()
+          },
+          cache: false,
+          type: 'post',
+          success: function (json) {
+            var data = JSON.parse(json);
+            bank = data.data;
+            $("#pick-content").html(data.str);
+          }
+        })
+      });
     });
+  </script>
+
+  <script>
+    $(function () {
+      $.contextMenu({
+        selector: '.replace',
+        trigger: 'hover',
+        delay: 200,
+        autoHide: true,
+
+        build: function ($trigger, e) {
+          // this callback is executed every time the menu is to be shown
+          // its results are destroyed every time the menu is hidden
+          // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+          var pk = $(e.currentTarget).data('pk');
+          var return_menu = {};
+          $.each(bank[pk], function (index, word) {
+            if (index != 0) {
+              return_menu['<del>' + bank[pk][0] + '</del><ins>' + word + '</ins>'] = {
+                name: word,
+                icon: function (opt, $itemElement, itemKey, item) {
+                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">10</span>' + word + opt.selector);
+                  $itemElement.css('padding', '3px 12px');
+                }
+              }
+            } else {
+              return_menu[word] = {
+                name: word,
+                icon: function (opt, $itemElement, itemKey, item) {
+                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">10</span>' + word + opt.selector);
+                  $itemElement.css('padding', '3px 12px');
+                }
+              }
+            }
 
 
+          });
+          console.log(return_menu);
+          return {
+
+            callback: function (key, options) {
+              this.html(key);
+            },
+            items: return_menu
+
+          }
+        }
+      });
+    });
   </script>
 
 

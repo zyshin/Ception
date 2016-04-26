@@ -260,12 +260,38 @@ def sentence_vote(request):
         return HttpResponseBadRequest()
 
 
+def dummy_function(str1, str2):
+    data = {
+        '0': ['text', 'sentence'],
+        '1': ['Shichao Yue', 'scyue']
+    }
+    html_str = 'This is a normal <div class="replace" data-pk="0">text</div> written by <div class="replace" data-pk="1">Shichao Yue</div>.'
+    return html_str, data
+
+
+@login_required
+@ajax_required
+def cherry_pick_api(request):
+    if request.method == 'POST':
+        user_sen = request.POST['sen_A']
+        other_sen = request.POST['sen_B']
+        user_clean = CleanParser.get_clean_test(user_sen)
+        other_clean = CleanParser.get_clean_test(other_sen)
+        html_str, data = dummy_function(user_clean, other_clean)
+        result_json = {
+            'str': html_str,
+            'data': data
+        }
+        return HttpResponse(json.dumps(result_json))
+    else:
+        return HttpResponseBadRequest()
+
 @login_required
 def diff_test(request):
     test_str = "This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin."
     if request.method == 'POST':
         cp = CleanParser()
-        cp.feed(stadardlize_text(request.POST["content"]))
+        cp.feed(stadardlize_text(request.POST["content"][:-1]))
         result = DiffParser.diff(test_str, cp.clean_sentence)
         return HttpResponse(result)
     else:

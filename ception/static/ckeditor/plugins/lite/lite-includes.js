@@ -80,7 +80,7 @@
 	var modules = {};
 
 	var api = {
-        version: "1.3alpha.20140716",
+		version: "1.3alpha.20140716",
 		initialized: false,
 		supported: true,
 

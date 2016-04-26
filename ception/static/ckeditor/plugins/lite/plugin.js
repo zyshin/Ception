@@ -128,8 +128,8 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 		preserveOnPaste: 'p',
 		css: 'css/lite.css'
 	},
-	
-	defaultTooltipTemplate = "%a by %u %t  ╮(╯▽╰)╭ ",
+
+			defaultTooltipTemplate = "%a by %u %t",
 	
 	ice = null,
 	
@@ -458,9 +458,7 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 	 * the lifecycle of {@link LITE.LITEPlugin} the real plugin object.
 	 * 
 	 */
-	CKEDITOR.plugins.add( 'lite',
-	{
-		
+	CKEDITOR.plugins.add('lite', {
 		icons: "lite-acceptall,lite-acceptone,lite-rejectall,lite-rejectone,lite-toggleshow,lite-toggletracking",// %REMOVE_LINE_CORE%
 		hidpi: true,
 		lang: ["en", "de"],
@@ -601,7 +599,7 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 			this._removeBindings = [];
 			
 			if (! defaultTooltipTemplate) {
-				defaultTooltipTemplate = "%a " + lang.lite.BY + " %u %t";
+				defaultTooltipTemplate = "%a by %u %t";
 			}
 
 			ed.ui.addToolbarGroup('lite');

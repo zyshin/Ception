@@ -1,6 +1,7 @@
 # author = scyue
 
 from HTMLParser import HTMLParser
+from utils import stadardlize_text
 
 
 class SimpleParser(HTMLParser):
@@ -40,6 +41,11 @@ class CleanParser(HTMLParser):
         if not self.in_del:
             self.clean_sentence += data
 
+    @staticmethod
+    def get_clean_test(data):
+        parser = CleanParser()
+        parser.feed(stadardlize_text(data))
+        return parser.clean_sentence
 
 
 if __name__ == '__main__':
