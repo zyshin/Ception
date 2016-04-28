@@ -197,7 +197,7 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
     //node_list.push(forward_node.highlight(range, selection));
     sentence_id = forward_node.getSentenceID();
   }
-  selection.selectRanges([range]);
+  //selection.selectRanges([range]);
   var text = "";
   for (var i = 0; i < node_list.length; i++) {
     //node_list[i].addClass("highlight");
@@ -211,7 +211,6 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
       }
     }
   }
-  CKEDITOR.editor.prototype.getSelectedSentence.lastSelection = node_list;
   return {
     sentence: text,
     id: sentence_id
