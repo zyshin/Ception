@@ -170,10 +170,10 @@ $(function () {
 
   $("#hide-del-toggle").change(function () {
     if ($(this).prop('checked')) {
-      $(".sentence-content-others").removeClass("hide-del-class");
+      $(".sentence-content").removeClass("hide-del-class");
       $("iframe", ".cke_concise").contents().find("body").removeClass("hide-del-class");
     } else {
-      $(".sentence-content-others").addClass("hide-del-class");
+      $(".sentence-content").addClass("hide-del-class");
       $("iframe", ".cke_concise").contents().find("body").addClass("hide-del-class");
     }
   });

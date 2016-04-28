@@ -36,30 +36,38 @@ def merge_diff(user_diff, other_diff):
     in_conflict = False
     while i < len(user_diff) or j < len(other_diff):
         if i >= len(user_diff) or (j < len(other_diff) and user_diff[i]['pos'][0] > other_diff[j]['pos'][1]):
-            if not in_conflict:
-                merged.append(([other_diff[j]], []))
+            d2 = other_diff[j]
+            if in_conflict:
+                merged[-1][1].append(d2)
+            else:
+                merged.append(([d2], []))
             in_conflict = False
             j += 1
             continue
         if j >= len(other_diff) or (i < len(user_diff) and user_diff[i]['pos'][1] < other_diff[j]['pos'][0]):
-            if not in_conflict:
-                merged.append(([user_diff[i]], []))
+            d1 = user_diff[i]
+            if in_conflict:
+                merged[-1][0].append(d1)
+            else:
+                merged.append(([d1], []))
             in_conflict = False    
             i += 1
             continue
         d1, d2 = user_diff[i], other_diff[j]
-        if not in_conflict:
-            in_conflict = True
-            merged.append(([d1], [d2]))
-        else:
-            if merged[-1][0] != d1:
-                merged[-1][0].append(d1)
-            if merged[-1][1] != d2:
-                merged[-1][1].append(d2)
         if d1['pos'][1] < d2['pos'][1]:
+            if in_conflict:
+                merged[-1][0].append(d1)
+            else:
+                merged.append(([d1], []))
             i += 1
         else:
+            if in_conflict:
+                merged[-1][1].append(d2)
+            else:
+                merged.append(([], [d2]))
             j += 1
+        if not in_conflict:
+            in_conflict = True
     return merged
 
 def apply_diff(origin_clean, diffs, _start=0, _end=None):
@@ -170,7 +178,17 @@ class MergeTest(unittest.TestCase):
     other_clean = 'These are example sentences whose target is to evaluate the performance of diff function modified by scyue.'
     user_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, user_clean))
     other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
-    html_str, data = merge_edit(origin_clean, user_clean, other_clean)
+    # html_str, data = merge_edit(origin_clean, user_clean, other_clean)
+
+    origin_clean = 'This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
+    user_clean = 'Thxaample sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
+    other_clean = 'T is a exbample sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
+    user_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, user_clean))
+    other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
+    merged = [
+        ([{'text': 'Thxaample', 'pos': (0, 17)}], [{'text': 'T', 'pos': (0, 4)}, {'text': 'exbample', 'pos': (10, 17)}]),
+    ]
+    self.assertEquals(merged, merge_diff(user_diff, other_diff))
 
 
 if __name__ == "__main__":
