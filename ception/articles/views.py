@@ -19,6 +19,7 @@ from ception.decorators import ajax_required
 from diff_parser import DiffParser
 from simple_parser import CleanParser
 from utils import stadardlize_text
+from merge import merge_edit
 
 
 def _articles(request, articles):
@@ -263,26 +264,18 @@ def sentence_vote(request):
         return HttpResponseBadRequest()
 
 
-def dummy_function(str1, str2):
-    print str1
-    print str2
-    data = {
-        '0': [{'word': 'text', 'count': 1}, {'word': 'sentence', 'count': 2}],
-        '1': [{'word': 'Shichao Yue', 'count': 3}, {'word': 'scyue', 'count': 4}]
-    }
-    html_str = 'This is a normal <div class="replace" data-pk="0">text</div> written by <div class="replace" data-pk="1">Shichao Yue</div>.'
-    return html_str, data
-
-
 @login_required
 @ajax_required
 def cherry_pick_api(request):
     if request.method == 'POST':
         user_sen = request.POST['sen_A']
         other_sen = request.POST['sen_B']
+
+        # TODO @scyue: WTH the '\n' is?
+        origin_clean = 'This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.\n'
         user_clean = CleanParser.get_clean_test(user_sen)
         other_clean = CleanParser.get_clean_test(other_sen)
-        html_str, data = dummy_function(user_clean, other_clean)
+        html_str, data = merge_edit(origin_clean, user_clean, other_clean)
         result_json = {
             'str': html_str,
             'data': data

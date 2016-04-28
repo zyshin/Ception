@@ -14,10 +14,30 @@
   <script src="{% static 'contextmenu/jquery.contextMenu.min.js' %}"></script>
   <script src="{% static 'contextmenu/jquery.ui.position.min.js' %}"></script>
   <style>
+    .context-menu-item {
+      padding: 3px 12px;
+    }
+    .context-menu-item ins {
+      text-decoration: none;
+    }
+    .context-menu-item del {
+      display: none;
+    }
     .replace {
-      font-weight: bold;
-      text-decoration: underline;
       display: inline-block;
+      position: relative;
+    }
+    .replace:before {
+      content: "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+      font-size: 0.6em;
+      font-weight: 700;
+      font-family: Times New Roman, Serif;
+      color: red;
+      width: 100%;
+      position: absolute;
+      top: 12px;
+      left: -1px;
+      overflow: hidden;
     }
   </style>
 
@@ -95,11 +115,11 @@
           var return_menu = {};
           $.each(bank[pk], function (index, bundle) {
             if (index != 0) {
-              return_menu['<del>' + bank[pk][0].word + '</del><ins>' + bundle.word + '</ins>'] = {
+              // return_menu['<del>' + bank[pk][0].word + '</del><ins>' + bundle.word + '</ins>'] = {
+              return_menu[bundle.word] = {
                 name: bundle.word,
                 icon: function (opt, $itemElement, itemKey, item) {
                   $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
-                  $itemElement.css('padding', '3px 12px');
                 }
               }
             } else {
@@ -107,20 +127,15 @@
                 name: bundle.word,
                 icon: function (opt, $itemElement, itemKey, item) {
                   $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
-                  $itemElement.css('padding', '3px 12px');
                 }
               }
             }
-
-
           });
-          console.log(return_menu);
           return {
             callback: function (key, options) {
               this.html(key);
             },
             items: return_menu
-
           }
         }
       });

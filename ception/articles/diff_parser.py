@@ -76,7 +76,7 @@ class DiffParser(HTMLParser):
     @classmethod
     def diff(cls, s1, s2):
         # d = cls.dmp.diff_main(s1, s2, False)
-        d = cls.dmp.diff_wordMode(s1, s2, None)
+        d = cls.dmp.diff_wordMode(s1, s2)
         # cls.dmp.diff_cleanupSemantic(d)
         return cls.dmp.diff_html(d)
 

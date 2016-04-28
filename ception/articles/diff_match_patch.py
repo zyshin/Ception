@@ -254,7 +254,7 @@ class diff_match_patch:
 
     return diffs
 
-  def diff_wordMode(self, text1, text2, deadline):
+  def diff_wordMode(self, text1, text2, deadline=None):
     """Do a quick word-level diff on both strings, then rediff the parts for
       greater accuracy.
       This speedup can produce non-minimal diffs.
