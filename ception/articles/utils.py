@@ -1,6 +1,5 @@
-from HTMLParser import HTMLParser
 import types
-
+from HTMLParser import HTMLParser
 
 NO_TAG = "Text"
 
@@ -13,12 +12,10 @@ def start_str(tag, attrs=None):
     attr_str = ""
     if type(attrs) == types.ListType:
         for attr in attrs:
-            if not (tag == "ins" or tag == "del") or attr[0] != "class":
-                attr_str += attr[0] + "=" + "\"" + attr[1] + "\" "
+            attr_str += attr[0] + "=" + "\"" + attr[1] + "\" "
     elif type(attrs) == types.DictionaryType:
         for (key, value) in attrs.items():
-            if not (tag == "ins" or tag == "del") or key[0] != "class":
-                attr_str += key + "=" + "\"" + value + "\" "
+            attr_str += key + "=" + "\"" + value + "\" "
     return "<" + tag + " " + attr_str + ">"
 
 

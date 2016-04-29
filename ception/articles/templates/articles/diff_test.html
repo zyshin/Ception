@@ -14,31 +14,7 @@
   <script src="{% static 'contextmenu/jquery.contextMenu.min.js' %}"></script>
   <script src="{% static 'contextmenu/jquery.ui.position.min.js' %}"></script>
   <style>
-    .context-menu-item {
-      padding: 3px 12px;
-    }
-    .context-menu-item ins {
-      text-decoration: none;
-    }
-    .context-menu-item del {
-      display: none;
-    }
-    .replace {
-      display: inline-block;
-      position: relative;
-    }
-    .replace:before {
-      content: "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-      font-size: 0.6em;
-      font-weight: 700;
-      font-family: Times New Roman, Serif;
-      color: red;
-      width: 100%;
-      position: absolute;
-      top: 12px;
-      left: -1px;
-      overflow: hidden;
-    }
+
   </style>
 
 {% endblock head %}
@@ -56,6 +32,31 @@
 
   <h3>Context Menu Test</h3>
   <div class="sentence-content" id="pick-content"></div>
+
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    Launch demo modal
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     CKEDITOR.config.height = 100;
@@ -81,7 +82,7 @@
       $("#cherry-pick-button").click(function () {
         var csrf = $("input[name='csrfmiddlewaretoken']").val();
         $.ajax({
-          url: '{% url "cherry_pick_api" %}',
+          url: '{% url "merge_api" %}',
           data: {
             'csrfmiddlewaretoken': csrf,
             'sen_A': editorA.getData(),
@@ -91,6 +92,10 @@
           type: 'post',
           success: function (json) {
             var data = JSON.parse(json);
+            var conflicted = data.conflicted;
+            if (!conflicted) {
+              alert("Success!");
+            }
             bank = data.data;
             $("#pick-content").html(data.str);
           }

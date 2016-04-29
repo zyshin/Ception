@@ -163,3 +163,33 @@
     top: 0px;
     z-index: 2000;
 }
+
+.context-menu-item {
+    padding: 3px 12px;
+}
+
+.context-menu-item ins {
+    text-decoration: none;
+}
+
+.context-menu-item del {
+    display: none;
+}
+
+.replace {
+    display: inline-block;
+    position: relative;
+}
+
+.replace:before {
+    content: "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+    font-size: 0.6em;
+    font-weight: 700;
+    font-family: Times New Roman, Serif;
+    color: red;
+    width: 100%;
+    position: absolute;
+    top: 12px;
+    left: -1px;
+    overflow: hidden;
+}

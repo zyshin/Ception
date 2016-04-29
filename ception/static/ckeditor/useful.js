@@ -229,7 +229,7 @@ function ceptArming(editor) {
 function set_editor_update_function(editor) {
   editor.update_functions = [];
   editor.on('contentDom', function () {
-    this.document.on('click', function (event) {
+    editor.editable().attachListener(editor.document, 'click', function () {
       for (var i = 0; i < editor.update_functions.length; i++) {
         editor.update_functions[i]();
       }

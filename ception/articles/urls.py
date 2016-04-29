@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 
 
 urlpatterns = patterns('ception.articles.views',
@@ -13,7 +13,8 @@ urlpatterns = patterns('ception.articles.views',
                        url(r'^edit/(?P<id>\d+)/$', 'edit', name='edit'),
                        url(r'^edit_compare/(?P<id>\d+)/$', 'edit_compare', name='edit_compare'),
                        url(r'^diff/$', 'diff_test', name='diff_test'),
-                       url(r'^cherry_pick_api/$', 'cherry_pick_api', name='cherry_pick_api'),
+                       url(r'^merge_api/$', 'merge_api', name='merge_api'),
+                       url(r'^merge_second_stage/$', 'merge_second_stage', name='merge_second_stage'),
                        # url(r'^(?P<slug>[-\w]+)/$', 'article', name='article'),
                        )
 

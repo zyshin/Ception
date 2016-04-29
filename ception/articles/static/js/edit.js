@@ -3,6 +3,7 @@
  */
 
 var versions = [];
+var bank = null;
 
 var commit_ajax = function () {
   var form = $("#edit_form");
@@ -24,14 +25,6 @@ var commit_ajax = function () {
   });
 };
 
-//TODO: @ssy cherry_pick
-var cherry_pick = function (author, other_sentence, other_all, my_sentence, my_all) {
-  alert("This is cherry pick function!" + "\n\n" + author + "\n\n" + other_sentence + "\n\n" + other_all + "\n\n" + my_sentence + "\n\n" + my_all);
-  var new_all = my_all;
-  return new_all;
-};
-
-
 CKEDITOR.SAVE_KEY = 1114195;
 
 function generate_alert(alert_type, content) {
@@ -42,6 +35,46 @@ function generate_alert(alert_type, content) {
 }
 
 $(function () {
+
+  $.contextMenu({
+    selector: '.replace',
+    trigger: 'hover',
+    delay: 200,
+    autoHide: true,
+
+    build: function ($trigger, e) {
+      // this callback is executed every time the menu is to be shown
+      // its results are destroyed every time the menu is hidden
+      // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+      var pk = $(e.currentTarget).data('pk');
+      var return_menu = {};
+      $.each(bank[pk], function (index, bundle) {
+        if (index != 0) {
+          return_menu[bundle.word] = {
+            name: bundle.word,
+            icon: function (opt, $itemElement, itemKey, item) {
+              $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+            }
+          }
+        } else {
+          return_menu[bundle.word] = {
+            name: bundle.word,
+            icon: function (opt, $itemElement, itemKey, item) {
+              $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+            }
+          }
+        }
+      });
+      return {
+        callback: function (key, options) {
+          this.html(key);
+        },
+        items: return_menu
+      }
+    }
+  });
+
+
   var sentence_comment_content = $(".sentence-comment-content");
   sentence_comment_content.focus(function () {
     $(this).attr("rows", "2");
@@ -178,16 +211,74 @@ $(function () {
     }
   });
 
+
+  var modal = $("#merge-modal");
   $(".accept-button").click(function () {
     var block = $(this).closest(".sentence-block");
-    var author = block.data("author");
-    var current = $("#current_sentence").html();
-    var this_content = CKEDITOR.instances["id_content"].getData();
-    cherry_pick(author, block.data("sentence"), block.data("context"), current, this_content);
+    var my_sentence = $("#current_sentence").html();
+    var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
+    var version_id = $("input[name='version_id']", block).val();
+    var sentence_id = $("input[name='sentence_id']", block).val();
+
+    $.ajax({
+      url: '/articles/merge_api/',
+      data: {
+        'csrfmiddlewaretoken': csrf,
+        'sen_A': my_sentence,
+        'sen_B': block.data("sentence"),
+        'sen_id': sentence_id,
+        'ver_id': version_id
+      },
+      cache: false,
+      type: 'post',
+      success: function (json) {
+        var data = JSON.parse(json);
+        bank = data.data;
+        $(".modal-body", modal).html(data.str);
+        merge_second_stage.csrf = csrf;
+        merge_second_stage.sen_id = sentence_id;
+        modal.modal();
+        //if (data.conflicted) {
+        //} else {
+        //merge_second_stage($(".modal-body", modal).html());
+        //}
+      }
+    });
+  });
+
+  $("#modal-confirm-button").click(function () {
+    modal.modal('hide');
+    merge_second_stage($(".modal-body", modal).html());
   });
 
 });
 
+function merge_second_stage(new_sentence) {
+  var editor = CKEDITOR.instances['id_content'];
+  var whole_content = editor.getData();
+  $.ajax({
+    url: '/articles/merge_second_stage/',
+    data: {
+      'csrfmiddlewaretoken': merge_second_stage.csrf,
+      'sentence': new_sentence,
+      'content': whole_content,
+      'sen_id': merge_second_stage.sen_id
+    },
+    cache: false,
+    type: 'post',
+    success: function (json) {
+      var data = JSON.parse(json);
+      try {
+        editor.setData(data.content);
+      } catch (e) {
+        // ignore
+      }
+      $("#current_sentence").html(data.formal);
+    }
+  })
+
+
+}
 
 function init_page(current_version, current_user, json_str_array) {
   var get_sentence_comment = function (version, sentence_id) {
@@ -311,7 +402,7 @@ function init_page(current_version, current_user, json_str_array) {
   }
   var previous_selected_id = -1;
   editor.on('contentDom', function () {
-    this.document.on('click', function (event) {
+    editor.editable().attachListener(editor.document, 'click', function () {
       update_comments_and_divs();
     });
   });

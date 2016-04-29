@@ -17,9 +17,9 @@ from ception.articles.new_parser import get_mapping_array
 from ception.articles.utils import convert_period_to_pd
 from ception.decorators import ajax_required
 from diff_parser import DiffParser
-from simple_parser import CleanParser
-from utils import stadardlize_text
 from merge import merge_edit
+from simple_parser import CleanParser, FormalParser
+from utils import stadardlize_text
 
 
 def _articles(request, articles):
@@ -266,23 +266,50 @@ def sentence_vote(request):
 
 @login_required
 @ajax_required
-def cherry_pick_api(request):
+def merge_api(request):
     if request.method == 'POST':
         user_sen = request.POST['sen_A']
         other_sen = request.POST['sen_B']
+        sentence_id = int(request.POST['sen_id'])
+        version_id = int(request.POST['ver_id'])
+        version = get_object_or_404(ArticleVersion, pk=version_id)
+        origin_sentences = version.origin.get_sentences()
 
         # TODO @scyue: WTH the '\n' is?
-        origin_clean = 'This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.\n'
-        user_clean = CleanParser.get_clean_test(user_sen)
-        other_clean = CleanParser.get_clean_test(other_sen)
-        html_str, data = merge_edit(origin_clean, user_clean, other_clean)
+        origin_clean = origin_sentences[sentence_id]
+        user_clean = CleanParser.get_clean_text(user_sen)
+        other_clean = CleanParser.get_clean_text(other_sen)
+        html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
         result_json = {
             'str': html_str,
-            'data': data
+            'data': data,
+            'conflicted': conflicted
         }
         return HttpResponse(json.dumps(result_json))
     else:
         return HttpResponseBadRequest()
+
+
+@login_required
+@ajax_required
+def merge_second_stage(request):
+    if request.method == 'POST':
+        content = request.POST['content']
+        sentence = request.POST['sentence']
+        sid = int(request.POST['sen_id'])
+        start_pos = 0
+        if sid > 1:
+            start_flag = content.find('sid="' + str(sid - 1))
+            start_pos = content.find('</pd>', start_flag) + 5
+        print start_pos
+        end_flag = content.find('sid="' + str(sid))
+        end_pos = content.rfind('<pd', None, end_flag)
+        formal_sentence = FormalParser.get_formal_text(sentence)
+        merged_content = content[:start_pos] + formal_sentence + content[end_pos:]
+        return HttpResponse(json.dumps({'content': merged_content, 'formal': formal_sentence}))
+    else:
+        return HttpResponseBadRequest()
+
 
 @login_required
 def diff_test(request):

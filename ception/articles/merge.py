@@ -94,8 +94,10 @@ def merge_edit(origin_clean, user_clean, other_clean):
 
     html_str = origin_clean
     data = {}
+    conflicted = 0
     for dd1, dd2 in reversed(merged):
         if dd2:   # conflicted
+            conflicted = 1
             start = min([d['pos'][0] for d in dd1 + dd2])
             end = max([d['pos'][1] for d in dd1 + dd2])
             i = len(data)
@@ -107,7 +109,7 @@ def merge_edit(origin_clean, user_clean, other_clean):
             html_str = html_str[:start] + replace + html_str[end:]
         else: # solved
             html_str = apply_diff(html_str, dd1)
-    return html_str, data
+    return html_str, data, conflicted
 
 
 import unittest
