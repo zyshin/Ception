@@ -491,9 +491,17 @@ class diff_match_patch:
           # r'.\b' and +1 prevents endless loop
           pos = re.search(r'.\b', s, re.DOTALL).start()+1
         except AttributeError:
-          if s: back.append(s)
+          if s:
+            if s.strip():
+              back.append(s)
+            else:
+              back += list(s)
           break
-        back.append(s[:pos])
+        after = s[:pos]
+        if after.strip():
+          back.append(after)
+        else:
+          back += list(after)
         s = s[pos:]
       return back
 
