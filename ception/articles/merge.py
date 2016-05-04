@@ -83,13 +83,15 @@ def apply_diff(origin_clean, diffs, _start=0, _end=None):
         start, end = d['pos']
         delete = '<del>%s</del>' % r[start:end] if (end - start) else ''
         add = '<ins>%s</ins>' % d['text'] if d['text'] else ''
+        delete = delete.replace(' ', '&nbsp;')
+        add = add.replace(' ', '&nbsp;')
         r = r[:start] + delete + add + r[end:]
     return r[_start:_end]
 
 def merge_edit(origin_clean, user_clean, other_clean):
     # data = {
-    #     '0': [{'word': 'text', 'count': 1}, {'word': 'sentence', 'count': 2}],
-    #     '1': [{'word': 'Shichao Yue', 'count': 3}, {'word': 'scyue', 'count': 4}],
+    #     '0': [{'key': 'to replace', 'word': 'text', 'count': 1}, {'key': 'to replace', 'word': 'sentence', 'count': 2}],
+    #     '1': [{'key': 'to replace', 'word': 'Shichao Yue', 'count': 3}, {'key': 'to replace', 'word': 'scyue', 'count': 4}],
     # }
     # html_str = 'This is a normal <div class="replace" data-pk="0">text</div> written by <div class="replace" data-pk="1">Shichao Yue</div>.'
     user_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, user_clean))
@@ -106,10 +108,15 @@ def merge_edit(origin_clean, user_clean, other_clean):
             end = max([d['pos'][1] for d in dd1 + dd2])
             i = len(data)
             data[i] = [
-                {'word': apply_diff(origin_clean, dd1, start, end), 'count': ''},
-                {'word': apply_diff(origin_clean, dd2, start, end), 'count': ''},
+                {'key': apply_diff(origin_clean, dd1, start, end), 'count': '&nbsp;mine&nbsp;'},
+                {'key': apply_diff(origin_clean, dd2, start, end), 'count': 'others'},
             ]
-            replace = '<div class="replace" data-pk="%d">%s</div>' % (i, data[i][0]['word'])
+            for o in data[i]:
+                if o['key'].startswith('<del>') and o['key'].endswith('</del>'):
+                    o['word'] = '<i>(deleted)</i>'
+                else:
+                    o['word'] = o['key']
+            replace = '<div class="replace" data-pk="%d">%s</div>' % (i, data[i][0]['key'])
             html_str = html_str[:start] + replace + html_str[end:]
         else: # solved
             html_str = apply_diff(html_str, dd1)
