@@ -34,7 +34,7 @@ $(function () {
         }
       },
       complete: function () {
-        window.setTimeout(check_notifications, 30000);
+        //window.setTimeout(check_notifications, 30000);
       }
     });
   };

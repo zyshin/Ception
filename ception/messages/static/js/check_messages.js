@@ -7,7 +7,7 @@ $(function () {
         $("#unread-count").text(data);
       },
       complete: function () {
-        window.setTimeout(check_messages, 60000);
+        //window.setTimeout(check_messages, 60000);
       }
     });
   };
