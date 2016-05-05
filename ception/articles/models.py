@@ -1,4 +1,4 @@
-from datetime import datetime
+import json
 
 import markdown
 from django.contrib.auth.models import User
@@ -6,11 +6,13 @@ from django.db import models
 from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from ception.activities.models import Activity
+from ception.articles.content_parser import get_mapping_array
 from ception.articles.diff_parser import DiffParser
-from ception.articles.simple_parser import SimpleParser
+from ception.articles.simple_parser import SimpleParser, CleanParser
 
 
 class Article(models.Model):
@@ -44,7 +46,7 @@ class Article(models.Model):
         if not self.pk:
             super(Article, self).save(*args, **kwargs)
         else:
-            self.update_date = datetime.now()
+            self.update_date = timezone.now()
         if not self.slug:
             slug_str = "%s %s" % (self.pk, self.title.lower())
             self.slug = slugify(slug_str)
@@ -98,12 +100,28 @@ class Article(models.Model):
         return version
 
     def compute_summary(self):
-        pass
+        version_set = ArticleVersion.objects.filter(origin=self)
+        origin_sentences = self.get_sentences()
+        version_info_array = []
+        for v in version_set:
+            version_info_array.append(json.loads(v.info_array_json))
+        for i in range(1, self.sentence_count + 1):
+            sentence_list = [origin_sentences[i]]
+            for v in version_info_array:
+                print "{" + v[i]["sentence"] + " === " + CleanParser.get_clean_text(v[i]["sentence"]) + "}"
+                if v[i]["single"]:
+                    sentence_list.append(CleanParser.get_clean_text(v[i]["sentence"]))
+            print sentence_list
+            # TODO: here is the sentence_list
+        
+
 
 
 class ArticleVersion(models.Model):
     origin = models.ForeignKey(Article)
     content = models.TextField(max_length=60000)
+    diff_content = models.TextField(max_length=60000)
+    info_array_json = models.TextField(max_length=100000, null=True)
     edit_date = models.DateTimeField(auto_now_add=True)
     edit_user = models.ForeignKey(User)
     slug = models.SlugField(max_length=255, null=True, blank=True)
@@ -120,7 +138,7 @@ class ArticleVersion(models.Model):
         if not self.pk:
             super(ArticleVersion, self).save(*args, **kwargs)
         else:
-            self.edit_date = datetime.now()
+            self.edit_date = timezone.now()
         if not self.slug:
             slug_str = "%s %s Edited" % (self.pk, self.origin.title.lower())
             self.slug = slugify(slug_str)
@@ -138,6 +156,11 @@ class ArticleVersion(models.Model):
         return up_votes - down_votes
 
     def prepocess(self):
+        self.compute_diff()
+        self.info_array_json = json.dumps(get_mapping_array(self.content))
+        self.origin.compute_summary()
+
+    def compute_diff(self):
         sp = SimpleParser()
         sp.feed(self.origin.content)
         parser = DiffParser(sp.sentence_array)
@@ -247,9 +270,3 @@ class ArticleSentenceSummary(models.Model):
 
     def __unicode__(self):
         return u'{0} - {1}'.format(self.article.title, self.sid)
-
-
-class VersionSentenceInfoDict(models.Model):
-    version = models.ForeignKey(ArticleVersion)
-    sid = models.IntegerField(null=True, blank=True)
-    content = models.TextField(max_length=60000)

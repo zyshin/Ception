@@ -13,7 +13,6 @@ from django.template.loader import render_to_string
 from ception.activities.models import Activity
 from ception.articles.forms import ArticleForm, VersionForm
 from ception.articles.models import Article, Tag, ArticleComment, ArticleVersion, ArticleSentenceComment
-from ception.articles.new_parser import get_mapping_array
 from ception.articles.utils import convert_period_to_pd
 from ception.decorators import ajax_required
 from diff_parser import DiffParser
@@ -142,7 +141,7 @@ def init_edit_page(request, id, compare=False):
         dict_data = {
             'comments': v.get_sentence_comments(),
             'vote': v.get_sentence_vote(request.user),
-            'info': get_mapping_array(v.content),
+            'info': v.info_array_json,
             'author': v.edit_user.profile.get_screen_name(),
             'id': v.pk,
             'time': naturaltime(v.edit_date)

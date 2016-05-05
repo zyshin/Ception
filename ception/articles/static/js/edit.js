@@ -409,6 +409,7 @@ function init_page(current_version, current_user, json_str_array) {
 
   for (var i = 0; i < json_str_array.length; i++) {
     versions.push(JSON.parse(json_str_array[i]));
+    versions[i].info = JSON.parse(versions[i].info);
   }
   for (i = 0; i < versions.length; i++) {
     versions[i].block = $(".sentence-block[data-author='" + versions[i].author + "']");

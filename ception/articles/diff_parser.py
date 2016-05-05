@@ -1,9 +1,11 @@
 # author = scyue
 
 from HTMLParser import HTMLParser
-from utils import start_str, end_str, stadardlize_text
-from new_parser import SentenceInfo
+
 import diff_match_patch as dmp_module
+from content_parser import SentenceInfo
+from utils import start_str, end_str
+
 
 class DiffParser(HTMLParser):
     """
@@ -52,7 +54,7 @@ class DiffParser(HTMLParser):
         elif tag == 'pd':
             self.in_pd = False
             if self.current.sid > 0 and self.current.status != SentenceInfo.REPLACE:
-                self.diff_content += self.diff(self.origin_array[self.current.sid - 1], self.current.content)
+                self.diff_content += self.diff(self.origin_array[self.current.sid], self.current.content)
                 self.diff_content += start_str('pd', self.pd_attr)
                 if self.in_pd_delete:
                     self.diff_content += start_str('del')
