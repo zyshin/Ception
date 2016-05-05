@@ -211,6 +211,14 @@ $(function () {
     }
   });
 
+  $("#hide-del-modal").change(function () {
+    if ($(this).prop('checked')) {
+      $(".modal-sentence").removeClass("hide-del-class");
+    } else {
+      $(".modal-sentence").addClass("hide-del-class");
+    }
+  });
+
 
   var modal = $("#merge-modal");
   $(".accept-button").click(function () {
@@ -225,7 +233,7 @@ $(function () {
       data: {
         'csrfmiddlewaretoken': csrf,
         'sen_A': my_sentence,
-        'sen_B': block.data("sentence"),
+        'sen_B': $(".sentence-content", block).html(),
         'sen_id': sentence_id,
         'ver_id': version_id
       },
@@ -327,19 +335,28 @@ function init_page(current_version, current_user, json_str_array) {
           var sentence_content = $(".sentence-content", version.block);
           var s = version.info[selected.id];
           if (s.edited) {
+            if (!s.single) {
+              $(".accept-button", version.block).css("display", "none");
+              version.block.css("border-left", "5px solid lightblue");
+            } else {
+              $(".accept-button", version.block).css("display", "inline-block");
+              version.block.css("border-left", "none");
+            }
             version.block.removeAttr("hidden");
             get_sentence_comment(version, s.id);
             get_sentence_vote(version, s.id);
             sentence_content.html(s.sentence);
-            version.block.data("sentence", s.sentence_without_span);
-            version.block.data("context", s.context_without_span);
+            //version.block.data("sentence", s.sentence_without_span);
+            //version.block.data("context", s.context_without_span);
             var author_editor = CKEDITOR.instances["editor-" + version.author];
-            //author_editor.setData(s.context);
-            $("iframe", "#cke_editor-" + version.author).contents().find("body").addClass("cke_concise_body").addClass("hide-del-class").html(s.context);
+            $("iframe", "#cke_editor-" + version.author).contents().find("body")
+                .addClass("cke_concise_body")
+                .addClass("hide-del-class")
+                .html(s.context);
             try {
               var range = new CKEDITOR.dom.range(editor.document);
               var element = author_editor.document.findOne("#current");
-              var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
+              //var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
               //range.moveToElementEditStart(element);
               //range.scrollIntoView();
               //var p1 = iframe_window.pageYOffset;
@@ -356,14 +373,13 @@ function init_page(current_version, current_user, json_str_array) {
               console.log(e);
               //TODO: ignore it
             }
-
-
-
           } else {
             version.block.attr("hidden", "hidden");
           }
         }
         //if (! $("#toggle-sentence-view").prop('checked')) $(".cke_concise").css("display", "none");
+        get_sentence_comment(current_version, selected.id);
+        get_sentence_vote(current_version, selected.id);
       } else {
         for (i = 0; i < versions.length; i++) {
           versions[i].block.attr("hidden", "hidden");
@@ -371,8 +387,6 @@ function init_page(current_version, current_user, json_str_array) {
       }
       window.scrollTo(0, backup_scoll);
       form_current_sentence_id.val(selected.id);
-      get_sentence_comment(current_version, selected.id);
-      get_sentence_vote(current_version, selected.id);
     }
     previous_selected_id = selected.id;
   };

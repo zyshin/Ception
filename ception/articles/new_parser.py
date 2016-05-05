@@ -1,8 +1,8 @@
 # author = scyue
 
 from HTMLParser import HTMLParser
+
 from utils import start_str, end_str, stadardlize_text
-import types
 
 
 class SentenceInfo(object):
@@ -184,10 +184,13 @@ def set_mapping_array(info_array, origin_count, text):
             for jj in range(j + 1, len(info_array)):
                 latter_content += info_array[jj].content
 
+            single_sentence = (len(current_sentence_array) == 1)
+
             for i in current_related_sid:
                 if i > 0:
                     sentence = ""
                     sentence_without_span = ""
+
                     for ss in current_sentence_array:
                         sentence_without_span += ss.content
                         if positive_sentence_count > 1 and (ss.sid == i or (ss.sid < 0 and ss.origin_sid == i)):
@@ -199,11 +202,12 @@ def set_mapping_array(info_array, origin_count, text):
                         'context': "<span class='context'>" + former_content + "</span>" +
                                    "<span id='current'>" + sentence + "</span>" +
                                    "<span class='context'>" + latter_content + "</span>",
-                        'context_without_span': text,
+                        # 'context_without_span': text,
                         'sentence': sentence,
-                        'sentence_without_span': sentence_without_span,
+                        # 'sentence_without_span': sentence_without_span,
                         'id': s.sid,
-                        'edited': not s.status == SentenceInfo.UNCHANGED
+                        'edited': not s.status == SentenceInfo.UNCHANGED,
+                        'single': single_sentence
                     }
                     mapping_array[i] = sentence_info_dict
             former_sentence_array.extend(current_sentence_array)

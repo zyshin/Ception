@@ -2,11 +2,12 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Merge Conflict Solving Panel</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Solve Conflict</h4>
       </div>
-      <div class="modal-body sentence-content">
+      <div class="modal-body modal-sentence hide-del-class">
         This is a
         <div class="replace" data-pk="0">
           <del>example</del>
@@ -15,6 +16,8 @@
         sentence whose target is to evaluate the performance of diff function modified by ZYShin.
       </div>
       <div class="modal-footer">
+        <input id="hide-del-modal" type="checkbox" data-width="100px" data-toggle="toggle" data-on="Delete "
+               data-off="Delete ">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="modal-confirm-button">Merge</button>
       </div>

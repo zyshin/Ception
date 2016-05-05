@@ -1,14 +1,16 @@
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
 from datetime import datetime
-from django.template.defaultfilters import slugify
-from ception.activities.models import Activity
-from ception.articles.simple_parser import SimpleParser
-from ception.articles.diff_parser import DiffParser
+
 import markdown
-from django.template.loader import render_to_string
+from django.contrib.auth.models import User
+from django.db import models
 from django.db.models import Q
+from django.template.defaultfilters import slugify
+from django.template.loader import render_to_string
+from django.utils.translation import ugettext_lazy as _
+
+from ception.activities.models import Activity
+from ception.articles.diff_parser import DiffParser
+from ception.articles.simple_parser import SimpleParser
 
 
 class Article(models.Model):
@@ -95,11 +97,13 @@ class Article(models.Model):
             version = version_set[0]
         return version
 
+    def compute_summary(self):
+        pass
+
 
 class ArticleVersion(models.Model):
     origin = models.ForeignKey(Article)
     content = models.TextField(max_length=60000)
-    diff_content = models.TextField(max_length=60000, null=True, blank=True)
     edit_date = models.DateTimeField(auto_now_add=True)
     edit_user = models.ForeignKey(User)
     slug = models.SlugField(max_length=255, null=True, blank=True)
@@ -120,6 +124,10 @@ class ArticleVersion(models.Model):
         if not self.slug:
             slug_str = "%s %s Edited" % (self.pk, self.origin.title.lower())
             self.slug = slugify(slug_str)
+
+        self.prepocess()
+        print "Saved:", self.__unicode__()
+
         super(ArticleVersion, self).save(*args, **kwargs)
 
     def get_votes(self, sentence_id):
@@ -129,13 +137,12 @@ class ArticleVersion(models.Model):
                                              sentence_id=sentence_id).count()
         return up_votes - down_votes
 
-    def compute_diff(self):
+    def prepocess(self):
         sp = SimpleParser()
         sp.feed(self.origin.content)
         parser = DiffParser(sp.sentence_array)
         parser.feed(self.content)
         self.diff_content = parser.diff_content
-        self.save()
 
     def get_sentence_comments(self):
         sentence_comments_array = [{'html': u'Error', 'count': -1}]
@@ -227,3 +234,22 @@ class ArticleComment(models.Model):
 
     def __unicode__(self):
         return u'{0} - {1}'.format(self.user.username, self.article.title)
+
+
+class ArticleSentenceSummary(models.Model):
+    article = models.ForeignKey(Article)
+    sid = models.IntegerField(null=True, blank=True)
+    content = models.TextField(max_length=60000)
+
+    class Meta:
+        verbose_name = _("Article Sentence Summary")
+        verbose_name_plural = _("Article Sentence Summarys")
+
+    def __unicode__(self):
+        return u'{0} - {1}'.format(self.article.title, self.sid)
+
+
+class VersionSentenceInfoDict(models.Model):
+    version = models.ForeignKey(ArticleVersion)
+    sid = models.IntegerField(null=True, blank=True)
+    content = models.TextField(max_length=60000)

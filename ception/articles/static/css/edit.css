@@ -193,3 +193,17 @@
     left: -1px;
     overflow: hidden;
 }
+
+.modal-sentence del {
+    color: #3399ff;
+    text-line-through-color: #6699ff;
+}
+
+.modal-sentence ins {
+    color: #ff3366;
+    text-decoration: none;
+}
+
+.modal-footer .toggle {
+    float: left;
+}
