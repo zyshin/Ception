@@ -13,6 +13,7 @@ from ception.activities.models import Activity
 from ception.articles.content_parser import get_mapping_array
 from ception.articles.diff_parser import DiffParser
 from ception.articles.simple_parser import SimpleParser, CleanParser
+from ception.articles.merge import summary_edit
 
 
 class Article(models.Model):
@@ -111,10 +112,8 @@ class Article(models.Model):
                 print "{" + v[i]["sentence"] + " === " + CleanParser.get_clean_text(v[i]["sentence"]) + "}"
                 if v[i]["single"]:
                     sentence_list.append(CleanParser.get_clean_text(v[i]["sentence"]))
-            print sentence_list
-            # TODO: here is the sentence_list
-        
-
+            html_str, data, conflicted = summary_edit(sentence_list)
+            # TODO @ysc: save and render
 
 
 class ArticleVersion(models.Model):

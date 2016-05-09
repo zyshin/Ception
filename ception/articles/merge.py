@@ -74,6 +74,36 @@ def merge_diff(user_diff, other_diff):
             dd2[:] = []
     return merged
 
+import sys
+from collections import deque
+
+def merge_diff2(diffs):
+    # return: merged = [{'user_id_1': [d1, ...], 'user_id_2': [d2, ...]}, ...]
+
+    def pop_min(diffs):
+        poss = [diff[0]['pos'][0] if len(diff) else sys.maxint for diff in diffs]
+        min_pos = min(poss)
+        if min_pos == sys.maxint:    # diffs are all empty
+            return -1, None
+        index = poss.index(min_pos)
+        d = diffs[index].popleft()
+        return index + 1, d
+
+    diffs = [deque(diff) for diff in diffs]
+    merged = []
+    merged_end_pos = -1
+    while True:
+        index, d = pop_min(diffs)
+        if not d:
+            break
+        if d['pos'][0] <= merged_end_pos:    # conflicted
+            merged[-1][index] = merged[-1].get(index, [])
+            merged[-1][index].append(d)
+        else:   # no conflicts
+            merged.append({index: [d]})
+        merged_end_pos = max(merged_end_pos, d['pos'][1])
+    return merged
+
 def apply_diff(origin_clean, diffs, _start=0, _end=None):
     if _end:
         _end = None if _end >= len(origin_clean) else _end - len(origin_clean)
@@ -120,6 +150,47 @@ def merge_edit(origin_clean, user_clean, other_clean):
             html_str = html_str[:start] + replace + html_str[end:]
         else: # solved
             html_str = apply_diff(html_str, dd1)
+    return html_str, data, conflicted
+
+from itertools import groupby
+
+def summary_edit(sentence_list):
+    # data = [
+    #     [{'key': 'to replace', 'authors': [1, 2]}, {'key': 'to replace', 'authors': [3, 4]}],
+    #     [{'key': 'to replace', 'authors': [1]}, {'key': 'to replace', 'authors': [2]}],
+    # ]
+    # ('word': key if key is only del else 'deleted', 'count': len(authors))
+    # html_str = 'This is a normal <div class="replace" data-pk="0">text</div> written by <div class="replace" data-pk="1">Shichao Yue</div>.'
+    # assert len(sentence_list) > 1
+    origin_clean = sentence_list[0]
+    diffs = [convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, s)) for s in sentence_list[1:]]
+    merged = merge_diff2(diffs)
+
+    html_str = origin_clean
+    data = []
+    conflicted = 0
+    for diff in reversed(merged):
+        start = min([dd[0]['pos'][0] for uid, dd in diff.iteritems()])
+        end = max([dd[-1]['pos'][1] for uid, dd in diff.iteritems()])
+        l = []
+        for dd, diffs in groupby(sorted(diff.iteritems(), key=lambda o: o[1]), key=lambda o: o[1]):
+            o = {
+                'key': apply_diff(origin_clean, dd, start, end),
+                'authors': sorted([uid for uid, dd in diffs]),
+            }
+            o['word'] = '<i>(deleted)</i>' if o['key'].startswith('<del>') and o['key'].endswith('</del>') else o['key']
+            o['count'] = len(o['authors'])
+            l.append(o)
+        l.sort(key=lambda o: o['authors'][0])
+
+        if len(diff) > 1:
+            conflicted = 1
+            replace = '<div class="replace" data-pk="%d">%s</div>' % (len(data), l[0]['key'])
+            data.append(l)
+        else:
+            replace = l[0]['key']
+        html_str = html_str[:start] + replace + html_str[end:]
+
     return html_str, data, conflicted
 
 
@@ -203,16 +274,57 @@ class MergeTest(unittest.TestCase):
     ]
     self.assertEquals(merged, merge_diff(user_diff, other_diff))
 
-  def testMergeEdit(self):
-    # origin_clean = 'Users can switch between monolingual and bilingual subtitles by clicking the button on the bottom right.'
-    # user_clean = 'Learners can switch between the monolingual subtitle and the bilingual ones by clicking the button on the bottom right.'
-    # other_clean = 'Users can switch between them by clicking the button on the bottom right.'
-    # origin_clean = 'This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
-    # user_clean = 'This is a good example sentence whose target is to evaluate the performance of difficult function modified by ZYShin.'
-    # other_clean = 'These are example sentences whose target is to evaluate the performance of diff function modified by scyue.'
-    # user_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, user_clean))
-    # other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
-    # html_str, data = merge_edit(origin_clean, user_clean, other_clean)
+  def testMergeDiff2(self):
+    d1 = [
+        {'text': u'a123ample', 'pos': (8, 17)},
+        {'text': u'evaluawerte', 'pos': (46, 54)},
+    ]
+    d2 = [
+        {'text': u'exasgabeqargple', 'pos': (10, 17)},
+        {'text': u'targeawert', 'pos': (33, 39)},
+    ]
+    merged = [
+        {1: [{'text': u'a123ample', 'pos': (8, 17)}], 2: [{'text': u'exasgabeqargple', 'pos': (10, 17)}]},
+        {2: [{'text': u'targeawert', 'pos': (33, 39)}]},
+        {1: [{'text': u'evaluawerte', 'pos': (46, 54)}]},
+    ]
+    # self.assertEquals((solved, conflicts), merge_diff(d1, d2))
+    self.assertEquals(merged, merge_diff2([d1, d2]))
+
+    d1 = [
+        {'text': ' the', 'pos': (0, 5)},
+        {'text': 'ones', 'pos': (51, 60)},
+    ]
+    d2 = [
+        {'text': 'them', 'pos': (25, 60)},
+    ]
+    merged = [
+        {1: [{'text': ' the', 'pos': (0, 5)}]},
+        {1: [{'text': 'ones', 'pos': (51, 60)}], 2: [{'text': 'them', 'pos': (25, 60)}]},
+    ]
+    # self.assertEquals((solved, conflicts), merge_diff(d1, d2))
+    self.assertEquals(merged, merge_diff2([d1, d2]))
+    
+    origin_clean = 'This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
+    user_clean = 'Thxaample sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
+    other_clean = 'T is a exbample sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
+    user_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, user_clean))
+    other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
+    merged = [
+        {1: [{'text': 'Thxaample', 'pos': (0, 17)}], 2: [{'text': 'T', 'pos': (0, 4)}, {'text': 'exbample', 'pos': (10, 17)}]},
+    ]
+    self.assertEquals(merged, merge_diff2([user_diff, other_diff]))
+
+    origin_clean = 'In this section, we explore the feasibility of using subtitles for building video augmented dictionary'
+    user_clean = 'In this section, we explore the feasibility of compiling video augmented dictionary for learners from subtitles'
+    other_clean = 'In this section, we explore the feasibility of  building video augmented dictionary with subtitle'
+    user_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, user_clean))
+    other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
+    merged = [
+        {1: [{'text': 'compiling', 'pos': (47, 75)}], 2: [{'text': '', 'pos': (47, 66)}]},
+        {1: [{'text': ' for learners from subtitles', 'pos': (102, 102)}], 2: [{'text': ' with subtitle', 'pos': (102, 102)}]},
+    ]
+    self.assertEquals(merged, merge_diff2([user_diff, other_diff]))
 
     origin_clean = 'In this section, we explore the feasibility of using subtitles for building video augmented dictionary'
     user_clean = 'In this section, we explore the feasibility of video augmented dictionary for learners from subtitles'
@@ -224,6 +336,44 @@ class MergeTest(unittest.TestCase):
     #     ([{'text': ' for learners from subtitles', 'pos': (102, 102)}], [{'text': ' with subtitle', 'pos': (102, 102)}])
     # ]
     # self.assertEquals(merged, merge_diff(user_diff, other_diff))
+
+  def testMerge(self):
+    # origin_clean = 'Users can switch between monolingual and bilingual subtitles by clicking the button on the bottom right.'
+    # user_clean = 'Learners can switch between the monolingual subtitle and the bilingual ones by clicking the button on the bottom right.'
+    # other_clean = 'Users can switch between them by clicking the button on the bottom right.'
+    origin_clean = 'This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.'
+    user_clean = 'This is a good example sentence whose target is to evaluate the performance of difficult function modified by ZYShin.'
+    other_clean = 'These are example sentences whose target is to evaluate the performance of diff function modified by scyue.'
+    html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
+    html_str2, data2, conflicted2 = summary_edit([origin_clean, user_clean, other_clean])
+    self.assertEquals(html_str, html_str2)
+    data = [v for k, v in sorted(data.iteritems(), key=lambda o: o[0])]
+    for oo in data:
+        for o in oo:
+            o['count'] = 1
+    for oo in data2:
+        for o in oo:
+            del o['authors']
+    self.assertEquals(data, data2)
+    # self.assertEquals([v for k, v in sorted(data.iteritems(), key=lambda o: o[0])], data2)
+    self.assertEquals(conflicted, conflicted2)
+
+    origin_clean = 'In this section, we explore the feasibility of using subtitles for building video augmented dictionary'
+    user_clean = 'In this section, we explore the feasibility of video augmented dictionary for learners from subtitles'
+    other_clean = 'In this section, we explore the feasibility of  building video augmented dictionary with subtitle'
+    html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
+    html_str2, data2, conflicted2 = summary_edit([origin_clean, user_clean, other_clean])
+    self.assertEquals(html_str, html_str2)
+    data = [v for k, v in sorted(data.iteritems(), key=lambda o: o[0])]
+    for oo in data:
+        for o in oo:
+            o['count'] = 1
+    for oo in data2:
+        for o in oo:
+            del o['authors']
+    self.assertEquals(data, data2)
+    self.assertEquals(conflicted, conflicted2)
+    
 
 
 if __name__ == "__main__":
