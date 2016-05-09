@@ -12,6 +12,7 @@ from django.template.loader import render_to_string
 
 from ception.activities.models import Activity
 from ception.articles.forms import ArticleForm, VersionForm
+from ception.articles.merge import summary_edit
 from ception.articles.models import Article, Tag, ArticleComment, ArticleVersion, ArticleSentenceComment
 from ception.articles.utils import convert_period_to_pd
 from ception.decorators import ajax_required
@@ -324,3 +325,21 @@ def diff_test(request):
         return HttpResponse(result)
     else:
         return render(request, 'articles/tests/diff_view.html', {'content': test_str})
+
+
+@login_required
+def summary_test(request):
+    test_str = "This is a example sentence whose target is to evaluate the performance of summary feature."
+    if request.method == 'POST':
+        sentence_list = [test_str]
+        for sen_name in ['sen_A', 'sen_B', 'sen_C', 'sen_D']:
+            sentence_list.append(request.POST[sen_name])
+        html_str, data, conflicted = summary_edit(sentence_list)
+        result_json = {
+            'str': html_str,
+            'data': data,
+            'conflicted': conflicted
+        }
+        return HttpResponse(json.dumps(result_json))
+    else:
+        return render(request, 'articles/tests/summary_view.html', {'content': test_str})

@@ -1,10 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
 
-</body>
-</html>
+{% block head %}
+  <link href="{% static 'css/articles.css' %}" rel="stylesheet">
+  <link href="{% static 'css/edit.css' %}" rel="stylesheet">
+  <link href="{% static 'css/callout.css' %}" rel="stylesheet">
+  <link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
+  <link href="{% static 'contextmenu/jquery.contextMenu.min.css' %}" rel="stylesheet">
+  <script src="{% static 'js/articles.js' %}"></script>
+  <script src="{% static 'js/edit.js' %}"></script>
+  <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
+  <script src="{% static 'contextmenu/jquery.contextMenu.min.js' %}"></script>
+  <script src="{% static 'contextmenu/jquery.ui.position.min.js' %}"></script>
+  <style>
+
+  </style>
+
+{% endblock head %}
+
+{% block main %}
+  {% csrf_token %}
+  <textarea id="editor-A" name="content" class="form-control">{{ content }}</textarea>
+  <textarea id="editor-B" name="content" class="form-control">{{ content }}</textarea>
+  <textarea id="editor-C" name="content" class="form-control">{{ content }}</textarea>
+  <textarea id="editor-D" name="content" class="form-control">{{ content }}</textarea>
+
+  <button class="btn btn-primary" id="summary-button" style="margin-top: 20px">Compute Summary</button>
+
+  <h3>Summary Test</h3>
+  <div class="sentence-content" id="summary-content"></div>
+
+  <script>
+    var bank = null;
+    $(function () {
+      $("#summary-button").click(function () {
+        var csrf = $("input[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+          url: '{% url "summary_test" %}',
+          data: {
+            'csrfmiddlewaretoken': csrf,
+            'sen_A': $("#editor-A").val(),
+            'sen_B': $("#editor-B").val(),
+            'sen_C': $("#editor-C").val(),
+            'sen_D': $("#editor-D").val(),
+          },
+          cache: false,
+          type: 'post',
+          success: function (json) {
+            var data = JSON.parse(json);
+            bank = data.data;
+            $("#summary-content").html(data.str);
+          }
+        });
+      });
+    });
+  </script>
+
+  <script>
+    $(function () {
+      $.contextMenu({
+        selector: '.replace',
+        trigger: 'hover',
+        delay: 200,
+        autoHide: true,
+
+        build: function ($trigger, e) {
+          // this callback is executed every time the menu is to be shown
+          // its results are destroyed every time the menu is hidden
+          // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+          var pk = $(e.currentTarget).data('pk');
+          var return_menu = {};
+          $.each(bank[pk], function (index, bundle) {
+            if (index != 0) {
+              // return_menu['<del>' + bank[pk][0].word + '</del><ins>' + bundle.word + '</ins>'] = {
+              return_menu[bundle.word] = {
+                name: bundle.word,
+                icon: function (opt, $itemElement, itemKey, item) {
+                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+                }
+              }
+            } else {
+              return_menu[bundle.word] = {
+                name: bundle.word,
+                icon: function (opt, $itemElement, itemKey, item) {
+                  $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+                }
+              }
+            }
+          });
+          return {
+            callback: function (key, options) {
+              this.html(key);
+            },
+            items: return_menu
+          }
+        }
+      });
+    });
+  </script>
+
+
+{% endblock main %}
