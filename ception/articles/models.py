@@ -12,8 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 from ception.activities.models import Activity
 from ception.articles.content_parser import get_mapping_array
 from ception.articles.diff_parser import DiffParser
-from ception.articles.simple_parser import SimpleParser, CleanParser
 from ception.articles.merge import summary_edit
+from ception.articles.simple_parser import SimpleParser, CleanParser
 
 
 class Article(models.Model):
@@ -174,7 +174,8 @@ class ArticleVersion(models.Model):
                 'count': 0
             }
             for comment in ArticleSentenceComment.objects.filter(parent=self, sentence_id=i):
-                comment_dict['html'] += render_to_string('articles/partial_sentence_comment.html', {'comment': comment})
+                comment_dict['html'] += render_to_string('articles/partial/partial_sentence_comment.html',
+                                                         {'comment': comment})
                 comment_dict['count'] += 1
             sentence_comments_array.append(comment_dict)
         return sentence_comments_array

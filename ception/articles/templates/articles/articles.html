@@ -20,7 +20,7 @@
     <div class="col-md-12">
       <section class="articles">
         {% for article in articles %}
-          {% include 'articles/partial_article.html' with article=article %}
+          {% include 'articles/partial/partial_article.html' with article=article %}
         {% empty %}
           <h4 class="no-data">{% trans 'There is no published article yet' %}. <a href="{% url 'write' %}">{% trans 'Be the first one to publish' %}!</a></h4>
         {% endfor %}

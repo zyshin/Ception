@@ -116,7 +116,8 @@ def comment(request):
                 article_comment.save()
             html = u''
             for comment in article.get_comments():
-                html = u'{0}{1}'.format(html, render_to_string('articles/partial_article_comment.html', {'comment': comment}))
+                html = u'{0}{1}'.format(html, render_to_string('articles/partial/partial_article_comment.html',
+                                                               {'comment': comment}))
             return HttpResponse(html)
         else:
             return HttpResponseBadRequest()
@@ -222,7 +223,7 @@ def sentence_comments(request):
                     sentence_comment.save()
             html = u''
             for comment in ArticleSentenceComment.objects.filter(parent=version, sentence_id=sentence_id):
-                html = u"{0}{1}".format(html, render_to_string('articles/partial_sentence_comment.html',
+                html = u"{0}{1}".format(html, render_to_string('articles/partial/partial_sentence_comment.html',
                                                                {'comment': comment}))
             return HttpResponse(html)
         else:
@@ -265,24 +266,29 @@ def sentence_vote(request):
 @ajax_required
 def merge_api(request):
     if request.method == 'POST':
-        user_sen = request.POST['sen_A']
-        other_sen = request.POST['sen_B']
-        sentence_id = int(request.POST['sen_id'])
-        version_id = int(request.POST['ver_id'])
-        version = get_object_or_404(ArticleVersion, pk=version_id)
-        origin_sentences = version.origin.get_sentences()
-
-        # TODO @scyue: WTH the '\n' is?
-        origin_clean = origin_sentences[sentence_id]
-        user_clean = CleanParser.get_clean_text(user_sen)
-        other_clean = CleanParser.get_clean_text(other_sen)
-        html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
-        result_json = {
-            'str': html_str,
-            'data': data,
-            'conflicted': conflicted
-        }
-        return HttpResponse(json.dumps(result_json))
+        try:
+            user_sen = request.POST['sen_A']
+            other_sen = request.POST['sen_B']
+            sentence_id = int(request.POST['sen_id'])
+            version_id = int(request.POST['ver_id'])
+            if version_id >= 0:
+                version = get_object_or_404(ArticleVersion, pk=version_id)
+                origin_sentences = version.origin.get_sentences()
+                origin_clean = origin_sentences[sentence_id]
+            else:
+                origin_clean = "This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.\n"
+            user_clean = CleanParser.get_clean_text(user_sen)
+            other_clean = CleanParser.get_clean_text(other_sen)
+            html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
+            result_json = {
+                'str': html_str,
+                'data': data,
+                'conflicted': conflicted
+            }
+            return HttpResponse(json.dumps(result_json))
+        except Exception, e:
+            print e
+            return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()
 
@@ -317,4 +323,4 @@ def diff_test(request):
         result = DiffParser.diff(test_str, cp.clean_sentence)
         return HttpResponse(result)
     else:
-        return render(request, 'articles/diff_test.html', {'content': test_str})
+        return render(request, 'articles/tests/diff_view.html', {'content': test_str})

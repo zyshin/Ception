@@ -96,9 +96,9 @@
         </div>
       </div>
       <div id="sentence-list" hidden="hidden">
-        {% include 'articles/partial_sentence.html' with author=user %}
+        {% include 'articles/partial/partial_sentence.html' with author=user %}
         {% for author in data.authors %}
-          {% include 'articles/partial_sentence.html' with author=author %}
+          {% include 'articles/partial/partial_sentence.html' with author=author %}
         {% endfor %}
       </div>
       <div style="min-height: 300px"></div>
