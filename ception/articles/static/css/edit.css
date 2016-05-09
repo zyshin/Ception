@@ -177,11 +177,12 @@
 }
 
 .replace {
-    display: inline-block;
+    display: inline;
     position: relative;
+    background: #FFFF88;
 }
 
-.replace:before {
+/*.replace:before {
     content: "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
     font-size: 0.6em;
     font-weight: 700;
@@ -192,7 +193,7 @@
     top: 12px;
     left: -1px;
     overflow: hidden;
-}
+}*/
 
 .modal-sentence del {
     color: #3399ff;

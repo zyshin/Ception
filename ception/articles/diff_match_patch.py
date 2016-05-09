@@ -274,10 +274,10 @@ class diff_match_patch:
     diffs = self.diff_main(text1, text2, False, deadline)
 
     # self.diff_cleanupSemantic(diffs)
-    self.diff_cleanupEfficiency(diffs)
+    # self.diff_cleanupEfficiency(diffs)
 
     # Convert the diff back to original text.
-    self.diff_charsToLines(diffs, linearray)
+    self.diff_wordsToLines(diffs, linearray)
 
     return diffs
 
@@ -505,7 +505,7 @@ class diff_match_patch:
         s = s[pos:]
       return back
 
-    def diff_linesToCharsMunge(text):
+    def diff_linesToWordsMunge(text):
       """Split a text into an array of strings.  Reduce the texts to a string
       of hashes where each Unicode character represents one line.
       Modifies linearray and linehash through being a closure.
@@ -534,15 +534,15 @@ class diff_match_patch:
           continue
 
         if line in lineHash:
-          chars.append(unichr(lineHash[line]))
+          chars.append(unichr(lineHash[line]) * len(line))
         else:
           lineArray.append(line)
           lineHash[line] = len(lineArray) - 1
-          chars.append(unichr(len(lineArray) - 1))
+          chars.append(unichr(len(lineArray) - 1) * len(line))
       return "".join(chars)
 
-    chars1 = diff_linesToCharsMunge(text1)
-    chars2 = diff_linesToCharsMunge(text2)
+    chars1 = diff_linesToWordsMunge(text1)
+    chars2 = diff_linesToWordsMunge(text2)
     return (chars1, chars2, lineArray)
 
   def diff_charsToLines(self, diffs, lineArray):
@@ -558,6 +558,21 @@ class diff_match_patch:
       for char in diffs[x][1]:
         text.append(lineArray[ord(char)])
       diffs[x] = (diffs[x][0], "".join(text))
+
+  def diff_wordsToLines(self, diffs, wordArray):
+    """Rehydrate the text in a diff from a string of line hashes to real lines
+    of text.
+
+    Args:
+      diffs: Array of diff tuples.
+      wordArray: Array of unique words.
+    """
+    for x in xrange(len(diffs)):
+      text = []
+      s = diffs[x][1]
+      for i in xrange(1, len(wordArray)):
+        s = s.replace(chr(i) * len(wordArray[i]), wordArray[i])
+      diffs[x] = (diffs[x][0], s)
 
   def diff_commonPrefix(self, text1, text2):
     """Determine the common prefix of two strings.
