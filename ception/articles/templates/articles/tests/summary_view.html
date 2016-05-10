@@ -27,9 +27,10 @@
   <div id="compare_area"></div>
 
   <button class="btn btn-primary" id="summary-button" style="margin-top: 20px">Compute Summary</button>
+  <button class="btn btn-warning" id="diff-button" style="margin-top: 20px">Compute Diff</button>
 
-  <h3>Summary Test</h3>
-  <div class="sentence-content" id="summary-content"></div>
+  <h3>Result</h3>
+  <div class="sentence-content" id="display"></div>
 
 
   <script>
@@ -57,7 +58,7 @@
 
     $(function () {
       var area = $("#compare_area");
-      var start_str = "<textarea class=\"form-control compare_sentence\" style=\"height: 40px\">";
+      var start_str = "<input type=\"checkbox\"> <textarea class=\"form-control compare_sentence\" style=\"height: 40px\">";
       var end_str = "</textarea>";
       $("#search-button").click(function () {
         var a = $("#article_id").val();
@@ -86,7 +87,42 @@
           success: function (json) {
             var data = JSON.parse(json);
             bank = data.data;
-            $("#summary-content").html(data.str);
+            $("#display").html(data.str);
+          }
+        });
+      });
+      $("#diff-button").click(function () {
+        var csrf = $("input[name='csrfmiddlewaretoken']").val();
+        var sentence_array = [];
+        var selected_array = [];
+        var selected_sentence = [];
+        $(".compare_sentence").each(function () {
+          sentence_array.push($(this).val());
+        });
+        $("input[type='checkbox']").each(function () {
+          selected_array.push($(this).prop('checked'));
+        });
+        for (var i = 0; i < selected_array.length; i++) {
+          if (selected_array[i]) {
+            selected_sentence.push(sentence_array[i]);
+          }
+        }
+        $.ajax({
+          url: '{% url "merge_api" %}',
+          data: {
+            'csrfmiddlewaretoken': csrf,
+            'sen_A': selected_sentence[0],
+            'sen_B': selected_sentence[1],
+            'sen_id': $("#sentence_id").val(),
+            'ver_id': -2,
+            'origin': sentence_array[0],
+          },
+          cache: false,
+          type: 'post',
+          success: function (json) {
+            var data = JSON.parse(json);
+            bank = data.data;
+            $("#display").html(data.str);
           }
         });
       });

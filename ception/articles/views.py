@@ -277,7 +277,10 @@ def merge_api(request):
                 origin_sentences = version.origin.get_sentences()
                 origin_clean = origin_sentences[sentence_id]
             else:
-                origin_clean = "This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.\n"
+                if version_id == -2:
+                    origin_clean = request.POST["origin"]
+                else:
+                    origin_clean = "This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.\n"
             user_clean = CleanParser.get_clean_text(user_sen)
             other_clean = CleanParser.get_clean_text(other_sen)
             html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
