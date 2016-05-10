@@ -21,29 +21,65 @@
 
 {% block main %}
   {% csrf_token %}
-  <textarea id="editor-A" name="content" class="form-control">{{ content }}</textarea>
-  <textarea id="editor-B" name="content" class="form-control">{{ content }}</textarea>
-  <textarea id="editor-C" name="content" class="form-control">{{ content }}</textarea>
-  <textarea id="editor-D" name="content" class="form-control">{{ content }}</textarea>
+  Article ID: <input id="article_id" value="1">
+  Sentence ID: <input id="sentence_id" value="1">
+  <button id="search-button" class="btn btn-default" style="height: 30px; line-height: 0">Search</button>
+  <div id="compare_area"></div>
 
   <button class="btn btn-primary" id="summary-button" style="margin-top: 20px">Compute Summary</button>
 
   <h3>Summary Test</h3>
   <div class="sentence-content" id="summary-content"></div>
 
+
+  <script>
+    var data;
+    (function () {
+      data = {{ data | safe }};
+      for (var i = 0; i < data.length; i++) {
+        for (var j = 0; j < data[i].length; j++) {
+          data[i][j] = JSON.parse(data[i][j]);
+        }
+      }
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
   <script>
     var bank = null;
+
     $(function () {
+      var area = $("#compare_area");
+      var start_str = "<textarea class=\"form-control compare_sentence\" style=\"height: 40px\">";
+      var end_str = "</textarea>";
+      $("#search-button").click(function () {
+        var a = $("#article_id").val();
+        var s = $("#sentence_id").val();
+        area.empty();
+        for (var i = 0; i < data[a].length; i++) {
+          area.append(start_str + data[a][i][s].clean_sentence + end_str);
+        }
+      });
       $("#summary-button").click(function () {
         var csrf = $("input[name='csrfmiddlewaretoken']").val();
+        var sentence_array = [];
+        $(".compare_sentence").each(function () {
+          sentence_array.push($(this).val());
+        });
         $.ajax({
           url: '{% url "summary_test" %}',
           data: {
             'csrfmiddlewaretoken': csrf,
-            'sen_A': $("#editor-A").val(),
-            'sen_B': $("#editor-B").val(),
-            'sen_C': $("#editor-C").val(),
-            'sen_D': $("#editor-D").val(),
+            'sen_list': JSON.stringify(sentence_array),
+            'art_id': $("#article_id").val(),
+            'sen_id': $("#sentence_id").val()
           },
           cache: false,
           type: 'post',

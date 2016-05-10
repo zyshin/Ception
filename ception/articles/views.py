@@ -329,11 +329,11 @@ def diff_test(request):
 
 @login_required
 def summary_test(request):
-    test_str = "This is a example sentence whose target is to evaluate the performance of summary feature."
     if request.method == 'POST':
-        sentence_list = [test_str]
-        for sen_name in ['sen_A', 'sen_B', 'sen_C', 'sen_D']:
-            sentence_list.append(request.POST[sen_name])
+        sentence_list = json.loads(request.POST['sen_list'])
+        article_pk = request.POST['art_id']
+        sentence_id = request.POST['sen_id']
+        print sentence_list
         html_str, data, conflicted = summary_edit(sentence_list)
         result_json = {
             'str': html_str,
@@ -342,4 +342,12 @@ def summary_test(request):
         }
         return HttpResponse(json.dumps(result_json))
     else:
-        return render(request, 'articles/tests/summary_view.html', {'content': test_str})
+        article_array = []
+        for a in Article.objects.all():
+            version_array = []
+            # print '======================='
+            for v in ArticleVersion.objects.filter(origin=a).order_by('edit_user__username'):
+                # print v.edit_user
+                version_array.append(v.info_array_json)
+            article_array.append(version_array)
+        return render(request, 'articles/tests/summary_view.html', {'data': json.dumps(article_array)})

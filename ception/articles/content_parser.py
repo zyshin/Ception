@@ -2,6 +2,7 @@
 
 from HTMLParser import HTMLParser
 
+from simple_parser import CleanParser
 from utils import start_str, end_str, stadardlize_text
 
 
@@ -144,7 +145,7 @@ def eliminate_replace(info_array):
         s = info_array[i]
         if s.sid > origin_count:
             origin_count = s.sid
-        if s.sid > 0 and replace_dict[s.sid] and s.status == SentenceInfo.DELETED:
+        if s.sid > 0 and s.sid < len(replace_dict) and replace_dict[s.sid] and s.status == SentenceInfo.DELETED:
             info_array[i - 1].content += "<del>" + s.content + "</del>"
             info_array[i + 1].content = "<ins>" + s.content + "</ins>" + info_array[i + 1].content
             s.status = SentenceInfo.REMOVED
@@ -189,10 +190,8 @@ def set_mapping_array(info_array, origin_count, text):
             for i in current_related_sid:
                 if i > 0:
                     sentence = ""
-                    sentence_without_span = ""
 
                     for ss in current_sentence_array:
-                        sentence_without_span += ss.content
                         if positive_sentence_count > 1 and (ss.sid == i or (ss.sid < 0 and ss.origin_sid == i)):
                             sentence += "<span class='highlight'>" + ss.content + "</span>"
                         else:
@@ -204,7 +203,7 @@ def set_mapping_array(info_array, origin_count, text):
                                    "<span class='context'>" + latter_content + "</span>",
                         # 'context_without_span': text,
                         'sentence': sentence,
-                        # 'sentence_without_span': sentence_without_span,
+                        'clean_sentence': CleanParser.get_clean_text(sentence),
                         'id': s.sid,
                         'edited': not s.status == SentenceInfo.UNCHANGED,
                         'single': single_sentence

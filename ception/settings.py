@@ -38,6 +38,8 @@ INSTALLED_APPS = (
 
     'south',
 
+    'django_extensions',
+
     'ception.activities',
     'ception.articles',
     'ception.auth',

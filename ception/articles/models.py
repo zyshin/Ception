@@ -12,8 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from ception.activities.models import Activity
 from ception.articles.content_parser import get_mapping_array
 from ception.articles.diff_parser import DiffParser
-from ception.articles.merge import summary_edit
-from ception.articles.simple_parser import SimpleParser, CleanParser
+from ception.articles.simple_parser import SimpleParser
 
 
 class Article(models.Model):
@@ -104,16 +103,16 @@ class Article(models.Model):
         version_set = ArticleVersion.objects.filter(origin=self)
         origin_sentences = self.get_sentences()
         version_info_array = []
-        for v in version_set:
-            version_info_array.append(json.loads(v.info_array_json))
-        for i in range(1, self.sentence_count + 1):
-            sentence_list = [origin_sentences[i]]
-            for v in version_info_array:
-                print "{" + v[i]["sentence"] + " === " + CleanParser.get_clean_text(v[i]["sentence"]) + "}"
-                if v[i]["single"]:
-                    sentence_list.append(CleanParser.get_clean_text(v[i]["sentence"]))
-            html_str, data, conflicted = summary_edit(sentence_list)
-            # TODO @ysc: save and render
+        # for v in version_set:
+        #     version_info_array.append(json.loads(v.info_array_json))
+        # for i in range(1, self.sentence_count + 1):
+        #     sentence_list = [origin_sentences[i]]
+        #     for v in version_info_array:
+        #         print "{" + v[i]["sentence"] + " === " + CleanParser.get_clean_text(v[i]["sentence"]) + "}"
+        #         if v[i]["single"]:
+        #             sentence_list.append(CleanParser.get_clean_text(v[i]["sentence"]))
+        #     html_str, data, conflicted = summary_edit(sentence_list)
+        #     # TODO @ysc: save and render
 
 
 class ArticleVersion(models.Model):
