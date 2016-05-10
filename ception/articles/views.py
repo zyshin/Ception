@@ -288,7 +288,7 @@ def merge_api(request):
             }
             return HttpResponse(json.dumps(result_json))
         except Exception, e:
-            print e
+            print repr(e)
             return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()

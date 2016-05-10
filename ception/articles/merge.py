@@ -50,7 +50,7 @@ def merge_diff(user_diff, other_diff):
                 merged[-1][0].append(d1)
             else:
                 merged.append(([d1], []))
-            in_conflict = False    
+            in_conflict = False
             i += 1
             continue
         d1, d2 = user_diff[i], other_diff[j]
@@ -113,10 +113,11 @@ def apply_diff(origin_clean, diffs, _start=0, _end=None):
         start, end = d['pos']
         delete = '<del>%s</del>' % r[start:end] if (end - start) else ''
         add = '<ins>%s</ins>' % d['text'] if d['text'] else ''
-        delete = delete.replace(' ', '&nbsp;')
-        add = add.replace(' ', '&nbsp;')
         r = r[:start] + delete + add + r[end:]
-    return r[_start:_end]
+    r = r[_start:_end]
+    r = r.replace('<del> ', '<del>&nbsp;').replace(' </del>', '&nbsp;</del>').replace('<ins> ', '<ins>&nbsp;').replace(' </ins>', '&nbsp;</ins>')
+    return r
+    # TODO: replace spaces from head and tail of r
 
 def merge_edit(origin_clean, user_clean, other_clean):
     # data = {
@@ -142,7 +143,7 @@ def merge_edit(origin_clean, user_clean, other_clean):
                 {'key': apply_diff(origin_clean, dd2, start, end), 'count': 'others'},
             ]
             for o in data[i]:
-                if o['key'].startswith('<del>') and o['key'].endswith('</del>'):
+                if o['key'].rfind('<del>') == 0 and o['key'].find('</del>') == (len(o['key']) - len('</del>')):
                     o['word'] = '<i>(deleted)</i>'
                 else:
                     o['word'] = o['key']
@@ -178,10 +179,10 @@ def summary_edit(sentence_list):
                 'key': apply_diff(origin_clean, dd, start, end),
                 'authors': sorted([uid for uid, dd in diffs]),
             }
-            o['word'] = '<i>(deleted)</i>' if o['key'].startswith('<del>') and o['key'].endswith('</del>') else o['key']
+            o['word'] = '<i>(deleted)</i>' if o['key'].rfind('<del>') == 0 and o['key'].find('</del>') == (len(o['key']) - len('</del>')) else o['key']
             o['count'] = len(o['authors'])
             l.append(o)
-        l.sort(key=lambda o: o['authors'][0])
+        l.sort(key=lambda o: (-o['count'], o['authors'][0]))
 
         if len(diff) > 1:
             conflicted = 1
@@ -355,7 +356,6 @@ class MergeTest(unittest.TestCase):
         for o in oo:
             del o['authors']
     self.assertEquals(data, data2)
-    # self.assertEquals([v for k, v in sorted(data.iteritems(), key=lambda o: o[0])], data2)
     self.assertEquals(conflicted, conflicted2)
 
     origin_clean = 'In this section, we explore the feasibility of using subtitles for building video augmented dictionary'
@@ -373,7 +373,11 @@ class MergeTest(unittest.TestCase):
             del o['authors']
     self.assertEquals(data, data2)
     self.assertEquals(conflicted, conflicted2)
-    
+
+    origin_clean = 'In this section, we explore the feasibility of using subtitles for building video augmented dictionary'
+    user_clean = 'In this section, we explore the feasibility of compiling video augmented dictionary for learners from subtitles'
+    other_clean = 'In this section, we explore the feasibility of  building video augmented dictionary with subtitle'
+    html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
 
 
 if __name__ == "__main__":

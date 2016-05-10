@@ -143,11 +143,11 @@ class DiffTest(DiffMatchPatchTest):
 
   def testDiffLinesToWords(self):
     # Convert lines down to characters.
-    self.assertEquals(("\x01\x02\x03\x02\x01\x02", "\x03\x02\x01\x02\x03\x02", ["", "alpha", " ", "beta"]), self.dmp.diff_linesToWords("alpha beta alpha ", "beta alpha beta "))
+    self.assertEquals(("\x01\x01\x01\x01\x01\x02\x03\x03\x03\x03\x02\x01\x01\x01\x01\x01\x02", "\x03\x03\x03\x03\x02\x01\x01\x01\x01\x01\x02\x03\x03\x03\x03\x02", ["", "alpha", " ", "beta"]), self.dmp.diff_linesToWords("alpha beta alpha ", "beta alpha beta "))
 
-    self.assertEquals(("\x01\x02\x03\x02\x04\x02\x05\x06", "\x07\x02\x08\x02\x04\x02\x09\x06", ["", "This", " ", "was", "a", "dog", ".", "That", "is", "cat"]), self.dmp.diff_linesToWords("This was a dog.", "That is a cat."))
+    # self.assertEquals(("\x01\x02\x03\x02\x04\x02\x05\x06", "\x07\x02\x08\x02\x04\x02\x09\x06", ["", "This", " ", "was", "a", "dog", ".", "That", "is", "cat"]), self.dmp.diff_linesToWords("This was a dog.", "That is a cat."))
 
-    self.assertEquals(("", "\x01\x02\x02\x03\x02\x02\x02\x02\x02\x02", ["", "alpha", " ", "beta"]), self.dmp.diff_linesToWords("", "alpha  beta      "))
+    self.assertEquals(("", "\x01\x01\x01\x01\x01\x02\x02\x03\x03\x03\x03\x02\x02\x02\x02\x02\x02", ["", "alpha", " ", "beta"]), self.dmp.diff_linesToWords("", "alpha  beta      "))
 
     self.assertEquals(("\x01", "\x02", ["", "a", "b"]), self.dmp.diff_linesToWords("a", "b"))
 
@@ -169,6 +169,28 @@ class DiffTest(DiffMatchPatchTest):
     # Convert chars up to lines.
     diffs = [(self.dmp.DIFF_EQUAL, "\x01\x02\x01"), (self.dmp.DIFF_INSERT, "\x02\x01\x02")]
     self.dmp.diff_charsToLines(diffs, ["", "alpha\n", "beta\n"])
+    self.assertEquals([(self.dmp.DIFF_EQUAL, "alpha\nbeta\nalpha\n"), (self.dmp.DIFF_INSERT, "beta\nalpha\nbeta\n")], diffs)
+
+    # More than 256 to reveal any 8-bit limitations.
+    n = 300
+    lineList = []
+    charList = []
+    for x in range(1, n + 1):
+      lineList.append(str(x) + "\n")
+      charList.append(unichr(x))
+    self.assertEquals(n, len(lineList))
+    lines = "".join(lineList)
+    chars = "".join(charList)
+    self.assertEquals(n, len(chars))
+    lineList.insert(0, "")
+    diffs = [(self.dmp.DIFF_DELETE, chars)]
+    self.dmp.diff_charsToLines(diffs, lineList)
+    self.assertEquals([(self.dmp.DIFF_DELETE, lines)], diffs)
+
+  def testDiffWordsToLines(self):
+    # Convert chars up to lines.
+    diffs = [(self.dmp.DIFF_EQUAL, "\x01\x01\x01\x01\x01\x01\x02\x02\x02\x02\x02\x01\x01\x01\x01\x01\x01"), (self.dmp.DIFF_INSERT, "\x02\x02\x02\x02\x02\x01\x01\x01\x01\x01\x01\x02\x02\x02\x02\x02")]
+    self.dmp.diff_wordsToLines(diffs, ["", "alpha\n", "beta\n"])
     self.assertEquals([(self.dmp.DIFF_EQUAL, "alpha\nbeta\nalpha\n"), (self.dmp.DIFF_INSERT, "beta\nalpha\nbeta\n")], diffs)
 
     # More than 256 to reveal any 8-bit limitations.
@@ -572,10 +594,38 @@ class DiffTest(DiffMatchPatchTest):
       pass
 
   def testDiffWordMode(self):
+    a = '1 2 3 4 aa bb cc'
+    b = 'aa bb cc 5 6 7 8'
+    self.assertEquals([(self.dmp.DIFF_DELETE, "1 2 3 4 "), (self.dmp.DIFF_EQUAL, "aa bb cc"), (self.dmp.DIFF_INSERT, " 5 6 7 8")], self.dmp.diff_wordMode(a, b))
     a = '1 2 3 4 a b c'
     b = 'a b c 5 6 7 8'
-    # should be: self.assertEquals([(self.dmp.DIFF_DELETE, "1 2 3 4 "), (self.dmp.DIFF_EQUAL, "a b c"), (self.dmp.DIFF_INSERT, " 5 6 7 8")], self.dmp.diff_wordMode(a, b))
-    self.assertEquals([(self.dmp.DIFF_DELETE, "1 2 3 4 a b c"), (self.dmp.DIFF_INSERT, "a b c 5 6 7 8")], self.dmp.diff_wordMode(a, b))
+    expected = [(self.dmp.DIFF_DELETE, "1 2 3 4 "), (self.dmp.DIFF_EQUAL, "a b c"), (self.dmp.DIFF_INSERT, " 5 6 7 8")]
+    # self.assertEquals([(self.dmp.DIFF_DELETE, "1 2 3 4 a b c"), (self.dmp.DIFF_INSERT, "a b c 5 6 7 8")], self.dmp.diff_wordMode(a, b))
+
+    a = 'Once selected, the clip will automatically start playing with subtitles.'
+    b = 'Once selected, the clip will automatically begin with two types of subtitles.'
+    c = 'Once selected, the clip will automatically start playing with two types of subtitles.'
+    expected = [
+      (self.dmp.DIFF_EQUAL, "Once selected, the clip will automatically "),
+      (self.dmp.DIFF_DELETE, "start playing"),
+      (self.dmp.DIFF_INSERT, "begin"),
+      (self.dmp.DIFF_EQUAL, " with"),
+      (self.dmp.DIFF_INSERT, " two types of"),
+      (self.dmp.DIFF_EQUAL, " subtitles."),
+    ]
+    diff = [
+      (self.dmp.DIFF_EQUAL, "Once selected, the clip will automatically "),
+      (self.dmp.DIFF_DELETE, "start playing with"),
+      (self.dmp.DIFF_INSERT, "begin with two types of"),
+      (self.dmp.DIFF_EQUAL, " subtitles."),
+    ]
+    self.assertEquals(expected, self.dmp.diff_wordMode(a, b))
+    diff2 = [
+      (self.dmp.DIFF_EQUAL, "Once selected, the clip will automatically start playing with "),
+      (self.dmp.DIFF_INSERT, "two types of "),
+      (self.dmp.DIFF_EQUAL, "subtitles."),
+    ]
+    self.assertEquals(diff2, self.dmp.diff_wordMode(a, c))
 
 
 class MatchTest(DiffMatchPatchTest):
