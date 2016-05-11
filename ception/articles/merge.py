@@ -1,5 +1,32 @@
 from diff_parser import DiffParser
 
+def diff_wordsToChars(text1, lineArray):
+  lineHash = dict(zip(lineArray, xrange(len(lineArray))))
+
+  def diff_wordsToCharsMunge(text):
+    chars = []
+    # Walk the text, pulling out a substring for each line.
+    text = text.replace(',', ' , ').replace('.', ' . ').replace(';', ' ; ').replace(':', ' : ').replace('?', ' ? ').replace('!', ' ! ')
+    for line in text.split():
+      if line in lineHash:
+        chars.append(unichr(lineHash[line]))
+      else:
+        lineArray.append(line)
+        lineHash[line] = len(lineArray) - 1
+        chars.append(unichr(len(lineArray) - 1))
+    return "".join(chars)
+
+  return diff_wordsToCharsMunge(text1)
+
+def diff_charsToWords(s, wordArray):
+  text = ' '.join([wordArray[ord(char)] for char in s])
+  text = text.replace(' ,', ',').replace(' .', '.').replace(' ;', ';').replace(' :', ':').replace(' ?', '?').replace(' !', '!')
+  if text:
+    # start_space = '' if text[0] in ',.;:?!' else ' '
+    start_space = ' '
+    # TODO: handle punct spaces
+    text = start_space + text + ' '
+  return text
 
 def convert_diff_to_replace(diff):
     # diff: [(-1, 'This is a'), (1, u'Thawesa wega'), (0, ' example sentence whose target is to evaluate the performance of diff function modified by ZYShin.\n')]
@@ -104,22 +131,47 @@ def merge_diff2(diffs):
         merged_end_pos = max(merged_end_pos, d['pos'][1])
     return merged
 
-def apply_diff(origin_clean, diffs, _start=0, _end=None):
+# def apply_diff(origin_clean, diffs, _start=0, _end=None):
+#     if _end:
+#         _end = None if _end >= len(origin_clean) else _end - len(origin_clean)
+#     # assert origin_clean[diffs_start:diffs_end] in origin_clean[_start:_end]
+#     r = origin_clean
+#     for d in reversed(diffs):
+#         start, end = d['pos']
+#         delete = '<del>%s</del>' % r[start:end] if (end - start) else ''
+#         add = '<ins>%s</ins>' % d['text'] if d['text'] else ''
+#         r = r[:start] + delete + add + r[end:]
+#     r = r[_start:_end]
+#     r = r.replace('<del> ', '<del>&nbsp;').replace(' </del>', '&nbsp;</del>').replace('<ins> ', '<ins>&nbsp;').replace(' </ins>', '&nbsp;</ins>')
+#     if r.startswith(' '):
+#         r = '&nbsp;' + r[1:]
+#     if r.endswith(' '):
+#         r = r[:-1] + '&nbsp;'
+#     return r
+
+def apply_diff2(wordArray, origin_clean, diffs, _start=0, _end=None):
     if _end:
         _end = None if _end >= len(origin_clean) else _end - len(origin_clean)
+    __end = len(origin_clean) if not _end else _end
     # assert origin_clean[diffs_start:diffs_end] in origin_clean[_start:_end]
+    # assert _end < 0 or _end == None
     r = origin_clean
-    for d in reversed(diffs):
+    diffs = diffs + [{'pos': (__end, __end), 'text': ''}]
+    for i in reversed(xrange(len(diffs))):
+        d = diffs[i]
         start, end = d['pos']
-        delete = '<del>%s</del>' % r[start:end] if (end - start) else ''
-        add = '<ins>%s</ins>' % d['text'] if d['text'] else ''
+        delete = '<del>%s</del>' % diff_charsToWords(r[start:end], wordArray) if (end - start) else ''
+        add = '<ins>%s</ins>' % diff_charsToWords(d['text'], wordArray) if d['text'] else ''
         r = r[:start] + delete + add + r[end:]
+        pre_end = diffs[i - 1]['pos'][1] if i > 0 else 0
+        pre_end = max(pre_end, _start)
+        r = r[:pre_end] + diff_charsToWords(r[pre_end:start], wordArray) + r[start:]
     r = r[_start:_end]
-    r = r.replace('<del> ', '<del>&nbsp;').replace(' </del>', '&nbsp;</del>').replace('<ins> ', '<ins>&nbsp;').replace(' </ins>', '&nbsp;</ins>')
-    if r.startswith(' '):
-        r = '&nbsp;' + r[1:]
-    if r.endswith(' '):
-        r = r[:-1] + '&nbsp;'
+    # r = r.replace('<del> ', '<del>&nbsp;').replace(' </del>', '&nbsp;</del>').replace('<ins> ', '<ins>&nbsp;').replace(' </ins>', '&nbsp;</ins>')
+    # if r.startswith(' '):
+    #     r = '&nbsp;' + r[1:]
+    # if r.endswith(' '):
+    #     r = r[:-1] + '&nbsp;'
     return r
 
 def merge_edit(origin_clean, user_clean, other_clean):
@@ -128,34 +180,41 @@ def merge_edit(origin_clean, user_clean, other_clean):
     #     '1': [{'key': 'to replace', 'word': 'Shichao Yue', 'count': 3}, {'key': 'to replace', 'word': 'scyue', 'count': 4}],
     # }
     # html_str = 'This is a normal <div class="replace" data-pk="0">text</div> written by <div class="replace" data-pk="1">Shichao Yue</div>.'
-    user_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, user_clean))
-    other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
+    wordArray = ['']
+    origin_clean = diff_wordsToChars(origin_clean, wordArray)
+    user_clean = diff_wordsToChars(user_clean, wordArray)
+    other_clean = diff_wordsToChars(other_clean, wordArray)
+    user_diff = convert_diff_to_replace(DiffParser.dmp.diff_main(origin_clean, user_clean))
+    other_diff = convert_diff_to_replace(DiffParser.dmp.diff_main(origin_clean, other_clean))
     merged = merge_diff(user_diff, other_diff)
 
-    origin_clean = origin_clean + ' '
     html_str = origin_clean
     data = {}
     conflicted = 0
-    for dd1, dd2 in reversed(merged):
+    merged = merged + [([{'pos': (len(origin_clean), len(origin_clean)), 'text': ''}], [])]
+    for i in reversed(xrange(len(merged))):
+        dd1, dd2 = merged[i]
         start = min([d['pos'][0] for d in dd1 + dd2])
         end = max([d['pos'][1] for d in dd1 + dd2])
         if dd2:   # conflicted
             conflicted = 1
-            i = len(data)
-            data[i] = [
-                {'key': apply_diff(origin_clean, dd1, start, end), 'count': '&nbsp;mine&nbsp;'},
-                {'key': apply_diff(origin_clean, dd2, start, end), 'count': 'others'},
+            j = len(data)
+            data[j] = [
+                {'key': apply_diff2(wordArray, origin_clean, dd1, start, end), 'count': '&nbsp;mine&nbsp;'},
+                {'key': apply_diff2(wordArray, origin_clean, dd2, start, end), 'count': 'others'},
             ]
-            for o in data[i]:
+            for o in data[j]:
                 if o['key'].rfind('<del>') == 0 and o['key'].find('</del>') == (len(o['key']) - len('</del>')):
                     o['word'] = '<i>(deleted)</i>'
                 else:
                     o['word'] = o['key']
-            replace = '<div class="replace" data-pk="%d">%s</div>' % (i, data[i][0]['key'])
+            replace = '<div class="replace" data-pk="%d">%s</div>' % (j, data[j][0]['key'])
         else: # solved
-            replace = apply_diff(origin_clean, dd1, start, end)
+            replace = apply_diff2(wordArray, origin_clean, dd1, start, end)
         html_str = html_str[:start] + replace + html_str[end:]
-    html_str = html_str.rstrip()
+
+        pre_end = max([d['pos'][1] for d in merged[i - 1][0] + merged[i - 1][1]]) if i > 0 else 0
+        html_str = html_str[:pre_end] + diff_charsToWords(html_str[pre_end:start], wordArray) + html_str[start:]
     return html_str, data, conflicted
 
 from itertools import groupby
@@ -168,21 +227,24 @@ def summary_edit(sentence_list):
     # ('word': key if key is only del else 'deleted', 'count': len(authors))
     # html_str = 'This is a normal <div class="replace" data-pk="0">text</div> written by <div class="replace" data-pk="1">Shichao Yue</div>.'
     # assert len(sentence_list) > 1
+    wordArray = ['']
+    sentence_list = [diff_wordsToChars(s, wordArray) for s in sentence_list]
     origin_clean = sentence_list[0]
-    diffs = [convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, s)) for s in sentence_list[1:]]
+    diffs = [convert_diff_to_replace(DiffParser.dmp.diff_main(origin_clean, s)) for s in sentence_list[1:]]
     merged = merge_diff2(diffs)
 
-    origin_clean = origin_clean + ' '
     html_str = origin_clean
     data = []
     conflicted = 0
-    for diff in reversed(merged):
+    merged = merged + [{0: [{'pos': (len(origin_clean), len(origin_clean)), 'text': ''}]}]
+    for i in reversed(xrange(len(merged))):
+        diff = merged[i]
         start = min([dd[0]['pos'][0] for uid, dd in diff.iteritems()])
         end = max([dd[-1]['pos'][1] for uid, dd in diff.iteritems()])
         l = []
         for dd, diffs in groupby(sorted(diff.iteritems(), key=lambda o: o[1]), key=lambda o: o[1]):
             o = {
-                'key': apply_diff(origin_clean, dd, start, end),
+                'key': apply_diff2(wordArray, origin_clean, dd, start, end),
                 'authors': sorted([uid for uid, dd in diffs]),
             }
             o['word'] = '<i>(deleted)</i>' if o['key'].rfind('<del>') == 0 and o['key'].find('</del>') == (len(o['key']) - len('</del>')) else o['key']
@@ -190,14 +252,16 @@ def summary_edit(sentence_list):
             l.append(o)
         l.sort(key=lambda o: (-o['count'], o['authors'][0]))
 
-        if len(diff) > 1:
+        if len(l) > 1:
             conflicted = 1
             replace = '<div class="replace" data-pk="%d">%s</div>' % (len(data), l[0]['key'])
             data.append(l)
         else:
             replace = l[0]['key']
         html_str = html_str[:start] + replace + html_str[end:]
-    html_str = html_str.rstrip()
+
+        pre_end = max([dd[-1]['pos'][1] for uid, dd in merged[i - 1].iteritems()]) if i > 0 else 0
+        html_str = html_str[:pre_end] + diff_charsToWords(html_str[pre_end:start], wordArray) + html_str[start:]
     return html_str, data, conflicted
 
 
@@ -380,9 +444,7 @@ class MergeTest(unittest.TestCase):
     self.assertEquals(data, data2)
     self.assertEquals(conflicted, conflicted2)
 
-    origin_clean = 'In this section, we explore the feasibility of using subtitles for building video augmented dictionary'
     user_clean = 'In this section, we explore the feasibility of compiling video augmented dictionary for learners from subtitles'
-    other_clean = 'In this section, we explore the feasibility of  building video augmented dictionary with subtitle'
     html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
 
 

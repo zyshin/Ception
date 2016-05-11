@@ -281,6 +281,7 @@ def merge_api(request):
                     origin_clean = request.POST["origin"]
                 else:
                     origin_clean = "This is a example sentence whose target is to evaluate the performance of diff function modified by ZYShin.\n"
+            origin_clean = CleanParser.get_clean_text(origin_clean)
             user_clean = CleanParser.get_clean_text(user_sen)
             other_clean = CleanParser.get_clean_text(other_sen)
             html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
@@ -308,7 +309,7 @@ def merge_second_stage(request):
         if sid > 1:
             start_flag = content.find('sid="' + str(sid - 1))
             start_pos = content.find('</pd>', start_flag) + 5
-        print start_pos
+        # print start_pos
         end_flag = content.find('sid="' + str(sid))
         end_pos = content.rfind('<pd', None, end_flag)
         formal_sentence = FormalParser.get_formal_text(sentence)
@@ -336,7 +337,7 @@ def summary_test(request):
         sentence_list = json.loads(request.POST['sen_list'])
         article_pk = request.POST['art_id']
         sentence_id = request.POST['sen_id']
-        print sentence_list
+        # print sentence_list
         html_str, data, conflicted = summary_edit(sentence_list)
         result_json = {
             'str': html_str,
