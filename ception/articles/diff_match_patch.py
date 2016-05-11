@@ -269,7 +269,7 @@ class diff_match_patch:
     """
 
     # Scan the text on a word-by-word basis first.
-    (text1, text2, linearray) = self.diff_linesToWords(text1, text2)
+    (text1, text2, linearray) = self.diff_wordsToChars(text1, text2)
 
     diffs = self.diff_main(text1, text2, False, deadline)
 
@@ -277,7 +277,7 @@ class diff_match_patch:
     # self.diff_cleanupEfficiency(diffs)
 
     # Convert the diff back to original text.
-    self.diff_wordsToLines(diffs, linearray)
+    self.diff_charsToWords(diffs, linearray)
 
     return diffs
 
@@ -464,7 +464,7 @@ class diff_match_patch:
     chars2 = diff_linesToCharsMunge(text2)
     return (chars1, chars2, lineArray)
 
-  def diff_linesToWords(self, text1, text2):
+  def diff_wordsToChars(self, text1, text2):
     """Split two texts into an array of strings.  Reduce the texts to a string
     of hashes where each Unicode character represents one line.
 
@@ -484,28 +484,7 @@ class diff_match_patch:
     # So we'll insert a junk entry to avoid generating a null character.
     lineArray.append('')
 
-    def boundary_split(s):
-      back = []
-      while 1:
-        try:
-          # r'.\b' and +1 prevents endless loop
-          pos = re.search(r'.\b', s, re.DOTALL).start()+1
-        except AttributeError:
-          if s:
-            if s.strip():
-              back.append(s)
-            else:
-              back += list(s)
-          break
-        after = s[:pos]
-        if after.strip():
-          back.append(after)
-        else:
-          back += list(after)
-        s = s[pos:]
-      return back
-
-    def diff_linesToWordsMunge(text):
+    def diff_wordsToCharsMunge(text):
       """Split a text into an array of strings.  Reduce the texts to a string
       of hashes where each Unicode character represents one line.
       Modifies linearray and linehash through being a closure.
@@ -517,32 +496,19 @@ class diff_match_patch:
         Encoded string.
       """
       chars = []
-      # # Walk the text, pulling out a substring for each line.
-      # # text.split('\n') would would temporarily double our memory footprint.
-      # # Modifying text would create many large strings to garbage collect.
-      # lineStart = 0
-      # lineEnd = -1
-      # while lineEnd < len(text) - 1:
-      #   lineEnd = text.find(' ', lineStart)
-      #   if lineEnd == -1:
-      #     lineEnd = len(text) - 1
-      #   line = text[lineStart:lineEnd + 1]
-      #   lineStart = lineEnd + 1
-      for line in boundary_split(text):
-      # for line in re.sub(r'\b', '\x00', text).split('\x00'):
-        if not line:
-          continue
-
+      # Walk the text, pulling out a substring for each line.
+      text = text.replace(',', ' , ').replace('.', ' . ').replace(';', ' ; ').replace(':', ' : ').replace('?', ' ? ').replace('!', ' ! ')
+      for line in text.split():
         if line in lineHash:
-          chars.append(unichr(lineHash[line]) * len(line))
+          chars.append(unichr(lineHash[line]))
         else:
           lineArray.append(line)
           lineHash[line] = len(lineArray) - 1
-          chars.append(unichr(len(lineArray) - 1) * len(line))
+          chars.append(unichr(len(lineArray) - 1))
       return "".join(chars)
 
-    chars1 = diff_linesToWordsMunge(text1)
-    chars2 = diff_linesToWordsMunge(text2)
+    chars1 = diff_wordsToCharsMunge(text1)
+    chars2 = diff_wordsToCharsMunge(text2)
     return (chars1, chars2, lineArray)
 
   def diff_charsToLines(self, diffs, lineArray):
@@ -559,20 +525,23 @@ class diff_match_patch:
         text.append(lineArray[ord(char)])
       diffs[x] = (diffs[x][0], "".join(text))
 
-  def diff_wordsToLines(self, diffs, wordArray):
+  def diff_charsToWords(self, diffs, wordArray):
     """Rehydrate the text in a diff from a string of line hashes to real lines
     of text.
 
     Args:
       diffs: Array of diff tuples.
-      wordArray: Array of unique words.
+      lineArray: Array of unique strings.
     """
     for x in xrange(len(diffs)):
-      text = []
-      s = diffs[x][1]
-      for i in xrange(1, len(wordArray)):
-        s = s.replace(chr(i) * len(wordArray[i]), wordArray[i])
-      diffs[x] = (diffs[x][0], s)
+      text = ' '.join([wordArray[ord(char)] for char in diffs[x][1]])
+      text = text.replace(' ,', ',').replace(' .', '.').replace(' ;', ';').replace(' :', ':').replace(' ?', '?').replace(' !', '!')
+      if diffs[x][0] == self.DIFF_EQUAL:
+        start_space = ' ' if x > 0 else ''
+        end_space = ' ' if x < len(diffs) - 1 else ''
+        text = start_space + text + end_space
+      diffs[x] = (diffs[x][0], text)
+
 
   def diff_commonPrefix(self, text1, text2):
     """Determine the common prefix of two strings.

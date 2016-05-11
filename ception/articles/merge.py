@@ -116,8 +116,11 @@ def apply_diff(origin_clean, diffs, _start=0, _end=None):
         r = r[:start] + delete + add + r[end:]
     r = r[_start:_end]
     r = r.replace('<del> ', '<del>&nbsp;').replace(' </del>', '&nbsp;</del>').replace('<ins> ', '<ins>&nbsp;').replace(' </ins>', '&nbsp;</ins>')
+    if r.startswith(' '):
+        r = '&nbsp;' + r[1:]
+    if r.endswith(' '):
+        r = r[:-1] + '&nbsp;'
     return r
-    # TODO: replace spaces from head and tail of r
 
 def merge_edit(origin_clean, user_clean, other_clean):
     # data = {
@@ -129,14 +132,15 @@ def merge_edit(origin_clean, user_clean, other_clean):
     other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
     merged = merge_diff(user_diff, other_diff)
 
+    origin_clean = origin_clean + ' '
     html_str = origin_clean
     data = {}
     conflicted = 0
     for dd1, dd2 in reversed(merged):
+        start = min([d['pos'][0] for d in dd1 + dd2])
+        end = max([d['pos'][1] for d in dd1 + dd2])
         if dd2:   # conflicted
             conflicted = 1
-            start = min([d['pos'][0] for d in dd1 + dd2])
-            end = max([d['pos'][1] for d in dd1 + dd2])
             i = len(data)
             data[i] = [
                 {'key': apply_diff(origin_clean, dd1, start, end), 'count': '&nbsp;mine&nbsp;'},
@@ -148,9 +152,10 @@ def merge_edit(origin_clean, user_clean, other_clean):
                 else:
                     o['word'] = o['key']
             replace = '<div class="replace" data-pk="%d">%s</div>' % (i, data[i][0]['key'])
-            html_str = html_str[:start] + replace + html_str[end:]
         else: # solved
-            html_str = apply_diff(html_str, dd1)
+            replace = apply_diff(origin_clean, dd1, start, end)
+        html_str = html_str[:start] + replace + html_str[end:]
+    html_str = html_str.rstrip()
     return html_str, data, conflicted
 
 from itertools import groupby
@@ -167,6 +172,7 @@ def summary_edit(sentence_list):
     diffs = [convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, s)) for s in sentence_list[1:]]
     merged = merge_diff2(diffs)
 
+    origin_clean = origin_clean + ' '
     html_str = origin_clean
     data = []
     conflicted = 0
@@ -191,7 +197,7 @@ def summary_edit(sentence_list):
         else:
             replace = l[0]['key']
         html_str = html_str[:start] + replace + html_str[end:]
-
+    html_str = html_str.rstrip()
     return html_str, data, conflicted
 
 
@@ -271,7 +277,7 @@ class MergeTest(unittest.TestCase):
     other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
     merged = [
         ([{'text': 'compiling', 'pos': (47, 75)}], [{'text': '', 'pos': (47, 66)}]),
-        ([{'text': ' for learners from subtitles', 'pos': (102, 102)}], [{'text': ' with subtitle', 'pos': (102, 102)}])
+        ([{'text': 'for learners from subtitles', 'pos': (103, 103)}], [{'text': 'with subtitle', 'pos': (103, 103)}]),
     ]
     self.assertEquals(merged, merge_diff(user_diff, other_diff))
 
@@ -323,7 +329,7 @@ class MergeTest(unittest.TestCase):
     other_diff = convert_diff_to_replace(DiffParser.dmp.diff_wordMode(origin_clean, other_clean))
     merged = [
         {1: [{'text': 'compiling', 'pos': (47, 75)}], 2: [{'text': '', 'pos': (47, 66)}]},
-        {1: [{'text': ' for learners from subtitles', 'pos': (102, 102)}], 2: [{'text': ' with subtitle', 'pos': (102, 102)}]},
+        {1: [{'text': 'for learners from subtitles', 'pos': (103, 103)}], 2: [{'text': 'with subtitle', 'pos': (103, 103)}]},
     ]
     self.assertEquals(merged, merge_diff2([user_diff, other_diff]))
 
