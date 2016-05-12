@@ -12,7 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 from ception.activities.models import Activity
 from ception.articles.content_parser import get_mapping_array
 from ception.articles.diff_parser import DiffParser
-from ception.articles.simple_parser import SimpleParser
+from ception.articles.merge import summary_edit
+from ception.articles.simple_parser import SimpleParser, CleanParser
 
 
 class Article(models.Model):
@@ -99,20 +100,21 @@ class Article(models.Model):
             version = version_set[0]
         return version
 
-    def compute_summary(self):
+    def compute_summary(self, user):
         version_set = ArticleVersion.objects.filter(origin=self)
         origin_sentences = self.get_sentences()
         version_info_array = []
-        # for v in version_set:
-        #     version_info_array.append(json.loads(v.info_array_json))
-        # for i in range(1, self.sentence_count + 1):
-        #     sentence_list = [origin_sentences[i]]
-        #     for v in version_info_array:
-        #         print "{" + v[i]["sentence"] + " === " + CleanParser.get_clean_text(v[i]["sentence"]) + "}"
-        #         if v[i]["single"]:
-        #             sentence_list.append(CleanParser.get_clean_text(v[i]["sentence"]))
-        #     html_str, data, conflicted = summary_edit(sentence_list)
-        #     # TODO @ysc: save and render
+        summary_list = [{'Error': 'Error'}]
+        for v in version_set:
+            version_info_array.append(json.loads(v.info_array_json))
+        for i in range(1, self.sentence_count + 1):
+            sentence_list = [origin_sentences[i]]
+            for v in version_info_array:
+                if v[i]["single"] and version_set[i].edit_user != user:
+                    sentence_list.append(CleanParser.get_clean_text(v[i]["sentence"]))
+            html_str, data, conflicted = summary_edit(sentence_list)
+            summary_list.append({'html_str': html_str, 'data': data, 'conflicted': conflicted})
+        return summary_list
 
 
 class ArticleVersion(models.Model):
@@ -156,7 +158,6 @@ class ArticleVersion(models.Model):
     def prepocess(self):
         self.compute_diff()
         self.info_array_json = json.dumps(get_mapping_array(self.content))
-        self.origin.compute_summary()
 
     def compute_diff(self):
         sp = SimpleParser()

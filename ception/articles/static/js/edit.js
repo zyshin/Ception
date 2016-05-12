@@ -4,6 +4,7 @@
 
 var versions = [];
 var bank = null;
+var summary_bank = null;
 
 var commit_ajax = function () {
   var form = $("#edit_form");
@@ -46,9 +47,13 @@ $(function () {
       // this callback is executed every time the menu is to be shown
       // its results are destroyed every time the menu is hidden
       // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+      var current_using_bank = bank;
       var pk = $(e.currentTarget).data('pk');
+      if ($(e.currentTarget).closest(".context-menu-activated").hasClass('summary-content')) {
+        current_using_bank = summary_bank
+      }
       var return_menu = {};
-      $.each(bank[pk], function (index, bundle) {
+      $.each(current_using_bank[pk], function (index, bundle) {
         if (index != 0) {
           return_menu[bundle.key] = {
             name: bundle.word,
@@ -288,7 +293,18 @@ function merge_second_stage(new_sentence) {
 
 }
 
-function init_page(current_version, current_user, json_str_array) {
+function init_page(current_version, current_user, json_str_array, summary_list) {
+
+  var update_summary = function (sid) {
+    if (sid > 0) {
+      summary_bank = summary_list[sid].data;
+      summary_sentence.html(summary_list[sid].html_str);
+    } else {
+      summary_sentence.html('');
+    }
+    $("input[name='sentence_id']", ".summary-block").val(sid);
+  };
+
   var get_sentence_comment = function (version, sentence_id) {
     var list = $(".sentence-comment-list", version.block);
     list.html(version.comments[sentence_id]['html']);
@@ -356,19 +372,8 @@ function init_page(current_version, current_user, json_str_array) {
             try {
               var range = new CKEDITOR.dom.range(editor.document);
               var element = author_editor.document.findOne("#current");
-              //var iframe_window = $("iframe", "#cke_editor-" + version.author)[0].contentWindow;
-              //range.moveToElementEditStart(element);
-              //range.scrollIntoView();
-              //var p1 = iframe_window.pageYOffset;
-              //range.moveToElementEditEnd(element);
               range.selectNodeContents(element);
               range.scrollIntoView();
-              //var p2 = iframe_window.pageYOffset;
-              //if (p1 == 0) {
-              //  iframe_window.scrollTo(0, 0);
-              //} else {
-              //  iframe_window.scrollTo(0, (p1 + p2) / 2);
-              //}
             } catch (e) {
               console.log(e);
               //TODO: ignore it
@@ -380,6 +385,7 @@ function init_page(current_version, current_user, json_str_array) {
         //if (! $("#toggle-sentence-view").prop('checked')) $(".cke_concise").css("display", "none");
         get_sentence_comment(current_version, selected.id);
         get_sentence_vote(current_version, selected.id);
+        update_summary(selected.id);
       } else {
         for (i = 0; i < versions.length; i++) {
           versions[i].block.attr("hidden", "hidden");
@@ -404,6 +410,8 @@ function init_page(current_version, current_user, json_str_array) {
   $("input[name='version_id']", current_version.block).val(current_version.id);
   var id_div = $("#selected-id");
   var form_current_sentence_id = $("input[name='sentence_id']", current_version.block);
+  var summary_sentence = $(".sentence-content", ".summary-block");
+  $("input[name='version_id']", ".summary-block").val($("#edit_form").data("id"));
 
 
 

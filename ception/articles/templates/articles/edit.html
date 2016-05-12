@@ -97,6 +97,7 @@
       </div>
       <div id="sentence-list" hidden="hidden">
         {% include 'articles/partial/partial_sentence.html' with author=user %}
+        {% include 'articles/partial/partial_summary.html' %}
         {% for author in data.authors %}
           {% include 'articles/partial/partial_sentence.html' with author=author %}
         {% endfor %}
@@ -109,7 +110,8 @@
         var current_version = {{ data.current_version_json | safe }};
         var current_user = "{{ user }}";
         var json_str_array = {{ data.json|safe }};
-        init_page(current_version, current_user, json_str_array);
+        var summary_list = {{ data.summary | safe }};
+        init_page(current_version, current_user, json_str_array, summary_list);
       })();
     </script>
   </div>

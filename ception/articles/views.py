@@ -161,6 +161,7 @@ def init_edit_page(request, id, compare=False):
         'authors': authors,
         'versions': version_array,
         'current_version_json': json.dumps(current_version_dict),
+        'summary': json.dumps(article.compute_summary(request.user))
     }
     if not compare:
         return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
