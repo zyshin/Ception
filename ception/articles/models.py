@@ -109,10 +109,12 @@ class Article(models.Model):
             version_info_array.append(json.loads(v.info_array_json))
         for i in range(1, self.sentence_count + 1):
             sentence_list = [origin_sentences[i]]
-            for v in version_info_array:
-                if v[i]["single"] and version_set[i].edit_user != user:
-                    sentence_list.append(CleanParser.get_clean_text(v[i]["sentence"]))
+            for j in xrange(len(version_info_array)):
+                if version_info_array[j][i]["single"] and version_set[j].edit_user != user:
+                    print version_set[j].edit_user, user
+                    sentence_list.append(CleanParser.get_clean_text(version_info_array[j][i]["sentence"]))
             html_str, data, conflicted = summary_edit(sentence_list)
+            print html_str
             summary_list.append({'html_str': html_str, 'data': data, 'conflicted': conflicted})
         return summary_list
 
