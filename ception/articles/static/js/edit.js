@@ -203,7 +203,7 @@ $(function () {
       $(".sentence-content-others").css("display", "none");
       $(".cke_concise").css("display", "block");
     } else {
-      $(".sentence-content-others").css("display", "inline");
+      $(".sentence-content-others").css("display", "inline-block");
       $(".cke_concise").css("display", "none");
     }
   });

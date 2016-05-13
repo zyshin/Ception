@@ -1246,6 +1246,7 @@ legend.cke_voice_label {
 }
 
 .cke_concise {
+    padding-left: 15px;
     border: 0;
     box-shadow: 0 0 0 0;
 }

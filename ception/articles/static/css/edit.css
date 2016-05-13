@@ -28,7 +28,7 @@
     padding: 5px 15px;
 }
 
-.sentence-content del {
+del {
     color: #3399ff;
     text-line-through-color: #6699ff;
 }
@@ -37,8 +37,7 @@
     display: none;
 }
 
-
-.sentence-content ins {
+ins {
     color: #ff3366;
     text-decoration: none;
 }
