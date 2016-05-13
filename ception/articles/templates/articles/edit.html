@@ -96,12 +96,12 @@
       </div>
       <div id="sentence-list" hidden="hidden">
         <div class="sentence-list-header">
-          <div class="header-text">current sentence</div>
+          <div class="header-text h4">Current sentence</div>
 
-          <input id="toggle-sentence-view" type="checkbox" data-toggle="toggle" data-on="Context" data-off="Context"
-                 data-width="100px">
-          <input id="hide-del-toggle" type="checkbox" data-toggle="toggle" data-on="Delete " data-off="Delete "
-                 data-width="100px">
+          <input id="toggle-sentence-view" class="pull-right" type="checkbox" data-toggle="toggle" data-on="Context" data-off="Context"
+                 data-width="70px" data-size="mini">
+          <input id="hide-del-toggle" class="pull-right" type="checkbox" data-toggle="toggle" data-on="Delete " data-off="Delete "
+                 data-width="70px" data-size="mini">
         </div>
         {% include 'articles/partial/partial_sentence.html' with author=user %}
         {% include 'articles/partial/partial_summary.html' %}
@@ -111,9 +111,9 @@
         <div class="sentence-list-footer">
           <div class="sentence-content footer-text">
             Legend:
-            <ins>Inserted</ins>
-            <del>Deleted</del>
-            <span class="highlight">Modified Current Sentence</span>
+            1. <ins>Inserted</ins>
+            2. <del>Deleted</del>
+            3. <span class="highlight">Modified Current Sentence</span>
           </div>
         </div>
       </div>

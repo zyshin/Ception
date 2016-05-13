@@ -252,7 +252,8 @@ def summary_edit(sentence_list):
             l.append(o)
         l.sort(key=lambda o: (-o['count'], o['authors'][0]))
 
-        if len(l) > 1:
+        if True:
+        # if len(l) > 1:
             conflicted = 1
             replace = '<div class="replace" data-pk="%d">%s</div>' % (len(data), l[0]['key'])
             data.append(l)
@@ -446,6 +447,10 @@ class MergeTest(unittest.TestCase):
 
     user_clean = 'In this section, we explore the feasibility of compiling video augmented dictionary for learners from subtitles'
     html_str, data, conflicted = merge_edit(origin_clean, user_clean, other_clean)
+
+    origin_clean = 'Once selected, the clip will automatically start palying with subtitles'
+    user_clean = 'Once selected, the clip will automatically begin with two types of subtitles'
+    other_clean = 'Once selected, the clip will automatically start palying with two types of subtitles'
 
 
 if __name__ == "__main__":

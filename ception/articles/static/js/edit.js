@@ -123,8 +123,10 @@ $(function () {
     var block = $(this).closest(".sentence-block");
     var comment_block = $(".sentence-comment-block", block);
     if (comment_block.css('display') == "none") {
+      $(this).addClass('hovered');
       comment_block.fadeIn('normal');
     } else {
+      $(this).removeClass('hovered');
       comment_block.fadeOut('normal');
     }
   });
@@ -305,6 +307,18 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     $("input[name='sentence_id']", ".summary-block").val(sid);
   };
 
+  var update_sentence_style = function (sid) {
+    var pd_tags = $('iframe[title$="id_content"]').contents().find('pd'),
+      current = pd_tags.filter('[sid="' + sid.toString() + '"]'),
+      previous = current.prevAll('pd').first();
+    if (previous.length == 0)
+      previous = current.parent('p');
+    pd_tags.parent('p').removeClass('previous');
+    pd_tags.removeClass('current').removeClass('previous');
+    current.addClass('current');
+    previous.addClass('previous');
+  };
+
   var get_sentence_comment = function (version, sentence_id) {
     var list = $(".sentence-comment-list", version.block);
     list.html(version.comments[sentence_id]['html']);
@@ -386,6 +400,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
         get_sentence_comment(current_version, selected.id);
         get_sentence_vote(current_version, selected.id);
         update_summary(selected.id);
+        update_sentence_style(selected.id);
       } else {
         for (i = 0; i < versions.length; i++) {
           versions[i].block.attr("hidden", "hidden");

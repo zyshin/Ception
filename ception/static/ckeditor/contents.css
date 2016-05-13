@@ -170,3 +170,19 @@ ins {
 .hide-del-class del {
 	display: none;
 }
+
+p.previous:before,
+pd.previous:after {
+    content: '[';
+    color: red;
+    position: absolute;
+    margin-left: -3px;
+    /*visibility: hidden;*/
+}
+pd.current:after {
+    content: ']';
+    color: red;
+    position: absolute;
+    margin-left: -1px;
+    /*visibility: hidden;*/
+}
