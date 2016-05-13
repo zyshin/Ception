@@ -111,10 +111,8 @@ class Article(models.Model):
             sentence_list = [origin_sentences[i]]
             for j in xrange(len(version_info_array)):
                 if version_info_array[j][i]["single"] and version_set[j].edit_user != user:
-                    print version_set[j].edit_user, user
                     sentence_list.append(CleanParser.get_clean_text(version_info_array[j][i]["sentence"]))
             html_str, data, conflicted = summary_edit(sentence_list)
-            print html_str
             summary_list.append({'html_str': html_str, 'data': data, 'conflicted': conflicted})
         return summary_list
 

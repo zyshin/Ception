@@ -81,26 +81,41 @@
 
     <div class="col-md-6" id="sidebar">
       <div class="row" style="margin-top: 10px;">
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
         <div class="col-md-3">
           <a class="btn btn-default btn-block" id="cancel-button"
-             href="{% url 'articles' %}">{% trans 'Cancel' %}</a>
+             href="{% url 'articles' %}">{% trans 'Cancel' %}
+          </a>
+
         </div>
         <div class="col-md-3">
           <button class="btn btn-primary btn-block" id="commit-button">{% trans 'Commit' %}</button>
-        </div>
-        <div class="col-md-3">
-          <input id="toggle-sentence-view" type="checkbox" data-toggle="toggle" data-on="Context" data-off="Context">
-        </div>
-        <div class="col-md-3">
-          <input id="hide-del-toggle" type="checkbox" data-toggle="toggle" data-on="Delete " data-off="Delete ">
+
         </div>
       </div>
       <div id="sentence-list" hidden="hidden">
+        <div class="sentence-list-header">
+          <div class="header-text">current sentence</div>
+
+          <input id="toggle-sentence-view" type="checkbox" data-toggle="toggle" data-on="Context" data-off="Context"
+                 data-width="100px">
+          <input id="hide-del-toggle" type="checkbox" data-toggle="toggle" data-on="Delete " data-off="Delete "
+                 data-width="100px">
+        </div>
         {% include 'articles/partial/partial_sentence.html' with author=user %}
         {% include 'articles/partial/partial_summary.html' %}
         {% for author in data.authors %}
           {% include 'articles/partial/partial_sentence.html' with author=author %}
         {% endfor %}
+        <div class="sentence-list-footer">
+          <div class="sentence-content footer-text">
+            Legend:
+            <ins>Inserted</ins>
+            <del>Deleted</del>
+            <span class="highlight">Modified Current Sentence</span>
+          </div>
+        </div>
       </div>
       <div style="min-height: 300px"></div>
     </div>
