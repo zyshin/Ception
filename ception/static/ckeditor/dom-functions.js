@@ -172,9 +172,14 @@ CKEDITOR.dom.node.prototype.unhighlight = function (range, selection) {
 };
 
 CKEDITOR.editor.prototype.getSelectedSentence = function () {
-  var selection = this.getSelection();
-  var range = this.getSelection().getRanges()[0];
-  var node = range.getBoundaryNodes().startNode;
+  var node = null;
+  try {
+    node = this.getSelection().getRanges()[0].getBoundaryNodes().startNode;
+    CKEDITOR.editor.prototype.getSelectedSentence.previous_selected_node = node;
+  } catch (e) {
+    console.log(e);
+    node = CKEDITOR.editor.prototype.getSelectedSentence.previous_selected_node
+  }
   if (node.getParent().getName && node.getParent().getName() == "del") {
     node = node.getPreviousUndergroundNode();
   }
@@ -182,22 +187,18 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
   var forward_node = node;
   var backward_node = node.getPreviousUndergroundNode();
   while (backward_node && !(backward_node.isPD() == 1)) {
-    //node_list.unshift(backward_node.highlight(range, selection));
     node_list.unshift(backward_node);
     backward_node = backward_node.getPreviousUndergroundNode();
   }
   while (forward_node && !(forward_node.isPD() == 1)) {
-    //node_list.push(forward_node.highlight(range, selection));
     node_list.push(forward_node);
     forward_node = forward_node.getNextUndergroundNode();
   }
   var sentence_id = undefined;
   if (forward_node) {
     node_list.push(forward_node);
-    //node_list.push(forward_node.highlight(range, selection));
     sentence_id = forward_node.getSentenceID();
   }
-  //selection.selectRanges([range]);
   var text = "";
   for (var i = 0; i < node_list.length; i++) {
     //node_list[i].addClass("highlight");

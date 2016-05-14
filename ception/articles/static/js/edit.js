@@ -468,8 +468,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   });
   editor.on('change', function (e) {
     try {
-      var selected = editor.getSelectedSentence();
-      current_sentence.html(selected.sentence);
+      update_comments_and_divs();
     } catch (e) {
       // ignore it
     }

@@ -8,6 +8,7 @@ CKEDITOR.DELETE = 46;
 CKEDITOR.INVISIABLECHAR = String.fromCharCode(0);
 CKEDITOR.CUT_KEY = 1114200;
 CKEDITOR.SHIFT_MAC = 2228240;
+CKEDITOR.UNDO = 1114202;
 
 CKEDITOR.SENTENCE_NEW = -10;
 CKEDITOR.SENTENCE_SPLIT = -9;
@@ -22,6 +23,7 @@ function isModifier(keyCode, modifier) {
 }
 
 function isVisible(keyCode) {
+  if (isModifier(keyCode, CKEDITOR.CTRL)) return false;
   var trueKeyCode = sanitizeKeyCode(keyCode);
   return (trueKeyCode >= 48 && trueKeyCode < 300) || trueKeyCode == 32;
 }
@@ -71,52 +73,54 @@ function fixSpecificLineBug(editor, e) {
 
 function fixSpecificBsBug(editor, e) {
   var keycode = sanitizeKeyCode(e.data.keyCode);
-  var range = editor.getSelection().getRanges()[0];
-  var container = range.startContainer;
-  var parent = container.getParent();
-  if (keycode == CKEDITOR.BACKSPACE && container.getLength && parent.getName() == "ins") {
-    var tar_n = parent && parent.hasNext() && parent.getNext().getName && parent.getNext().getName() == "del";
-    var ending = (range.startOffset == container.getText().length);
-    var tar_p = parent && parent.hasPrevious() && parent.getPrevious().getName && parent.getPrevious().getName() == "del";
-    var beginning = (range.startOffset == 1);
-    var same = (range.startOffset == range.endOffset);
-    var inside_ins = (parent.getName() == "ins");
-    if (inside_ins && same) {
-      if (tar_n && ending) {
-        if (range.startOffset > 1) {
-          container.setText(container.getText().slice(0, -1));
-          range.startOffset -= 1;
-          range.endOffset -= 1;
-        } else {
+  if (keycode == CKEDITOR.BACKSPACE) {
+    var range = editor.getSelection().getRanges()[0];
+    var container = range.startContainer;
+    var parent = container.getParent();
+    if (container.getLength && parent.getName() == "ins") {
+      var tar_n = parent && parent.hasNext() && parent.getNext().getName && parent.getNext().getName() == "del";
+      var ending = (range.startOffset == container.getText().length);
+      var tar_p = parent && parent.hasPrevious() && parent.getPrevious().getName && parent.getPrevious().getName() == "del";
+      var beginning = (range.startOffset == 1);
+      var same = (range.startOffset == range.endOffset);
+      var inside_ins = (parent.getName() == "ins");
+      if (inside_ins && same) {
+        if (tar_n && ending) {
+          if (range.startOffset > 1) {
+            container.setText(container.getText().slice(0, -1));
+            range.startOffset -= 1;
+            range.endOffset -= 1;
+          } else {
+            var previous = parent.getPreviousUndergroundNode();
+            while ((previous.getName && previous.getName() == "del") || previous.isPD() == -1) {
+              previous = previous.getPrevious();
+            }
+            range.setStart(previous, previous.getLength());
+            range.setEnd(previous, previous.getLength());
+            container.remove();
+          }
+          editor.getSelection().selectRanges([range]);
+          e.cancel();
+        } else if (tar_p && beginning) {
+          if (container.getLength() == 1) {
+            container.remove();
+          } else {
+            container.setText(container.getText().slice(1));
+          }
           var previous = parent.getPreviousUndergroundNode();
           while ((previous.getName && previous.getName() == "del") || previous.isPD() == -1) {
+            //console.log(previous.getName());
             previous = previous.getPrevious();
           }
           range.setStart(previous, previous.getLength());
           range.setEnd(previous, previous.getLength());
-          container.remove();
+          editor.getSelection().selectRanges([range]);
+          e.cancel();
         }
-        editor.getSelection().selectRanges([range]);
-        e.cancel();
-      } else if (tar_p && beginning) {
-        if (container.getLength() == 1) {
-          container.remove();
-        } else {
-          container.setText(container.getText().slice(1));
-        }
-        var previous = parent.getPreviousUndergroundNode();
-        while ((previous.getName && previous.getName() == "del") || previous.isPD() == -1) {
-          console.log(previous.getName());
-          previous = previous.getPrevious();
-        }
-        range.setStart(previous, previous.getLength());
-        range.setEnd(previous, previous.getLength());
-        editor.getSelection().selectRanges([range]);
-        e.cancel();
       }
     }
+    editor.fire('scyue_event');
   }
-  editor.fire('scyue_event');
 }
 
 function fixSpecificCutBug(editor, e) {
