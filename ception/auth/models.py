@@ -21,7 +21,7 @@ class Profile(models.Model):
         return url 
 
     def get_picture(self):
-        no_picture = 'http://trybootcamp.vitorfs.com/static/img/user.png'
+        no_picture = '/static/img/user.png'
         # try:
         #     filename = settings.MEDIA_ROOT + '/profile_pictures/' + self.user.username + '.jpg'
         #     picture_url = settings.MEDIA_URL + 'profile_pictures/' + self.user.username + '.jpg'

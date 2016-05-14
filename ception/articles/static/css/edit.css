@@ -245,11 +245,11 @@ ins {
 
 .sentence-list-footer {
     border-top: 1px solid #e3e3e3;
-    height: 30px;
+    height: 50px;
 }
 
 .sentence-list-footer .footer-text {
-    line-height: 30px;
+    line-height: 50px;
     margin-left: 15px;
     /*font-family: Chalkboard;*/
     /*font-size: 14px;*/
@@ -259,7 +259,7 @@ ins {
     content: '[';
     color: red;
     position: absolute;
-    margin-left: -3px;
+    margin-left: -6px;
 }
 #current_sentence:after{
     content: ']';

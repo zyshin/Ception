@@ -171,6 +171,17 @@ CKEDITOR.dom.node.prototype.unhighlight = function (range, selection) {
   }
 };
 
+CKEDITOR.editor.prototype.updateSentenceStyle = function (referNode, currentPDNode, previousPDNode) {
+  var parent = $(referNode.$).closest('p'),
+    pd_tags = parent.find('pd'),
+    current = (currentPDNode && (currentPDNode = currentPDNode.getPDNodeIfExist()))? $(currentPDNode.$) : parent,
+    previous = (previousPDNode && (previousPDNode = previousPDNode.getPDNodeIfExist()))? $(previousPDNode.$) : parent;
+  parent.removeClass('current').removeClass('previous');
+  pd_tags.removeClass('current').removeClass('previous');
+  current.addClass('current');
+  previous.addClass('previous');
+};
+
 CKEDITOR.editor.prototype.getSelectedSentence = function () {
   var node = null;
   try {
@@ -212,6 +223,7 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
       }
     }
   }
+  this.updateSentenceStyle(node, forward_node, backward_node);
   return {
     sentence: text,
     id: sentence_id

@@ -171,15 +171,27 @@ ins {
 	display: none;
 }
 
-p.previous:before,
-pd.previous:after {
+pd {
+	/*margin-left: 10px;*/
+	margin-right: 5px;
+}
+
+p.previous:before {
     content: '[';
     color: red;
     position: absolute;
-    margin-left: -3px;
+    margin-left: -6px;
     /*visibility: hidden;*/
 }
-pd.current:after {
+pd.previous:after {
+    content: '\00a0[';
+    color: red;
+    position: absolute;
+    margin-left: -1px;
+    /*visibility: hidden;*/
+}
+pd.current:after,
+p.current:after {
     content: ']';
     color: red;
     position: absolute;
