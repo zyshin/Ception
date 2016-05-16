@@ -267,3 +267,7 @@ ins {
     position: absolute;
     margin-left: -1px;
 }
+
+.summary-block .comment-text h5 {
+    background-color: #ffe7f7;
+}

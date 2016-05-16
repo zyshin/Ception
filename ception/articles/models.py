@@ -110,9 +110,15 @@ class Article(models.Model):
         for i in range(1, self.sentence_count + 1):
             sentence_list = [origin_sentences[i]]
             for j in xrange(len(version_info_array)):
-                if version_info_array[j][i]["single"] and version_set[j].edit_user != user:
+                if version_info_array[j][i]["single"] and version_set[j].edit_user != user and version_info_array[j][i][
+                    "edited"]:
                     sentence_list.append(CleanParser.get_clean_text(version_info_array[j][i]["sentence"]))
-            html_str, data, conflicted = summary_edit(sentence_list)
+            if len(sentence_list) <= 2:
+                html_str = "No summary view is available."
+                data = {}
+                conflicted = False
+            else:
+                html_str, data, conflicted = summary_edit(sentence_list)
             summary_list.append({'html_str': html_str, 'data': data, 'conflicted': conflicted})
         return summary_list
 

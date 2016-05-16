@@ -103,7 +103,7 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 	},
 	
 	tooltipDefaults = {
-		show: true,
+		show: false,
 		path: "js/opentip-adapter.js",
 		classPath: "OpentipAdapter",
 		cssPath: "css/opentip.css",
