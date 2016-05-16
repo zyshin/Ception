@@ -14,22 +14,26 @@ class SentenceInfo(object):
         content: pure sentence content
         status: Unchanged / Edited / Deleted / NEW / UNKNOWN
     """
-    DELETED = 0
+    UNKNOWN = 0
     EDITED = 1
     NEW = 2
     UNCHANGED = 3
     SPLIT = 4
     REPLACE = 5
-    REMOVED = 6
+    REMOVED = 6  # Substituted by a new sentence
+    MERGED = 7  # PD Tag Removed
+    DELETED = 8
 
     REVERT_DICT = [
-        'Deleted',
+        'Unknown',
         'Edited',
         'New',
         'Unchanged',
         'Split',
         'Replace',
-        'Removed'
+        'Removed',
+        'Merged',
+        'Deleted',
     ]
 
     def __init__(self):
@@ -115,9 +119,13 @@ class ContentParser(HTMLParser):
         elif tag == 'pd':
             self.in_pd = False
             if self.in_pd_delete:
-                self.current.status = SentenceInfo.DELETED
+                self.current.status = SentenceInfo.MERGED
             if self.in_ins:
                 self.current.content += "</ins>"
+
+            if len(CleanParser.get_clean_text(self.current.content)) <= 1:
+                self.current.status = SentenceInfo.DELETED
+
             self.info_array.append(self.current)
             self.current = SentenceInfo()
             if self.in_ins:
@@ -145,7 +153,7 @@ def eliminate_replace(info_array):
         s = info_array[i]
         if s.sid > origin_count:
             origin_count = s.sid
-        if s.sid > 0 and s.sid < len(replace_dict) and replace_dict[s.sid] and s.status == SentenceInfo.DELETED:
+        if s.sid > 0 and s.sid < len(replace_dict) and replace_dict[s.sid] and s.status == SentenceInfo.MERGED:
             info_array[i - 1].content += "<del>" + s.content + "</del>"
             info_array[i + 1].content = "<ins>" + s.content + "</ins>" + info_array[i + 1].content
             s.status = SentenceInfo.REMOVED
@@ -168,15 +176,25 @@ def set_mapping_array(info_array, origin_count, text):
         s = info_array[j]
         if s.status == SentenceInfo.REMOVED:
             continue
+        elif s.status == SentenceInfo.DELETED:
+            mapping_array[s.sid] = {
+                'context': "(Sentence Deleted)",
+                # 'context_without_span': text,
+                'sentence': "(Sentence Deleted)",
+                'clean_sentence': "",
+                'id': s.sid,
+                'edited': True,
+                'single': False
+            }
+            continue
         current_sentence_array.append(s)
         current_related_sid.append(s.sid)
-        if s.sid > 0 and s.status != SentenceInfo.DELETED:
+        if s.sid > 0 and s.status != SentenceInfo.MERGED:
 
             positive_sentence_count = 0
             for ss in current_sentence_array:
                 if ss.sid > 0:
                     positive_sentence_count += 1
-
             former_content = ""
             for ss in former_sentence_array:
                 former_content += ss.content
