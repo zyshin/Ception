@@ -37,13 +37,14 @@
               src="{{ form.instance.origin.create_user.profile.get_picture }}"></a>
           <a href="{% url 'profile' form.instance.origin.create_user.username %}">{{ form.instance.origin.create_user.profile.get_screen_name }}</a>
         </span>
-        <span class="edit">
+        <!--<span class="edit">
           <span class="glyphicon glyphicon-pencil"></span>
           10 Edits
-        </span>
+        </span>-->
         <span class="select">
-          <span class="glyphicon glyphicon-search"></span>
-          <div id="selected-id" style="display: inline"></div>
+          {# <span class="glyphicon glyphicon-search"></span> #}
+          <span class="glyphicon glyphicon-pencil"></span>
+          <div id="selected-id" style="display: inline">Sentence ID</div>
         </span>
       </div>
 
