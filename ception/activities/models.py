@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.utils.html import escape
+
 
 class Activity(models.Model):
     FAVORITE = 'F'
@@ -140,3 +141,39 @@ class Notification(models.Model):
             return u'{0}...'.format(value[:summary_size])
         else:
             return value
+
+
+class Log(models.Model):
+    CONTEXT_MENU = 'C'
+    DELETE_TOGGLE = 'D'
+    CONTEXT_TOGGLE = 'T'
+
+    LOG_TYPES = (
+        (CONTEXT_MENU, 'Context Menu Toggled'),
+        (DELETE_TOGGLE, 'Delete Toggle'),
+        (CONTEXT_TOGGLE, 'Context Toggle'),
+    )
+
+    user = models.ForeignKey(User)
+    log_type = models.CharField(max_length=1, choices=LOG_TYPES)
+    date = models.DateTimeField(auto_now_add=True)
+    version = models.IntegerField(null=True, blank=True)
+    sentence = models.IntegerField(null=True, blank=True)
+
+
+class ApplyLog(models.Model):
+    CANCELED = 'A'
+    CONFIRMED = 'B'
+    APPLY_TYPES = (
+        (CANCELED, 'Canceled'),
+        (CONFIRMED, 'Confirmed')
+    )
+    user = models.ForeignKey(User)
+    apply_type = models.CharField(max_length=1, choices=APPLY_TYPES)
+    date = models.DateTimeField(auto_now_add=True)
+    version = models.IntegerField(null=True, blank=True)
+    sentence = models.IntegerField(null=True, blank=True)
+    self_content = models.TextField(max_length=1000)
+    other_content = models.TextField(max_length=1000)
+    merge_content = models.TextField(max_length=1000)
+    final_content = models.TextField(max_length=1000)

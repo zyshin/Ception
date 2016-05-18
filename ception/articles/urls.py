@@ -16,6 +16,7 @@ urlpatterns = patterns('ception.articles.views',
                        url(r'^summary/$', 'summary_test', name='summary_test'),
                        url(r'^merge_api/$', 'merge_api', name='merge_api'),
                        url(r'^merge_second_stage/$', 'merge_second_stage', name='merge_second_stage'),
+                       url(r'^log_event/$', 'log_event', name='log_event'),
                        # url(r'^(?P<slug>[-\w]+)/$', 'article', name='article'),
                        )
 

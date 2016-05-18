@@ -5,6 +5,43 @@
 var versions = [];
 var bank = null;
 var summary_bank = null;
+var logging = true;
+
+
+var apply_event = function (merge_log_dict) {
+  $.ajax({
+    url: '/articles/log_event/',
+    data: merge_log_dict,
+    cache: false,
+    type: 'post',
+    success: function (data) {
+      console.log(data);
+    }
+  });
+};
+apply_event.CANCEL = 'A';
+apply_event.CONFIRM = 'B';
+
+var log_event = function (event_type) {
+  var data = {
+    'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", "#edit_form").val(),
+    'event_type': event_type,
+    'sentence': $("#selected-id").text()
+  };
+  $.ajax({
+    url: '/articles/log_event/',
+    data: data,
+    cache: false,
+    type: 'post',
+    success: function (data) {
+      console.log(data);
+    }
+  });
+};
+log_event.CONTEXT_MENU = 'C';
+log_event.DELETE_TOGGLE = 'D';
+log_event.CONTEXT_TOGGLE = 'T';
+
 
 var commit_ajax = function () {
   var form = $("#edit_form");
@@ -47,6 +84,9 @@ $(function () {
       // this callback is executed every time the menu is to be shown
       // its results are destroyed every time the menu is hidden
       // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
+      if (logging) {
+        log_event(log_event.CONTEXT_MENU);
+      }
       var current_using_bank = bank;
       var pk = $(e.currentTarget).data('pk');
       if ($(e.currentTarget).closest(".context-menu-activated").hasClass('summary-content')) {
@@ -199,6 +239,9 @@ $(function () {
   });
 
   $("#toggle-sentence-view").change(function () {
+    if (logging) {
+      log_event(log_event.CONTEXT_TOGGLE);
+    }
     if ($(this).prop('checked')) {
       $(".sentence-content-others").css("display", "none");
       $(".cke_concise").css("display", "block");
@@ -209,6 +252,9 @@ $(function () {
   });
 
   $("#hide-del-toggle").change(function () {
+    if (logging) {
+      log_event(log_event.DELETE_TOGGLE);
+    }
     if ($(this).prop('checked')) {
       $(".sentence-content").removeClass("hide-del-class");
       $("iframe", ".cke_concise").contents().find("body").removeClass("hide-del-class");
@@ -228,12 +274,19 @@ $(function () {
 
 
   var modal = $("#merge-modal");
+  var merge_log_dict = {};
   $(".accept-button").click(function () {
+    merge_log_dict = {'event_type': 'P'};
     var block = $(this).closest(".sentence-block");
     var my_sentence = $("#current_sentence").html();
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
     var version_id = $("input[name='version_id']", block).val();
     var sentence_id = $("input[name='sentence_id']", block).val();
+    merge_log_dict['version'] = version_id;
+    merge_log_dict['sentence'] = sentence_id;
+    merge_log_dict['csrfmiddlewaretoken'] = csrf;
+    merge_log_dict['self_content'] = my_sentence;
+    merge_log_dict['other_content'] = $(".sentence-content", block).html();
 
     $.ajax({
       url: '/articles/merge_api/',
@@ -250,6 +303,7 @@ $(function () {
         var data = JSON.parse(json);
         bank = data.data;
         $(".modal-body", modal).html(data.str);
+        merge_log_dict['merge_content'] = data.str;
         merge_second_stage.csrf = csrf;
         merge_second_stage.sen_id = sentence_id;
         modal.modal();
@@ -261,9 +315,29 @@ $(function () {
     });
   });
 
+
+  var is_confirm = false;
   $("#modal-confirm-button").click(function () {
-    modal.modal('hide');
+    if (logging) {
+      merge_log_dict['final_content'] = $(".modal-body", modal).html();
+      merge_log_dict['apply_type'] = apply_event.CONFIRM;
+      apply_event(merge_log_dict);
+    }
     merge_second_stage($(".modal-body", modal).html());
+    is_confirm = true;
+    modal.modal('hide');
+  });
+
+  modal.on('hidden.bs.modal', function () {
+    if (is_confirm) {
+      is_confirm = false;
+    } else {
+      if (logging) {
+        merge_log_dict['final_content'] = $(".modal-body", modal).html();
+        merge_log_dict['apply_type'] = apply_event.CANCEL;
+        apply_event(merge_log_dict);
+      }
+    }
   });
 
 });
@@ -472,6 +546,10 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     commit_ajax();
     e.cancel();
   });
+
+  //editor.on('lite:showHide', function (e) {
+  //  console.log("Toggle Tracking");
+  //});
 
 }
 

@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
-from ception.activities.models import Activity
+from ception.activities.models import Activity, Log, ApplyLog
 from ception.articles.forms import ArticleForm, VersionForm
 from ception.articles.merge import summary_edit
 from ception.articles.models import Article, Tag, ArticleComment, ArticleVersion, ArticleSentenceComment
@@ -356,3 +356,30 @@ def summary_test(request):
                 version_array.append(v.info_array_json)
             article_array.append(version_array)
         return render(request, 'articles/tests/summary_view.html', {'data': json.dumps(article_array)})
+
+
+@ajax_required
+@login_required
+def log_event(request):
+    if request.method != 'POST':
+        return HttpResponseBadRequest()
+    event_type = request.POST['event_type']
+    if event_type == 'P':
+        log = ApplyLog()
+        log.apply_type = request.POST['apply_type']
+        log.self_content = request.POST['self_content']
+        log.other_content = request.POST['other_content']
+        log.merge_content = request.POST['merge_content']
+        log.final_content = request.POST['final_content']
+        log.sentence = request.POST['sentence']
+        log.version = request.POST['version']
+        log.user = request.user
+        log.save()
+        return HttpResponse("Apply Log Saved!")
+    else:
+        log = Log()
+        log.log_type = event_type
+        log.user = request.user
+        log.sentence = int(request.POST['sentence'])
+        log.save()
+        return HttpResponse("Ordinary Log Saved!")
