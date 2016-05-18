@@ -467,6 +467,12 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   editor.on('drop', function (e) {
     e.cancel();
   });
+
+  editor.on('save', function (e) {
+    commit_ajax();
+    e.cancel();
+  });
+
 }
 
 function init_sidebar(info_str_array) {
