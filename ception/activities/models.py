@@ -160,6 +160,12 @@ class Log(models.Model):
     version = models.IntegerField(null=True, blank=True)
     sentence = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        ordering = ('-date',)
+
+    def __unicode__(self):
+        return '%s %s' % (self.user.username, self.log_type)
+
 
 class ApplyLog(models.Model):
     CANCELED = 'A'
@@ -177,3 +183,9 @@ class ApplyLog(models.Model):
     other_content = models.TextField(max_length=1000)
     merge_content = models.TextField(max_length=1000)
     final_content = models.TextField(max_length=1000)
+
+    class Meta:
+        ordering = ('-date',)
+
+    def __unicode__(self):
+        return '%s %s v%d s%d' % (self.user.username, self.apply_type, self.version, self.sentence)
