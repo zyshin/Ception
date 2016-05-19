@@ -114,7 +114,7 @@ class Article(models.Model):
                     "edited"]:
                     sentence_list.append(CleanParser.get_clean_text(version_info_array[j][i]["sentence"]))
             if len(sentence_list) <= 2:
-                html_str = "<i>( No summary view is available. )</i>"
+                html_str = ""
                 data = {}
                 conflicted = False
             else:

@@ -255,10 +255,13 @@ function set_editor_update_function(editor) {
 
 function initWithLite(name, isTracking, isShowing) {
   var editor = CKEDITOR.replace(name);
+  if (isShowing !== undefined)
+    CKEDITOR.config.liteShowHide = isShowing;
   editor.on(LITE.Events.INIT, function(e) {
     editor.lite = e.data.lite;
     editor.lite.toggleTracking(isTracking);
-    editor.lite.toggleShow(isShowing);
+    editor.lite.toggleShow(CKEDITOR.config.liteShowHide, false);
+    console.log('CKEditor lite loaded!');
   });
   ceptArming(editor);
   set_editor_update_function(editor);

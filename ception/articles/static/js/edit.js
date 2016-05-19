@@ -300,8 +300,14 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   var update_summary = function (sid) {
     if (sid > 0) {
       summary_bank = summary_list[sid].data;
-      summary_sentence.html(summary_list[sid].html_str);
+      if (summary_list[sid].html_str) {
+        $('#summary-merge-button').removeClass('hidden');
+      } else {
+        $('#summary-merge-button').addClass('hidden');
+      }
+      summary_sentence.html(summary_list[sid].html_str || '<i>( No summary is available. )</i>');
     } else {
+      $('#summary-merge-button').removeClass('hidden');
       summary_sentence.html('');
     }
     $("input[name='sentence_id']", ".summary-block").val(sid);
@@ -411,7 +417,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   current_version.block = $(".sentence-block[data-author='" + current_user + "']");
   current_version.block.addClass("selected-block");
   var current_sentence = $(".sentence-content", current_version.block);
-  $(".time", current_version.block).text("editing now");
+  $(".time", current_version.block).text("");
   $("input[name='version_id']", current_version.block).val(current_version.id);
   var id_div = $("#selected-id");
   var form_current_sentence_id = $("input[name='sentence_id']", current_version.block);
@@ -471,6 +477,10 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   editor.on('save', function (e) {
     commit_ajax();
     e.cancel();
+  });
+
+  editor.on('lite:showHide', function (e) {
+    CKEDITOR.config.liteShowHide = e.data.show;
   });
 
 }

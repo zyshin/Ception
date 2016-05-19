@@ -1,3 +1,10 @@
+a,
+a:active,
+a:hover,
+a:focus {
+    text-decoration: none;
+}
+
 #summary-window {
     border: 15px solid transparent;
     border-top: 55px solid transparent;
@@ -25,7 +32,7 @@
 }
 
 .sentence-block .sentence-content {
-    padding: 5px 15px;
+    padding: 8px 15px;
 }
 
 del {
@@ -179,7 +186,8 @@ ins {
 .replace {
     display: inline;
     position: relative;
-    background: #FFFF88;
+    /*background: #FFFF88;*/
+    border-bottom: 2px solid #5EB7E1;
 }
 
 /*.replace:before {
@@ -194,6 +202,72 @@ ins {
     left: -1px;
     overflow: hidden;
 }*/
+
+#sentence-list .replace:after {
+    margin-left: -.1em;
+    padding-left: .2em;
+    padding-right: .2em;
+    vertical-align: super;
+    font-size: xx-small;
+    /*color: #fff;*/
+    border-radius: .25em;
+}
+/*#sentence-list .replace.lv1:after{
+    content: "1";
+    background-color: rgb(180,230,253);
+}
+#sentence-list .replace.lv2:after{
+    content: "2";
+    background-color: rgb(165,225,253);
+}
+#sentence-list .replace.lv3:after{
+    content: "3";
+    background-color: rgb(149,219,252);
+}
+#sentence-list .replace.lv4:after{
+    content: "4";
+    background-color: rgb(134,214,252);
+}
+#sentence-list .replace.lv5:after{
+    content: "5";
+    background-color: rgb(119,209,251);
+}
+#sentence-list .replace.lv6:after{
+    content: "6";
+    background-color: rgb(103,203,251);
+}
+#sentence-list .replace.lv7:after{
+    content: "7";
+    background-color: rgb(88,198,250);
+}
+#sentence-list .replace.lv8:after{
+    content: "8";
+    background-color: rgb(72,192,250);
+}
+#sentence-list .replace.lv9:after{
+    content: "..";
+    background-color: rgb(57,187,249);
+}*/
+#sentence-list .replace.lv1:after{
+    content: "1";
+    background-color: rgb(180,230,253);
+}
+#sentence-list .replace.lv2:after{
+    content: "2";
+    background-color: rgb(149,219,252);
+}
+#sentence-list .replace.lv3:after{
+    content: "3";
+    background-color: rgb(119,209,251);
+}
+#sentence-list .replace.lv4:after{
+    content: "4";
+    background-color: rgb(88,198,250);
+}
+#sentence-list .replace.lv5:after{
+    content: "..";
+    background-color: rgb(57,187,249);
+}
 
 .modal-sentence del {
     color: #3399ff;
@@ -246,6 +320,10 @@ ins {
 .sentence-list-footer {
     border-top: 1px solid #e3e3e3;
     height: 50px;
+    background: #f6f6f6;
+    color: rgb(149,149,149);
+    /*font-family: 'SimHei';*/
+    /*font-weight: bold;*/
 }
 
 .sentence-list-footer .footer-text {
@@ -269,5 +347,47 @@ ins {
 }
 
 .summary-block .comment-text h5 {
-    background-color: #ffe7f7;
+    background-color: #EDFCE7;
+}
+
+#sentence-list .label {
+    margin-left: 0.6em;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.label {
+    padding-bottom: 0.2em;
+}
+
+#sentence-list .panel-group {
+    margin-bottom: 0;
+}
+
+#sentence-list .panel-default {
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-radius: 0;
+}
+
+#sentence-list .panel-heading {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 0;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-radius: 0;
+}
+
+#sentence-list .panel-heading {
+    background-color: #fff;
+}
+
+.glyphicon-chevron-down {
+    font-size: xx-small;
+    border: 1px solid;
+    padding: 1px 1px 0 2px;
 }

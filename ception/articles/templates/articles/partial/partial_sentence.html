@@ -4,8 +4,12 @@
     {#      <a href="{% url 'profile' author.username %}"><img src="{{ author.profile.get_picture }}" class="sentence-portrait"></a>#}
     <div class="comment-text">
       <h5>
-        <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a>
-        <small class="time">here should be the time</small>
+        {# <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a> #}
+        <a>{{ author.profile.get_screen_name }}</a>
+      {% if author == user %}
+        <span class="label label-info">&nbsp;mine&nbsp;</span>
+      {% endif %}
+        <small class="time">editing now</small>
         <div style="display: inline-block; padding-right: 20px;">
           <span class="glyphicon glyphicon-comment sentence-comment-button sentence-vote"></span>
           <span class="comment-count">-</span>
