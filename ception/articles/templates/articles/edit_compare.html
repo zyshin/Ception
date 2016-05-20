@@ -23,7 +23,7 @@
     <li class="active">{% trans 'Article' %}</li>
   </ol>
   <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-6">
       <h2>{{ form.instance.origin.title }}</h2>
       <article>
         <div class="info">
@@ -62,11 +62,13 @@
 
       </article>
     </div>
-    <div class="col-md-5 popular-tags" id="side-col">
+    <div class="col-md-6 popular-tags" id="side-col">
       <div class="row">
         <div class="col-md-3">
-          <input type="checkbox" checked id="hide-del-toggle" data-toggle="toggle" data-size="small"
-                 data-on="Show Del" data-off="Hide Del">
+          <div style="margin-top:12px; display: inline-block;">
+            <input type="checkbox" checked id="hide-del-toggle" data-toggle="toggle" data-size="small"
+              data-on="Show Del" data-off="Hide Del">
+          </div>
         </div>
         <div class="col-md-3"></div>
         <div class="col-md-3">
