@@ -381,5 +381,6 @@ def log_event(request):
         log.log_type = event_type
         log.user = request.user
         log.sentence = int(request.POST['sentence'])
+        log.version = int(request.POST['version'])
         log.save()
         return HttpResponse("Ordinary Log Saved!")

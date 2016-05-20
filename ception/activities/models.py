@@ -147,11 +147,13 @@ class Log(models.Model):
     CONTEXT_MENU = 'C'
     DELETE_TOGGLE = 'D'
     CONTEXT_TOGGLE = 'T'
+    COMMIT = 'M'
 
     LOG_TYPES = (
         (CONTEXT_MENU, 'Context Menu Toggled'),
         (DELETE_TOGGLE, 'Delete Toggle'),
         (CONTEXT_TOGGLE, 'Context Toggle'),
+        (COMMIT, 'COMMIT')
     )
 
     user = models.ForeignKey(User)

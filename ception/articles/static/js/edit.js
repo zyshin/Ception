@@ -26,7 +26,8 @@ var log_event = function (event_type) {
   var data = {
     'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", "#edit_form").val(),
     'event_type': event_type,
-    'sentence': $("#selected-id").text()
+    'sentence': $("#selected-id").text(),
+    'version': $("#edit_form").data('id')
   };
   $.ajax({
     url: '/articles/log_event/',
@@ -41,6 +42,7 @@ var log_event = function (event_type) {
 log_event.CONTEXT_MENU = 'C';
 log_event.DELETE_TOGGLE = 'D';
 log_event.CONTEXT_TOGGLE = 'T';
+log_event.COMMIT = 'M';
 
 
 var commit_ajax = function () {
@@ -59,6 +61,7 @@ var commit_ajax = function () {
       $(".alert").fadeTo(2000, 500).slideUp(500, function () {
         $(".alert").alert('close');
       });
+      log_event(log_event.COMMIT);
     }
   });
 };
