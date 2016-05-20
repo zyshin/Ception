@@ -296,21 +296,30 @@ function merge_second_stage(new_sentence) {
 }
 
 function init_page(current_version, current_user, json_str_array, summary_list) {
-
   var update_summary = function (sid) {
-    if (sid > 0) {
-      summary_bank = summary_list[sid].data;
-      if (summary_list[sid].html_str) {
-        $('#summary-merge-button').removeClass('hidden');
+    var edited_total = 0, merged_total = 0, unedited = 0;
+    for (var i = 0; i < versions.length; i++) {
+      var s = versions[i].info[sid];
+      if (s.edited) {
+        edited_total++;
+        if (s.single) merged_total++;
       } else {
-        $('#summary-merge-button').addClass('hidden');
+        unedited++;
       }
-      summary_sentence.html(summary_list[sid].html_str || '<i>( No summary is available. )</i>');
-    } else {
+    }
+    if (sid > 0 && summary_list[sid].html_str) {
+      summary_bank = summary_list[sid].data;
+      summary_sentence.html(summary_list[sid].html_str);
+      summary_block.removeClass('hidden');
       $('#summary-merge-button').removeClass('hidden');
+      $('#summary-span').text(merged_total + "/" + edited_total + " Merged");
+    } else {
+      summary_block.addClass('hidden');
+      $('#summary-merge-button').addClass('hidden');
       summary_sentence.html('');
     }
     $("input[name='sentence_id']", ".summary-block").val(sid);
+    $(".omitted-number").text(unedited);
   };
 
   var get_sentence_comment = function (version, sentence_id) {

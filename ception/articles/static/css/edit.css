@@ -321,7 +321,7 @@ ins {
     border-top: 1px solid #e3e3e3;
     height: 50px;
     background: #f6f6f6;
-    color: rgb(149,149,149);
+    color: #959595;
     /*font-family: 'SimHei';*/
     /*font-weight: bold;*/
 }
@@ -374,12 +374,14 @@ ins {
     padding-top: 5px;
     padding-bottom: 5px;
     margin: 0;
-    border-top-width: 1px;
-    border-top-style: solid;
+    /*border-top-width: 1px;*/
+    /*border-top-style: solid;*/
+    border-top: 1px solid #e3e3e3;
     border-left-width: 0;
     border-right-width: 0;
     border-bottom-width: 0;
     border-radius: 0;
+    color: #959595;
 }
 
 #sentence-list .panel-heading {
