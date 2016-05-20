@@ -61,11 +61,9 @@ $(function () {
 
   $("#hide-del-toggle").change(function () {
     if ($(this).prop('checked')) {
-      $(".sentence-content").removeClass("hide-del-class");
-      $("iframe", ".cke_concise").contents().find("body").removeClass("hide-del-class");
+      $("iframe", ".cke_editor_compare").contents().find("body").removeClass("hide-del-class");
     } else {
-      $(".sentence-content").addClass("hide-del-class");
-      $("iframe", ".cke_concise").contents().find("body").addClass("hide-del-class");
+      $("iframe", ".cke_editor_compare").contents().find("body").addClass("hide-del-class");
     }
   });
 });
