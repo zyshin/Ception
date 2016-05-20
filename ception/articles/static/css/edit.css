@@ -187,7 +187,7 @@ ins {
     display: inline;
     position: relative;
     /*background: #FFFF88;*/
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid rgb(57,187,249);
 }
 #sentence-list .replace.lv1{
     border-bottom-color: rgb(180,230,253);
