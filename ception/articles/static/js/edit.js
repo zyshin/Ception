@@ -396,7 +396,12 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
       summary_sentence.html('');
     }
     $("input[name='sentence_id']", ".summary-block").val(sid);
-    $(".omitted-number").text(unedited);
+    if (unedited == 0) {
+      $("#sentence-list .panel-heading").addClass('hidden');
+    } else {
+      $(".omitted-number").text(unedited);
+      $("#sentence-list .panel-heading").removeClass('hidden');
+    }
   };
 
   var get_sentence_comment = function (version, sentence_id) {

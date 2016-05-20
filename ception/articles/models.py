@@ -106,10 +106,11 @@ class Article(models.Model):
         version_info_array = []
         summary_list = [{'Error': 'Error'}]
         for v in version_set:
-            try:
-                version_info_array.append(json.loads(v.info_array_json))
-            except:
-                pass
+            if v.edit_user.is_staff:
+                try:
+                    version_info_array.append(json.loads(v.info_array_json))
+                except:
+                    pass
         for i in range(1, self.sentence_count + 1):
             sentence_list = [origin_sentences[i]]
             for j in xrange(len(version_info_array)):

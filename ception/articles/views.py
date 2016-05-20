@@ -128,7 +128,7 @@ def comment(request):
 
 # ========================== Editing View ==================================
 
-origin_authors = ["scyue", "ZYShin", "shawn"]
+# origin_authors = ["scyue", "zhuys", "chunyu"]
 
 def init_edit_page(request, id, compare=False):
     article = get_object_or_404(Article, pk=id)
@@ -151,10 +151,11 @@ def init_edit_page(request, id, compare=False):
         if v.edit_user == request.user:
             current_version_dict = dict_data
         else:
-            v_dict = dict_data
-            authors.append(v.edit_user)
-            version_jsons.append(json.dumps(v_dict))
-            version_array.append(v)
+            if v.edit_user.is_staff:
+                v_dict = dict_data
+                authors.append(v.edit_user)
+                version_jsons.append(json.dumps(v_dict))
+                version_array.append(v)
     json.dumps(article.compute_summary(request.user))
     pass_data = {
         'json': version_jsons,
