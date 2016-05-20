@@ -251,14 +251,21 @@ def summary_edit(sentence_list):
             o['count'] = len(o['authors'])
             l.append(o)
         l.sort(key=lambda o: (-o['count'], o['authors'][0]))
+        o = {
+            'key': apply_diff2(wordArray, origin_clean, [], start, end),
+            'authors': [],
+        }
+        o['word'] = o['key'] if o['key'] else '<i>(empty)</i>'
+        o['count'] = 0
+        l = [o] + l
 
         if i < len(merged) - 1:
         # if len(l) > 1:
             conflicted = 1
-            replace = '<div class="replace lv%d" data-pk="%d">%s</div>' % (len(diff) if len(diff) < 5 else 5, len(data), l[0]['key'])
+            replace = '<div class="replace lv%d" data-pk="%d">%s</div>' % (len(diff) if len(diff) < 5 else 5, len(data), l[1]['key'])
             data.append(l)
         else:
-            replace = l[0]['key']
+            replace = l[1]['key']
         html_str = html_str[:start] + replace + html_str[end:]
 
         pre_end = max([dd[-1]['pos'][1] for uid, dd in merged[i - 1].iteritems()]) if i > 0 else 0

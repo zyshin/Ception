@@ -101,14 +101,14 @@ $(function () {
           return_menu[bundle.key] = {
             name: bundle.word,
             icon: function (opt, $itemElement, itemKey, item) {
-              $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+              $itemElement.html('<span class="label label-success" style="margin-right: 5px;">' + (Number.isInteger(bundle.count)? '&nbsp;&nbsp;&nbsp;&nbsp;' + bundle.count + '&nbsp;&nbsp;&nbsp;&nbsp;' : bundle.count) + '</span>' + bundle.word + opt.selector);
             }
           };
         } else {
           return_menu[bundle.key] = {
             name: bundle.word,
             icon: function (opt, $itemElement, itemKey, item) {
-              $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+              $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + (Number.isInteger(bundle.count)? 'origin' : bundle.count) + '</span>' + bundle.word + opt.selector);
             }
           };
         }
