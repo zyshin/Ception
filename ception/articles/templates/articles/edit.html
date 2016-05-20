@@ -68,6 +68,7 @@
           <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true"
              aria-controls="collapseOne">
             Description
+            <span class="glyphicon glyphicon-chevron-down pull-right"></span>
           </a>
         </h4>
         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
@@ -92,7 +93,6 @@
         </div>
         <div class="col-md-3">
           <button class="btn btn-primary btn-block" id="commit-button">{% trans 'Commit' %}</button>
-
         </div>
       </div>
       <div id="sentence-list" hidden="hidden">
@@ -109,12 +109,33 @@
         {% for author in data.authors %}
           {% include 'articles/partial/partial_sentence.html' with author=author %}
         {% endfor %}
+        <!--<div class="panel-group" role="tablist">
+          <div class="panel panel-default">
+            <div id="collapseListGroup1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading1" aria-expanded="true">
+              <ul class="list-group">
+                <li class="list-group-item">Bootply</li>
+                <li class="list-group-item">One itmus ac facilin</li>
+                <li class="list-group-item">Second eros</li>
+              </ul>
+            </div>
+            <div class="panel-heading text-center" role="tab" id="collapseListGroupHeading1">
+              <a role="button" data-toggle="collapse" href="#collapseListGroup1" aria-expanded="true" aria-controls="collapseListGroup1">
+                Expand summarized edits by <span class="summary-number">3</span> users
+                <span class="glyphicon glyphicon-chevron-down"></span>
+              </a>
+            </div>
+          </div>
+        </div>-->
+        <div class="panel-heading text-center">
+          <i>Hided <span class="omitted-number">?</span> unchanged version</i>
+        </div>
         <div class="sentence-list-footer">
           <div class="footer-text">
+            <span class="glyphicon glyphicon-info-sign" style="color: #EE693E; vertical-align: text-top;"></span>
             Legend:
             1. <ins>Inserted</ins>
             2. <del>Deleted</del>
-            3. <span class="highlight">Modified Current Sentence</span>
+            3. <span class="highlight" style="color: black;">Cross-sentence edits</span>
           </div>
         </div>
       </div>

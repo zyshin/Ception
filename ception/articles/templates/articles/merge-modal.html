@@ -5,7 +5,11 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="myModalLabel">Solve Conflict</h4>
+        <span class="modal-title h4" id="myModalLabel">Solve Conflict</span>
+        <div class="pull-right" style="margin-right: 25px;">
+          <input id="hide-del-modal" type="checkbox" data-width="70px" data-size="mini" data-toggle="toggle" data-on="Delete "
+            data-off="Delete ">
+        </div>
       </div>
       <div class="modal-body modal-sentence hide-del-class context-menu-activated">
         This is a
@@ -16,10 +20,8 @@
         sentence whose target is to evaluate the performance of diff function modified by ZYShin.
       </div>
       <div class="modal-footer">
-        <input id="hide-del-modal" type="checkbox" data-width="100px" data-toggle="toggle" data-on="Delete "
-               data-off="Delete ">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="modal-confirm-button">Merge</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modal-confirm-button">Confirm</button>
       </div>
     </div>
   </div>

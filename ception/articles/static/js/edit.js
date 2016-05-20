@@ -370,15 +370,30 @@ function merge_second_stage(new_sentence) {
 }
 
 function init_page(current_version, current_user, json_str_array, summary_list) {
-
   var update_summary = function (sid) {
-    if (sid > 0) {
+    var edited_total = 0, merged_total = 0, unedited = 0;
+    for (var i = 0; i < versions.length; i++) {
+      var s = versions[i].info[sid];
+      if (s.edited) {
+        edited_total++;
+        if (s.single) merged_total++;
+      } else {
+        unedited++;
+      }
+    }
+    if (sid > 0 && summary_list[sid].html_str) {
       summary_bank = summary_list[sid].data;
       summary_sentence.html(summary_list[sid].html_str);
+      summary_block.removeClass('hidden');
+      $('#summary-merge-button').removeClass('hidden');
+      $('#summary-span').text(merged_total + "/" + edited_total + " Merged");
     } else {
+      summary_block.addClass('hidden');
+      $('#summary-merge-button').addClass('hidden');
       summary_sentence.html('');
     }
     $("input[name='sentence_id']", ".summary-block").val(sid);
+    $(".omitted-number").text(unedited);
   };
 
   var get_sentence_comment = function (version, sentence_id) {
@@ -485,7 +500,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   current_version.block = $(".sentence-block[data-author='" + current_user + "']");
   current_version.block.addClass("selected-block");
   var current_sentence = $(".sentence-content", current_version.block);
-  $(".time", current_version.block).text("editing now");
+  $(".time", current_version.block).text("");
   $("input[name='version_id']", current_version.block).val(current_version.id);
   var id_div = $("#selected-id");
   var form_current_sentence_id = $("input[name='sentence_id']", current_version.block);
@@ -547,9 +562,9 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     e.cancel();
   });
 
-  //editor.on('lite:showHide', function (e) {
-  //  console.log("Toggle Tracking");
-  //});
+  editor.on('lite:showHide', function (e) {
+    CKEDITOR.config.liteShowHide = e.data.show;
+  });
 
 }
 

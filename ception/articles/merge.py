@@ -201,7 +201,7 @@ def merge_edit(origin_clean, user_clean, other_clean):
             j = len(data)
             data[j] = [
                 {'key': apply_diff2(wordArray, origin_clean, dd1, start, end), 'count': '&nbsp;mine&nbsp;'},
-                {'key': apply_diff2(wordArray, origin_clean, dd2, start, end), 'count': 'others'},
+                {'key': apply_diff2(wordArray, origin_clean, dd2, start, end), 'count': 'theirs'},
             ]
             for o in data[j]:
                 if o['key'].rfind('<del>') == 0 and o['key'].find('</del>') == (len(o['key']) - len('</del>')):
@@ -252,10 +252,10 @@ def summary_edit(sentence_list):
             l.append(o)
         l.sort(key=lambda o: (-o['count'], o['authors'][0]))
 
-        if True:
+        if i < len(merged) - 1:
         # if len(l) > 1:
             conflicted = 1
-            replace = '<div class="replace" data-pk="%d">%s</div>' % (len(data), l[0]['key'])
+            replace = '<div class="replace lv%d" data-pk="%d">%s</div>' % (len(diff) if len(diff) < 5 else 5, len(data), l[0]['key'])
             data.append(l)
         else:
             replace = l[0]['key']
