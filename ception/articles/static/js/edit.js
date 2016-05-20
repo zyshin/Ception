@@ -503,6 +503,8 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   current_version.block = $(".sentence-block[data-author='" + current_user + "']");
   current_version.block.addClass("selected-block");
   var current_sentence = $(".sentence-content", current_version.block);
+  $(".vote-div", current_version.block).addClass('hide');
+  $(".comment-tool-div", current_version.block).addClass('hide');
   $(".time", current_version.block).text("");
   $("input[name='version_id']", current_version.block).val(current_version.id);
   var id_div = $("#selected-id");
