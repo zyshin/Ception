@@ -41,6 +41,7 @@ class SignUpForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),
         max_length=30,
         required=True,
+        label="Username (Must be your REAL NAME!)",
         help_text='Usernames may contain <strong>alphanumeric</strong>, <strong>_</strong> and <strong>.</strong> characters')
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}), 
