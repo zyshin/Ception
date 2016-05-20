@@ -64,11 +64,16 @@
     </div>
     <div class="col-md-5 popular-tags" id="side-col">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">
+          <input type="checkbox" checked id="hide-del-toggle" data-toggle="toggle" data-size="small"
+                 data-on="Show Del" data-off="Hide Del">
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
           <a class="btn btn-default btn-block" id="cancel-button" style="margin-top: 10px;"
              href="{% url 'articles' %}">{% trans 'Cancel' %}</a>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <button class="btn btn-primary btn-block" id="commit-button"
                   style="margin-top: 10px;">{% trans 'Commit' %}</button>
         </div>
@@ -76,14 +81,17 @@
       <div>
         {% for version in data.versions %}
         <h5>{{ version.edit_user.profile.get_screen_name }}'s Version</h5>
-        <textarea class="content" id="{{ version.id }}" disabled>
+          <textarea class="content" id="editor-{{ version.id }}" disabled>
           {{ version.content }}
         </textarea>
          <script>
-         CKEDITOR.replace("{{ version.id }}", {
-           removePlugins: 'toolbar,elementspath',
+           var temp_editor = CKEDITOR.replace("editor-{{ version.id }}", {
+             removePlugins: 'toolbar,elementspath, lite',
            height: 150
-         })
+           });
+           temp_editor.on("instanceReady", function (event) {
+             $("#cke_editor-{{ version.id }}").addClass("cke_editor_compare");
+           });
           </script>
       {% endfor %}
       </div>
@@ -94,6 +102,7 @@
     (function () {
       CKEDITOR.config.height = 300;
       var editor = initWithLite('content', true, true);
+
       commit_ajax.editor = editor;
       editor.on('key', function (e) {
         if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
