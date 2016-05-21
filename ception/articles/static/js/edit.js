@@ -297,6 +297,7 @@ function merge_second_stage(new_sentence) {
 
 function init_page(current_version, current_user, json_str_array, summary_list) {
   var update_summary = function (sid) {
+    summary_block.removeClass("hidden");
     var edited_total = 0, merged_total = 0, unedited = 0;
     for (var i = 0; i < versions.length; i++) {
       var s = versions[i].info[sid];
@@ -320,10 +321,10 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     }
     $("input[name='sentence_id']", ".summary-block").val(sid);
     if (unedited == 0) {
-      $("#sentence-list .panel-heading").addClass('hidden');
+      $("#hided-number-panel").addClass('hidden');
     } else {
       $(".omitted-number").text(unedited);
-      $("#sentence-list .panel-heading").removeClass('hidden');
+      $("#hided-number-panel").removeClass('hidden');
     }
   };
 
@@ -364,7 +365,10 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
       if (selected.id > 0) {
-        summary_block.removeAttr("hidden");
+        //if (! $("#toggle-sentence-view").prop('checked')) $(".cke_concise").css("display", "none");
+        get_sentence_comment(current_version, selected.id);
+        get_sentence_vote(current_version, selected.id);
+        update_summary(selected.id);
         //$(".cke_concise").css("display", "block");
         for (i = 0; i < versions.length; i++) {
           var version = versions[i];
@@ -376,10 +380,14 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
           if (s.edited) {
             if (!s.single) {
               $(".accept-button", version.block).css("display", "none");
-              version.block.css("border-left", "5px solid lightblue");
+              version.block.css("border-left", "none");
             } else {
               $(".accept-button", version.block).css("display", "inline-block");
-              version.block.css("border-left", "none");
+              if (!summary_block.hasClass('hidden')) {
+                version.block.css("border-left", "5px solid lightblue");
+              } else {
+                version.block.css("border-left", "none");
+              }
             }
             version.block.removeAttr("hidden");
             get_sentence_comment(version, s.id);
@@ -403,18 +411,13 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             }
           } else {
             version.block.attr("hidden", "hidden");
-
           }
         }
-        //if (! $("#toggle-sentence-view").prop('checked')) $(".cke_concise").css("display", "none");
-        get_sentence_comment(current_version, selected.id);
-        get_sentence_vote(current_version, selected.id);
-        update_summary(selected.id);
       } else {
         for (i = 0; i < versions.length; i++) {
           versions[i].block.attr("hidden", "hidden");
         }
-        summary_block.attr("hidden", "hidden");
+        summary_block.addClass("hidden");
       }
       window.scrollTo(0, backup_scoll);
       form_current_sentence_id.val(selected.id);

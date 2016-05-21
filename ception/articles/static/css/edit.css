@@ -350,13 +350,13 @@ ins {
 
 #current_sentence:before {
     content: '[';
-    color: red;
+    color: #ED6942;
     position: absolute;
     margin-left: -6px;
 }
 #current_sentence:after{
     content: ']';
-    color: red;
+    color: #ED6942;
     position: absolute;
     margin-left: -1px;
 }
