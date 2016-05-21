@@ -101,21 +101,19 @@ class Article(models.Model):
         return version
 
     def compute_summary(self, user):
-        version_set = ArticleVersion.objects.filter(origin=self)
+        version_set = ArticleVersion.get_versions(self, user).exclude(edit_user=user)
         origin_sentences = self.get_sentences()
         version_info_array = []
-        summary_list = [{'Error': 'Error'}]
         for v in version_set:
-            if v.edit_user.is_staff:
-                try:
-                    version_info_array.append(json.loads(v.info_array_json))
-                except:
-                    pass
+            try:
+                version_info_array.append(json.loads(v.info_array_json))
+            except:
+                version_info_array.append([{'single': '', 'edited': ''}] * (self.sentence_count + 1))
+        summary_list = [{'Error': 'Error'}]
         for i in range(1, self.sentence_count + 1):
             sentence_list = [origin_sentences[i]]
             for j in xrange(len(version_info_array)):
-                if version_info_array[j][i]["single"] and version_set[j].edit_user != user and version_info_array[j][i][
-                    "edited"]:
+                if version_info_array[j][i]["single"] and version_info_array[j][i]["edited"]:
                     sentence_list.append(CleanParser.get_clean_text(version_info_array[j][i]["sentence"]))
             if len(sentence_list) <= 2:
                 html_str = ""
@@ -203,9 +201,9 @@ class ArticleVersion(models.Model):
 
 
     @staticmethod
-    def get_versions(article):
-        versions = ArticleVersion.objects.filter(origin=article)
-        return versions
+    def get_versions(article, user):
+        versions = ArticleVersion.objects.filter(origin=article) if user.is_staff else ArticleVersion.objects.filter(origin=article, edit_user__is_staff=True)
+        return versions | ArticleVersion.objects.filter(edit_user=user)
 
         # def get_comments(self):
     #     return ArticleComment.objects.filter(article=self)
