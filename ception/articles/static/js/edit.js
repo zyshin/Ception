@@ -312,7 +312,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
       summary_sentence.html(summary_list[sid].html_str);
       summary_block.removeClass('hidden');
       $('#summary-merge-button').removeClass('hidden');
-      $('#summary-span').text(merged_total + "/" + edited_total + " Merged");
+      $('#summary-span').text(merged_total + " / " + edited_total + " merged");
     } else {
       summary_block.addClass('hidden');
       $('#summary-merge-button').addClass('hidden');
