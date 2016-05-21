@@ -703,41 +703,41 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 			}
 			
 			if (config.contextMenu !== false) {
-				if ( ed.addMenuItems ) {
-					ed.addMenuGroup ( 'lite', 50);
-					var params = {};
-					if (commands.indexOf(LITE.Commands.ACCEPT_ONE) >= 0) {
-						params[LITE.Commands.ACCEPT_ONE] = {
-							label :  lang.ACCEPT_ONE,
-							command : LITE.Commands.ACCEPT_ONE,
-							group : 'lite',
-							order : 1
-						};
-					}
-					if (commands.indexOf(LITE.Commands.REJECT_ONE) >= 0) {
-						params[LITE.Commands.REJECT_ONE] = {
-							label : lang.REJECT_ONE,
-							command : LITE.Commands.REJECT_ONE,
-							group : 'lite',
-							order : 2
-						};
-					}
-					ed.addMenuItems(params);
-				}
-	
-				if ( ed.contextMenu ) {
-					ed.contextMenu.addListener( (function( element /*, selection */ ) {
-						 if (element && this._tracker && this._tracker.currentChangeNode(element)) {
-							 var ret = {};
-							 ret[LITE.Commands.ACCEPT_ONE] = CKEDITOR.TRISTATE_OFF;
-							 ret[LITE.Commands.REJECT_ONE]= CKEDITOR.TRISTATE_OFF;
-							 return ret;
-						 }
-						 else {
-							 return null;
-						 }
-					}).bind(this) );
-				}
+				//if ( ed.addMenuItems ) {
+				//	ed.addMenuGroup ( 'lite', 50);
+				//	var params = {};
+				//	if (commands.indexOf(LITE.Commands.ACCEPT_ONE) >= 0) {
+				//		params[LITE.Commands.ACCEPT_ONE] = {
+				//			label :  lang.ACCEPT_ONE,
+				//			command : LITE.Commands.ACCEPT_ONE,
+				//			group : 'lite',
+				//			order : 1
+				//		};
+				//	}
+				//	if (commands.indexOf(LITE.Commands.REJECT_ONE) >= 0) {
+				//		params[LITE.Commands.REJECT_ONE] = {
+				//			label : lang.REJECT_ONE,
+				//			command : LITE.Commands.REJECT_ONE,
+				//			group : 'lite',
+				//			order : 2
+				//		};
+				//	}
+				//	ed.addMenuItems(params);
+				//}
+				//
+				//if ( ed.contextMenu ) {
+				//	ed.contextMenu.addListener( (function( element /*, selection */ ) {
+				//		 if (element && this._tracker && this._tracker.currentChangeNode(element)) {
+				//			 var ret = {};
+				//			 ret[LITE.Commands.ACCEPT_ONE] = CKEDITOR.TRISTATE_OFF;
+				//			 ret[LITE.Commands.REJECT_ONE]= CKEDITOR.TRISTATE_OFF;
+				//			 return ret;
+				//		 }
+				//		 else {
+				//			 return null;
+				//		 }
+				//	}).bind(this) );
+				//}
 			}
 		},
 		
