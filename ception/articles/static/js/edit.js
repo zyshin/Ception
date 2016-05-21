@@ -504,7 +504,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
 
   CKEDITOR.config.height = 240;
 
-  var editor = initWithLite("id_content", true, false);
+  var editor = initWithLite("id_content", true, true);
   commit_ajax.editor = editor;
 
 
