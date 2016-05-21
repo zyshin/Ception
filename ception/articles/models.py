@@ -164,6 +164,7 @@ class ArticleVersion(models.Model):
         return up_votes - down_votes
 
     def prepocess(self):
+        self.content = self.content.replace('class=\"current\"', '').replace('class="previous"', '')
         self.compute_diff()
         self.info_array_json = json.dumps(get_mapping_array(self.content))
 
