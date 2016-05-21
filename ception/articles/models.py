@@ -203,7 +203,7 @@ class ArticleVersion(models.Model):
     @staticmethod
     def get_versions(article, user):
         versions = ArticleVersion.objects.filter(origin=article) if user.is_staff else ArticleVersion.objects.filter(origin=article, edit_user__is_staff=True)
-        return versions | ArticleVersion.objects.filter(edit_user=user)
+        return versions | ArticleVersion.objects.filter(origin=article, edit_user=user)
 
         # def get_comments(self):
     #     return ArticleComment.objects.filter(article=self)
