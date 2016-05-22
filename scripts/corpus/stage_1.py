@@ -9,7 +9,7 @@ ContentDict = {
 class AnnotationParser(HTMLParser):
     def __init__(self, target):
         HTMLParser.__init__(self)
-        self.edit_clean_list = []
+        self.edit_clean_list = [ContentDict[target]]
         self.current_clean_sentence = ""
         self.current_index = 0
         self.edit_range = None
@@ -42,6 +42,7 @@ class AnnotationParser(HTMLParser):
             self.current_clean_sentence += self.origin[self.current_index: self.edit_range[0]]
             self.current_clean_sentence += self.correction + "(" + self.mistake_type + ")"
             self.current_index = self.edit_range[1]
+            self.correction = ""
 
     def handle_data(self, data):
         if self.in_type:
