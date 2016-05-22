@@ -1,0 +1,487 @@
+
+
+<annotation teacher_id="35" ><mistake start_par="1" start_off="0" end_par="1" end_off="2" >
+<type>Prep</type>
+<correction>With</correction>
+</mistake><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>is playing </correction>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="63" >
+<type>ArtOrDet</type>
+<correction>a more </correction>
+</mistake><mistake start_par="1" start_off="97" end_par="1" end_off="102" >
+<type>Rloc-</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="132" end_par="1" end_off="143" >
+<type>Rloc-</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="144" end_par="1" end_off="149" >
+<type>Vform</type>
+<correction>uses</correction>
+</mistake><mistake start_par="1" start_off="204" end_par="1" end_off="207" >
+<type>Mec</type>
+<correction>lot</correction>
+</mistake><mistake start_par="1" start_off="254" end_par="1" end_off="272" >
+<type>Wci</type>
+<correction>more about their lives</correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="298" >
+<type>Vform</type>
+<correction>raises</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="325" end_par="1" end_off="327" >
+<type>Pform</type>
+<correction>social media</correction>
+</mistake><mistake start_par="1" start_off="355" end_par="1" end_off="357" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="357" end_par="1" end_off="371" >
+<type>Wci</type>
+<correction>disadvantages</correction>
+</mistake><mistake start_par="1" start_off="442" end_par="1" end_off="444" >
+<type>Prep</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="445" end_par="1" end_off="449" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="449" end_par="1" end_off="458" >
+<type>Wci</type>
+<correction>also</correction>
+</mistake><mistake start_par="1" start_off="471" end_par="1" end_off="478" >
+<type>Nn</type>
+<correction>chances</correction>
+</mistake><mistake start_par="1" start_off="478" end_par="1" end_off="481" >
+<type>Prep</type>
+<correction>of</correction>
+</mistake><mistake start_par="1" start_off="485" end_par="1" end_off="487" >
+<type>Prep</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="488" end_par="1" end_off="492" >
+<type>Vform</type>
+<correction>talking</correction>
+</mistake><mistake start_par="1" start_off="516" end_par="1" end_off="520" >
+<type>Srun</type>
+<correction>face;</correction>
+</mistake><mistake start_par="1" start_off="521" end_par="1" end_off="526" >
+<type>Pform</type>
+<correction>this</correction>
+</mistake></annotation>
+
+<annotation teacher_id="43" ><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="26" end_par="1" end_off="37" >
+<type>V0</type>
+<correction>technology continues,</correction>
+</mistake><mistake start_par="1" start_off="85" end_par="1" end_off="89" >
+<type>Rloc-</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="204" end_par="1" end_off="207" >
+<type>Wci</type>
+<correction>load</correction>
+</mistake><mistake start_par="1" start_off="249" end_par="1" end_off="253" >
+<type>Wci</type>
+<correction>understand</correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="297" >
+<type>Vt</type>
+<correction>raises</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="439" end_par="1" end_off="458" >
+<type>WOadv</type>
+<correction>at the same time it</correction>
+</mistake><mistake start_par="1" start_off="516" end_par="1" end_off="520" >
+<type>Mec</type>
+<correction>face,</correction>
+</mistake><mistake start_par="1" start_off="650" end_par="1" end_off="655" >
+<type>ArtOrDet</type>
+<correction>any</correction>
+</mistake></annotation>
+
+<annotation teacher_id="9" ><mistake start_par="1" start_off="0" end_par="1" end_off="2" >
+<type>Prep</type>
+<correction>With</correction>
+</mistake><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>play</correction>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="63" >
+<type>ArtOrDet</type>
+<correction>a more</correction>
+</mistake><mistake start_par="1" start_off="204" end_par="1" end_off="207" >
+<type>Mec</type>
+<correction>lot</correction>
+</mistake><mistake start_par="1" start_off="217" end_par="1" end_off="222" >
+<type>Wtone</type>
+<correction>things</correction>
+</mistake><mistake start_par="1" start_off="283" end_par="1" end_off="285" >
+<type>Pref</type>
+<correction>this</correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="297" >
+<type>Vt</type>
+<correction>raises</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="325" end_par="1" end_off="327" >
+<type>Pref</type>
+<correction>they</correction>
+</mistake><mistake start_par="1" start_off="328" end_par="1" end_off="334" >
+<type>SVA</type>
+<correction>bring</correction>
+</mistake><mistake start_par="1" start_off="382" end_par="1" end_off="384" >
+<type>Wci</type>
+<correction>using social media</correction>
+</mistake><mistake start_par="1" start_off="439" end_par="1" end_off="458" >
+<type>WOinc</type>
+<correction>at the same time, it</correction>
+</mistake><mistake start_par="1" start_off="516" end_par="1" end_off="520" >
+<type>Mec</type>
+<correction>face,</correction>
+</mistake></annotation>
+
+<annotation teacher_id="40" ><mistake start_par="1" start_off="0" end_par="1" end_off="2" >
+<type>Prep</type>
+<correction>With</correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>has</correction>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="63" >
+<type>ArtOrDet</type>
+<correction>a more</correction>
+</mistake><mistake start_par="1" start_off="202" end_par="1" end_off="203" >
+<type>Others</type>
+<correction>as a</correction>
+<comment>missing word</comment>
+</mistake><mistake start_par="1" start_off="217" end_par="1" end_off="222" >
+<type>Wtone</type>
+<correction>events</correction>
+</mistake><mistake start_par="1" start_off="229" end_par="1" end_off="234" >
+<type>SVA</type>
+<correction>help</correction>
+</mistake><mistake start_par="1" start_off="249" end_par="1" end_off="253" >
+<type>Wci</type>
+<correction>understand</correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="297" >
+<type>Vt</type>
+<correction>raises</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="328" end_par="1" end_off="334" >
+<type>Wci</type>
+<correction>has</correction>
+</mistake><mistake start_par="1" start_off="335" end_par="1" end_off="342" >
+<type>WOinc</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="343" end_par="1" end_off="351" >
+<type>WOinc</type>
+<correction>benefits for us</correction>
+</mistake><mistake start_par="1" start_off="355" end_par="1" end_off="356" >
+<type>V0</type>
+<correction>is a</correction>
+</mistake><mistake start_par="1" start_off="357" end_par="1" end_off="362" >
+<type>Others</type>
+<correction>potential human</correction>
+<comment>missing word</comment>
+</mistake><mistake start_par="1" start_off="508" end_par="1" end_off="520" >
+<type>Mec</type>
+<correction>face-to-face</correction>
+</mistake></annotation>
+
+<annotation teacher_id="33" ><mistake start_par="1" start_off="0" end_par="1" end_off="2" >
+<type>Prep</type>
+<correction>With</correction>
+</mistake><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>has taken on</correction>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="63" >
+<type>ArtOrDet</type>
+<correction>a more</correction>
+</mistake><mistake start_par="1" start_off="90" end_par="1" end_off="92" >
+<type>Prep</type>
+<correction>throughout</correction>
+</mistake><mistake start_par="1" start_off="110" end_par="1" end_off="118" >
+<type>Wci</type>
+<correction>No one</correction>
+</mistake><mistake start_par="1" start_off="132" end_par="1" end_off="138" >
+<type>Wci</type>
+<correction>can</correction>
+</mistake><mistake start_par="1" start_off="204" end_par="1" end_off="207" >
+<type>Mec</type>
+<correction>to</correction>
+</mistake><mistake start_par="1" start_off="217" end_par="1" end_off="222" >
+<type>Wtone</type>
+<correction>things</correction>
+</mistake><mistake start_par="1" start_off="249" end_par="1" end_off="253" >
+<type>Wci</type>
+<correction>to understand</correction>
+</mistake><mistake start_par="1" start_off="286" end_par="1" end_off="290" >
+<type>V0</type>
+<correction>has also</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="325" end_par="1" end_off="327" >
+<type>Vm</type>
+<correction>it will</correction>
+</mistake><mistake start_par="1" start_off="328" end_par="1" end_off="334" >
+<type>Vform</type>
+<correction>bring</correction>
+</mistake><mistake start_par="1" start_off="363" end_par="1" end_off="371" >
+<type>Wci</type>
+<correction>crisis</correction>
+</mistake><mistake start_par="1" start_off="439" end_par="1" end_off="458" >
+<type>WOinc</type>
+<correction>at the same time it</correction>
+</mistake><mistake start_par="1" start_off="516" end_par="1" end_off="520" >
+<type>Mec</type>
+<correction>face,</correction>
+</mistake></annotation>
+
+<annotation teacher_id="37" ><mistake start_par="1" start_off="0" end_par="1" end_off="2" >
+<type>Prep</type>
+<correction>With</correction>
+</mistake><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>plays</correction>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="63" >
+<type>ArtOrDet</type>
+<correction>a more</correction>
+</mistake><mistake start_par="1" start_off="204" end_par="1" end_off="207" >
+<type>Mec</type>
+<correction>lot</correction>
+</mistake><mistake start_par="1" start_off="249" end_par="1" end_off="253" >
+<type>Wci</type>
+<correction>know more</correction>
+</mistake><mistake start_par="1" start_off="254" end_par="1" end_off="259" >
+<type>Prep</type>
+<correction>about their</correction>
+</mistake><mistake start_par="1" start_off="266" end_par="1" end_off="272" >
+<type>Wci</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="297" >
+<type>Vt</type>
+<correction>raises</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="439" end_par="1" end_off="441" >
+<type>WOinc</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="459" end_par="1" end_off="466" >
+<type>WOinc</type>
+<correction>it reduces</correction>
+</mistake><mistake start_par="1" start_off="471" end_par="1" end_off="477" >
+<type>Wci</type>
+<correction>opportunities</correction>
+</mistake></annotation>
+
+<annotation teacher_id="8" ><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="26" end_par="1" end_off="36" >
+<type>V0</type>
+<correction>continues</correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>is playing</correction>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="89" >
+<type>ArtOrDet</type>
+<correction>a more and more significant role</correction>
+</mistake><mistake start_par="1" start_off="97" end_par="1" end_off="102" >
+<type>Rloc-</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="110" end_par="1" end_off="118" >
+<type>Pform</type>
+<correction>Nobody</correction>
+</mistake><mistake start_par="1" start_off="132" end_par="1" end_off="138" >
+<type>Vform</type>
+<correction>can</correction>
+</mistake><mistake start_par="1" start_off="202" end_par="1" end_off="203" >
+<type>V0</type>
+<correction>create</correction>
+</mistake><mistake start_par="1" start_off="249" end_par="1" end_off="253" >
+<type>Wci</type>
+<correction>know about</correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="297" >
+<type>Vt</type>
+<correction>raises</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="442" end_par="1" end_off="458" >
+<type>Mec</type>
+<correction>, at the same time,</correction>
+</mistake><mistake start_par="1" start_off="631" end_par="1" end_off="636" >
+<type>Wci</type>
+<correction>difficult</correction>
+</mistake></annotation>
+
+<annotation teacher_id="42" ><mistake start_par="1" start_off="0" end_par="1" end_off="2" >
+<type>Prep</type>
+<correction>With</correction>
+</mistake><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>plays</correction>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="63" >
+<type>ArtOrDet</type>
+<correction>a more</correction>
+</mistake><mistake start_par="1" start_off="153" end_par="1" end_off="162" >
+<type>Mec</type>
+<correction>everyday</correction>
+</mistake><mistake start_par="1" start_off="192" end_par="1" end_off="197" >
+<type>Mec</type>
+<correction>ideas,</correction>
+</mistake><mistake start_par="1" start_off="204" end_par="1" end_off="207" >
+<type>Mec</type>
+<correction>lot</correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="297" >
+<type>Vt</type>
+<correction>raises</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="343" end_par="1" end_off="351" >
+<type>Mec</type>
+<correction>benefits,</correction>
+</mistake><mistake start_par="1" start_off="439" end_par="1" end_off="441" >
+<type>WOinc</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="459" end_par="1" end_off="466" >
+<type>WOinc</type>
+<correction>it reduces</correction>
+</mistake><mistake start_par="1" start_off="516" end_par="1" end_off="520" >
+<type>Mec</type>
+<correction>face,</correction>
+</mistake></annotation>
+
+<annotation teacher_id="36" ><mistake start_par="1" start_off="3" end_par="1" end_off="6" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="7" end_par="1" end_off="19" >
+<type>WOinc</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="19" end_par="1" end_off="22" >
+<type>Prep</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="26" end_par="1" end_off="36" >
+<type>WOinc</type>
+<correction>technology develops</correction>
+</mistake><mistake start_par="1" start_off="85" end_par="1" end_off="89" >
+<type>Rloc-</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="90" end_par="1" end_off="92" >
+<type>Prep</type>
+<correction>over</correction>
+</mistake><mistake start_par="1" start_off="110" end_par="1" end_off="118" >
+<type>Wci</type>
+<correction>Nobody</correction>
+</mistake><mistake start_par="1" start_off="132" end_par="1" end_off="138" >
+<type>Wci</type>
+<correction>can</correction>
+</mistake><mistake start_par="1" start_off="217" end_par="1" end_off="222" >
+<type>Mec</type>
+<correction>stuff,</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="355" end_par="1" end_off="356" >
+<type>V0</type>
+<correction>is a</correction>
+</mistake><mistake start_par="1" start_off="439" end_par="1" end_off="441" >
+<type>WOinc</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="459" end_par="1" end_off="466" >
+<type>WOinc</type>
+<correction>it reduces</correction>
+</mistake><mistake start_par="1" start_off="516" end_par="1" end_off="520" >
+<type>Mec</type>
+<correction>face,</correction>
+</mistake></annotation>
+
+<annotation teacher_id="39" ><mistake start_par="1" start_off="0" end_par="1" end_off="2" >
+<type>Prep</type>
+<correction>With</correction>
+</mistake><mistake start_par="1" start_off="22" end_par="1" end_off="25" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="51" end_par="1" end_off="58" >
+<type>Wci</type>
+<correction>has had</correction>
+<comment>also Vt</comment>
+</mistake><mistake start_par="1" start_off="59" end_par="1" end_off="63" >
+<type>ArtOrDet</type>
+<correction>a more</correction>
+</mistake><mistake start_par="1" start_off="97" end_par="1" end_off="102" >
+<type>Rloc-</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="192" end_par="1" end_off="197" >
+<type>Mec</type>
+<correction>ideas,</correction>
+</mistake><mistake start_par="1" start_off="204" end_par="1" end_off="207" >
+<type>Mec</type>
+<correction>lot</correction>
+</mistake><mistake start_par="1" start_off="223" end_par="1" end_off="228" >
+<type>Ssub</type>
+<correction>that</correction>
+</mistake><mistake start_par="1" start_off="283" end_par="1" end_off="285" >
+<type>Pref</type>
+<correction>social media</correction>
+</mistake><mistake start_par="1" start_off="291" end_par="1" end_off="297" >
+<type>Vt</type>
+<correction>raise</correction>
+</mistake><mistake start_par="1" start_off="298" end_par="1" end_off="301" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="325" end_par="1" end_off="327" >
+<type>Pref</type>
+<correction>they</correction>
+</mistake><mistake start_par="1" start_off="328" end_par="1" end_off="334" >
+<type>SVA</type>
+<correction>bring</correction>
+</mistake><mistake start_par="1" start_off="338" end_par="1" end_off="342" >
+<type>Rloc-</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="355" end_par="1" end_off="356" >
+<type>ArtOrDet</type>
+<correction></correction>
+</mistake><mistake start_par="1" start_off="363" end_par="1" end_off="371" >
+<type>Nn</type>
+<correction>disasters</correction>
+</mistake><mistake start_par="1" start_off="382" end_par="1" end_off="384" >
+<type>Pref</type>
+<correction>they</correction>
+</mistake><mistake start_par="1" start_off="385" end_par="1" end_off="390" >
+<type>SVA</type>
+<correction>help</correction>
+</mistake><mistake start_par="1" start_off="439" end_par="1" end_off="441" >
+<type>Pref</type>
+<correction>they</correction>
+</mistake><mistake start_par="1" start_off="459" end_par="1" end_off="466" >
+<type>SVA</type>
+<correction>reduce</correction>
+</mistake><mistake start_par="1" start_off="508" end_par="1" end_off="520" >
+<type>Mec</type>
+<correction>face-to-face,</correction>
+</mistake></annotation>
+

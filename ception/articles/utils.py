@@ -16,7 +16,10 @@ def start_str(tag, attrs=None):
     elif type(attrs) == types.DictionaryType:
         for (key, value) in attrs.items():
             attr_str += key + "=" + "\"" + value + "\" "
-    return "<" + tag + " " + attr_str + ">"
+    if len(attr_str) == 0:
+        return "<" + tag + ">"
+    else:
+        return "<" + tag + " " + attr_str + ">"
 
 
 def end_str(tag):
