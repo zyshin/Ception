@@ -107,7 +107,9 @@ class Article(models.Model):
         for v in version_set:
             try:
                 version_info_array.append(json.loads(v.info_array_json))
-            except:
+            except Exception, e:
+                print repr(e)
+                print 'Load json failed:', repr(v.info_array_json)
                 version_info_array.append([{'single': '', 'edited': ''}] * (self.sentence_count + 1))
         summary_list = [{'Error': 'Error'}]
         for i in range(1, self.sentence_count + 1):

@@ -164,7 +164,7 @@ ins {
 }
 
 .context {
-	opacity: 0.2;
+	opacity: 0.5;
 }
 
 .hide-del-class del {
@@ -178,14 +178,14 @@ pd {
 
 p.previous:before {
     content: '[';
-    color: red;
+    color: #ED6942;
     position: absolute;
     margin-left: -6px;
     /*visibility: hidden;*/
 }
 pd.previous:after {
     content: '\00a0[';
-    color: red;
+    color: #ED6942;
     position: absolute;
     margin-left: -1px;
     /*visibility: hidden;*/
@@ -193,7 +193,7 @@ pd.previous:after {
 pd.current:after,
 p.current:after {
     content: ']';
-    color: red;
+    color: #ED6942;
     position: absolute;
     margin-left: -1px;
     /*visibility: hidden;*/
