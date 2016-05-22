@@ -256,7 +256,7 @@ def summary_edit(sentence_list):
             'authors': [],
         }
         o['word'] = o['key'] if o['key'] else '<i>(empty)</i>'
-        o['count'] = 0
+        o['count'] = len(sentence_list) - 1 - len(diff)  # ignored the number of unchanged sentences
         l = [o] + l
 
         if i < len(merged) - 1:

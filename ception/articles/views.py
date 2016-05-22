@@ -155,7 +155,6 @@ def init_edit_page(request, id, compare=False):
             authors.append(v.edit_user)
             version_jsons.append(json.dumps(v_dict))
             version_array.append(v)
-    json.dumps(article.compute_summary(request.user))
     pass_data = {
         'json': version_jsons,
         'authors': authors,
