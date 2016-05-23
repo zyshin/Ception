@@ -9,12 +9,12 @@ def run():
             origin_sentences = self.get_sentences()
             version_info_array = []
             for v in version_set:
-                version_info_array.append(json.loads(v.info_array_json))
-                # try:
-                #     version_info_array.append(json.loads(v.info_array_json))
-                # except:
-                #     version_info_array.append([{'single': '', 'edited': ''}] * (self.sentence_count + 1))
+                # version_info_array.append(json.loads(v.info_array_json))
+                try:
+                    version_info_array.append(json.loads(v.info_array_json))
+                except:
+                    version_info_array.append([{'single': '', 'edited': ''}] * (self.sentence_count + 1))
             for i in version_info_array:
                 for j in i[1:]:
-                    if '\b' in j.get('sentence', ''):
+                    if type(j) is dict and '\b' in j.get('sentence', ''):
                         print self, user
