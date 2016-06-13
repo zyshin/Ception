@@ -7,6 +7,7 @@
 {% endblock head %}
 
 {% block body %}
+<div class="cover">
   <h1 class="logo"><a href="{% url 'home' %}">Cept</a></h1>
   <h1 class="logo" style="margin-top: -30px"><a href="{% url 'home' %}"><i class="h4">(<b>C</b>ollaborative <b>E</b>diting &amp; <b>P</b>olising <b>T</b>ool)</i></a></h1>
   <div class="signup">
@@ -25,7 +26,16 @@
           {% endfor %}
         </div>
       {% endfor %}
-      <button type="submit" class="btn btn-primary btn-lg">{% trans 'Create an account' %}</button>
+      <div class="form-group" style="margin-top: 25px;">
+        <button type="submit" class="btn btn-primary"><b>{% trans 'Create an account' %}</b></button>
+        <a href="{% url 'home' %}" class="btn btn-link">{% trans 'Try CEPT directly' %}</a>
+      </div>
     </form>
   </div>
+  <div class="alert alert-info text-justify">
+    <h4>Disclaimer:</h4>
+      <p>CEPT is a research prototype. It has been tested on the latest version of <b>Safari</b> and <b>Google Chrome</b> and it requires JavaScript to run properly. Some functionalities might not work on other browsers. Try it!</p>
+      <!--specially when using ... In particular, when running in Firefox, the ... is not supported.-->
+  </div>
+</div>
 {% endblock body %}

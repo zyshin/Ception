@@ -1,6 +1,6 @@
 <article>
   <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-8">
       <h2>{{ article.title }}</h2>
       <div class="info">
         <span class="date">
@@ -23,13 +23,13 @@
         </span>
       </div>
     </div>
-    <div class="col-md-3" style="margin-top: 10px">
+    <div class="col-md-4" style="margin-top: 10px">
       <div class="btn-group btn-group-justified" role="group" aria-label="...">
         <div class="btn-group" role="group">
-          <a href="{% url 'edit_compare' article.id %}" type="button" class="btn btn-default">UI #1 (Baseline)</a>
+          <a href="{% url 'edit_compare' article.id %}" type="button" class="btn btn-default">Edit with UI #1 (Baseline)</a>
         </div>
         <div class="btn-group" role="group">
-          <a href="{% url 'edit' article.id %}" type="button" class="btn btn-default">UI #2 (CEPT)</a>
+          <a href="{% url 'edit' article.id %}" type="button" class="btn btn-default"><b>Edit with UI #2 (CEPT)</b></a>
         </div>
       </div>
     </div>
