@@ -172,7 +172,6 @@ $(function () {
         version.vote[sentence_id]['state'] = vote;
         $(".sentence-comment-vote-number", block).text(data);
         version.vote[sentence_id]['count'] = data;
-
       }
     });
   });
@@ -254,6 +253,7 @@ $(function () {
         bank = data.data;
         $(".modal-body", modal).html(data.str);
         merge_second_stage.csrf = csrf;
+        merge_second_stage.ver_id = version_id;
         merge_second_stage.sen_id = sentence_id;
         modal.modal();
         //if (data.conflicted) {
@@ -267,8 +267,12 @@ $(function () {
   $("#modal-confirm-button").click(function () {
     modal.modal('hide');
     merge_second_stage($(".modal-body", modal).html());
+    // Auto Up-vote
+    var vote_button = $('.sentence-block').has('input[name="version_id"][value="' + merge_second_stage.ver_id.toString() + '"]').find('.up-vote');
+    if (!vote_button.hasClass("voted")) {
+      vote_button.click();
+    }
   });
-
 });
 
 function merge_second_stage(new_sentence) {
