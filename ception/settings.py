@@ -1,5 +1,6 @@
 from unipath import Path
 PROJECT_DIR = Path(__file__).parent
+ROOT_DIR = PROJECT_DIR.parent
 from decouple import config
 
 # Quick-start development settings - unsuitable for production
@@ -18,7 +19,7 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'debugDB',
+        'NAME': Path(ROOT_DIR, 'debugDB'),
     }
 }
 

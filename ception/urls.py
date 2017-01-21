@@ -28,4 +28,4 @@ urlpatterns = patterns('',
                        url(r'^search/$', 'ception.search.views.search', name='search'),
                        url(r'^profile/(?P<username>[^/]*)/$', 'ception.core.views.profile', name='profile'),
                        url(r'^i18n/', include('django.conf.urls.i18n', namespace='i18n')),
-                       ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+                       )# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
