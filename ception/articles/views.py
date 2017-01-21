@@ -184,7 +184,7 @@ def edit(request, id):
         else:
             return init_edit_page(request, id)
     except Exception, e:
-        print "Exception-Edit: ", e
+        print "Exception-Edit: ", repr(e)
         return HttpResponseBadRequest()
 
 

@@ -115,7 +115,7 @@ class Article(models.Model):
         for i in range(1, self.sentence_count + 1):
             sentence_list = [origin_sentences[i]]
             for j in xrange(len(version_info_array)):
-                if version_info_array[j][i]["single"] and version_info_array[j][i]["edited"]:
+                if version_info_array[j][i] and version_info_array[j][i]["single"] and version_info_array[j][i]["edited"]:
                     sentence_list.append(CleanParser.get_clean_text(version_info_array[j][i]["sentence"]))
             if len(sentence_list) <= 2:
                 html_str = ""
@@ -205,8 +205,9 @@ class ArticleVersion(models.Model):
 
     @staticmethod
     def get_versions(article, user):
-        versions = ArticleVersion.objects.filter(origin=article) if user.is_staff else ArticleVersion.objects.filter(origin=article, edit_user__is_staff=True)
-        versions = versions | ArticleVersion.objects.filter(origin=article, edit_user=user)
+        versions = ArticleVersion.objects.filter(origin=article)
+        # versions = ArticleVersion.objects.filter(origin=article) if user.is_staff else ArticleVersion.objects.filter(origin=article, edit_user__is_staff=True)
+        # versions = versions | ArticleVersion.objects.filter(origin=article, edit_user=user)
         versions = versions.order_by('edit_user__username')
         return versions
 
