@@ -1,0 +1,26 @@
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\csc.exe
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CSharp.Core.targets
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.VisualBasic.Core.targets
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\System.Collections.Immutable.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\System.Reflection.Metadata.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\vbc.exe
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\VBCSCompiler.exe
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\roslyn\VBCSCompiler.exe.config
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\obj\Debug\ContentWriter.csprojResolveAssemblyReference.cache
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\csc.exe
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.CSharp.Core.targets
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\Microsoft.VisualBasic.Core.targets
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\System.Collections.Immutable.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\System.Reflection.Metadata.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\vbc.exe
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\VBCSCompiler.exe
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\bin\Debug\roslyn\VBCSCompiler.exe.config
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriter\obj\Debug\ContentWriter.csprojResolveAssemblyReference.cache

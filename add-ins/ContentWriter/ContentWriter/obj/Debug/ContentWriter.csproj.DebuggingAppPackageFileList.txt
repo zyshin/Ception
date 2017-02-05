@@ -1,0 +1,2 @@
+bin\Debug\OfficeAppManifests\ContentWriterManifest.xml
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriter\bin\Debug\ContentWriter.debugapp

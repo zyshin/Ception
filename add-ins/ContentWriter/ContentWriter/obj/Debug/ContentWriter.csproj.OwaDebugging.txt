@@ -1,0 +1,7 @@
+False
+91f66cba-8982-4971-a7ab-e2aa35c94065d3eae3de-e6f7-4bf8-96a0-e419fa0701c7
+{3444a9e9-f989-4cf0-b95c-33cafd24c396}{49b2a910-e497-4d51-a47e-ed41cf42dc61}
+{b520b1ac-3fe1-439b-8783-16d7a28b79a2}
+1.0.0.0
+ContentWriter
+_layouts/15/

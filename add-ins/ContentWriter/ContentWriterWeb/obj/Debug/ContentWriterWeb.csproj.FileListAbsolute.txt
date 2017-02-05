@@ -1,0 +1,40 @@
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\csc.exe
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CSharp.Core.targets
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.VisualBasic.Core.targets
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\System.Collections.Immutable.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\System.Reflection.Metadata.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\vbc.exe
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\VBCSCompiler.exe
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\roslyn\VBCSCompiler.exe.config
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\ContentWriterWeb.dll.config
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\ContentWriterWeb.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\ContentWriterWeb.pdb
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\obj\Debug\ContentWriterWeb.csprojResolveAssemblyReference.cache
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\obj\Debug\ContentWriterWeb.dll
+\\Mac\Home\Documents\大学课程\O3652-2 Deep Dive in Office Word Add-ins\Completed Projects\Exercise 3\ContentWriter\ContentWriterWeb\obj\Debug\ContentWriterWeb.pdb
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\csc.exe
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CodeAnalysis.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.CSharp.Core.targets
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\Microsoft.VisualBasic.Core.targets
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\System.Collections.Immutable.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\System.Reflection.Metadata.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\vbc.exe
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\VBCSCompiler.exe
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\roslyn\VBCSCompiler.exe.config
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\ContentWriterWeb.dll.config
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\ContentWriterWeb.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\ContentWriterWeb.pdb
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\obj\Debug\ContentWriterWeb.csprojResolveAssemblyReference.cache
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\obj\Debug\ContentWriterWeb.dll
+\\Mac\Home\Documents\大学课程\ContentWriter\ContentWriterWeb\obj\Debug\ContentWriterWeb.pdb
