@@ -82,7 +82,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
     display: block;
     padding: 0;
     border: 1px solid #2b579a;
-    box-shadow: 0 0 6px 1px rgba(172, 181, 194, 0.56)
+    /*box-shadow: 0 0 6px 1px rgba(172, 181, 194, 0.56)*/
 }
 
 .cke_inner {
@@ -333,7 +333,7 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 }
 
 .cke_toolbar {
-    float: left
+    float: right
 }
 
 .cke_rtl .cke_toolbar {
@@ -341,7 +341,7 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 }
 
 .cke_toolgroup {
-    float: left;
+    float: right;
     margin: 0 6px 5px 0
 }
 

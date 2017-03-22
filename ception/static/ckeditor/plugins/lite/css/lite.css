@@ -7,9 +7,9 @@ You should have received a copy of the GNU General Public License along with thi
 Written by (David *)Frenkiel - https://github.com/imdfl
 **/
 
-ins, del {
+/*ins, del {
 	text-decoration: none !important;
-}
+}*/
 
 del.ice-del {
 	display: none;
@@ -25,14 +25,14 @@ ins.ice-no-decoration, del.ice-no-decoration {
 }
 
 .ICE-Tracking span.ice-ins, .ICE-Tracking ins.ice-ins {
-	color: #ff3366;
+	color: #EB454E;
 /*	padding: 1px 0 2px; */
 }
 
 .ICE-Tracking span.ice-del, .ICE-Tracking del.ice-del {
 	display: inline;
 	text-decoration: line-through !important;
-	color: #3366ff;
+	color: #EB454E;
 	/*background-color: #e5ffcd !important;*/
 }
 
