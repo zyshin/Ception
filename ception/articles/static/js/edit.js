@@ -45,17 +45,26 @@ function firm() {
           history.back();
             //alert("点击了取消");  
         }  
-}  
+}   
+
+function closeWin(){
+ var exit = confirm("Do you want to save before you leave?");  
+ console.log("sssswww");
+     if(exit==true){
+        commit_ajax();
+        //do something before closing;
+     }
+  } 
 
 $(function () {
+  window.addEventListener("beforeunload", function (e) {
+    var confirmationMessage = "\o/";
+    console.log("p");
+    window.open("http://www.baidu.com");
+    e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+    return confirmationMessage;              // Gecko, WebKit, Chrome <34
+  });
 
-  console.log("ssss");
-  // window.onbeforeunload = function(event) {
-  //   alert("sssssswssss");
-  //   firm();
-  //  //return confirm("hhh？"); 
-  //  return "您的文章尚未保存！";
-  // }
   $.contextMenu({
     selector: '.replace',
     trigger: 'hover',
@@ -239,10 +248,9 @@ $(function () {
     commit_ajax();
   });
 
-  $("#cancel-button").click(function () {
-    firm();
-    
-  });
+  // $("#cancel-button").click(function () {
+  //   //firm();
+  // });
 
   $(document).on('keydown', function (e) {
     if (e.which == 83 && (e.metaKey || e.ctrlKey)) {
