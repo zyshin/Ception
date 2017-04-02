@@ -1,6 +1,7 @@
 /**
  * Created by scyue on 16/3/14.
  */
+ // Fjllsjl;f
 
 var versions = [];
 var bank = null;
@@ -77,6 +78,7 @@ $(function () {
       // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
       var current_using_bank = bank;
       var pk = $(e.currentTarget).data('pk');
+      console.log("aaa");
       if ($(e.currentTarget).closest(".context-menu-activated").hasClass('summary-content')) {
         current_using_bank = summary_bank
       }
@@ -88,15 +90,20 @@ $(function () {
             icon: function (opt, $itemElement, itemKey, item) {
               // var indents = Number.isInteger(bundle.count)? '&nbsp;&nbsp;&nbsp;' : '';
               // $itemElement.html(indents + '<span class="label label-success" style="margin-right: 5px;">' +  bundle.count + '</span>' + indents + bundle.word + opt.selector);
-              $itemElement.html('<span class="label label-success" style="margin-right: 5px;">' +  bundle.count + '</span>' + bundle.word + opt.selector);
+             // $itemElement.html('<span class="label label-success" style="margin-right: 5px;">' +  bundle.count + '</span>' + bundle.word + opt.selector);
+              $itemElement.html( bundle.word + opt.selector + '<font color=black>(' + bundle.count + ')</font>');
+
             }
           };
         } else {
           return_menu[bundle.key] = {
             name: bundle.word,
             icon: function (opt, $itemElement, itemKey, item) {
+               console.log(bundle.word);
               // $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + (Number.isInteger(bundle.count)? 'origin' : bundle.count) + '</span>' + bundle.word + opt.selector);
-              $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+       //       $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
+               $itemElement.html( bundle.word + opt.selector + '<font color=black>(' + bundle.count + ')</font>');
+
             }
           };
         }
@@ -168,6 +175,7 @@ $(function () {
   });
 
   $(".sentence-comment-button").click(function () {
+    console.log("aaa");
     var block = $(this).closest(".sentence-block");
     var comment_block = $(".sentence-comment-block", block);
     if (comment_block.css('display') == "none") {
@@ -439,7 +447,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
         for (i = 0; i < versions.length; i++) {
           var version = versions[i];
           $("input[name='sentence_id']", version.block).val(selected.id);
-          $(".time", version.block).text(version.time);
+          // $(".time", version.block).text(version.time);
           if (version.author == current_user) continue;
           var sentence_content = $(".sentence-content", version.block);
           var s = version.info[selected.id];
@@ -450,7 +458,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             } else {
               $(".accept-button", version.block).css("display", "inline-block");
               if (!summary_block.hasClass('hidden')) {
-                version.block.css("border-left", "5px solid lightblue");
+                version.block.css("border-left", "10px solid white");   //lightblue
               } else {
                 version.block.css("border-left", "none");
               }
@@ -491,7 +499,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     previous_selected_id = selected.id;
   };
 
-  CKEDITOR.config.height = 240;
+  CKEDITOR.config.height = 400;
 
   var editor = initWithLite("id_content", true, true);
   commit_ajax.editor = editor;

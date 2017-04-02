@@ -154,12 +154,12 @@ a > img {
 }
 
 del {
-	color: #3399ff;
-	text-line-through-color: #6699ff;
+	color: #EB454E;
+	text-line-through-color: #EB454E;
 }
 
 ins {
-	color: #ff3366;
+	color: #EB454E;
 	text-decoration: none;
 }
 

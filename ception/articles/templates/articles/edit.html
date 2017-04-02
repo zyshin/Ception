@@ -21,31 +21,36 @@
   <ol class="breadcrumb">
     <li><a href="{% url 'articles' %}">{% trans 'Articles' %}</a></li>
     <li>{{ form.instance.origin.title }}</li>
-    <li class="active">{% trans 'Edit' %}</li>
+    <li class="active">{% trans 'Edit' %}</li>    
+    <!-- <a class="btn btn-default btn-block" id="cancel-button" href="{% url 'articles' %}" > {% trans 'Exit' %}</a> -->
+
   </ol>
+
+
   <div class="row">
     <div class="col-md-6">
       <h2>{{ form.instance.origin.title }}</h2>
 
       <div class="info">
-        <span class="date">
-          <span class="glyphicon glyphicon-calendar"></span>
-          {{ form.instance.origin.create_date }}
-        </span>
-        <span class="user">
+         <span class="user">
           <a href="{% url 'profile' form.instance.origin.create_user.username %}"><img
               src="{{ form.instance.origin.create_user.profile.get_picture }}"></a>
           <a href="{% url 'profile' form.instance.origin.create_user.username %}">{{ form.instance.origin.create_user.profile.get_screen_name }}</a>
         </span>
+        <span class="date">
+          <span class="glyphicon glyphicon-calendar"></span>
+          {{ form.instance.origin.create_date }}
+        </span>
+       
         <!--<span class="edit">
           <span class="glyphicon glyphicon-pencil"></span>
           10 Edits
         </span>-->
-        <span class="select">
+<!--         <span class="select">
           {# <span class="glyphicon glyphicon-search"></span> #}
           <span class="glyphicon glyphicon-pencil"></span>
           <div id="selected-id" style="display: inline">Sentence ID</div>
-        </span>
+        </span> -->
       </div>
 
       <form id="edit_form" data-id="{{ form.instance.pk }}">
@@ -81,51 +86,25 @@
 
     </div>
 
-<!-- href="{% url 'articles' %}" -->
     <div class="col-md-6" id="sidebar">
       <div class="row" style="margin-top: 10px;">
-        <div class="col-md-3"></div>
-        <div class="col-md-3"></div>
-        <div class="col-md-3">
-          <a class="btn btn-default btn-block" id="cancel-button">{% trans 'Exit' %}
-          </a>
-
-        </div>
-        <div class="col-md-3">
-          <button class="btn btn-primary btn-block" id="commit-button">{% trans 'Save' %}</button>
-        </div>
+     
       </div>
       <div id="sentence-list" hidden="hidden">
         <div class="sentence-list-header">
-          <div class="header-text h4">Current sentence</div>
-
+          <!-- <div class="header-text h4">Current sentence</div> -->
           <input id="toggle-sentence-view" class="pull-right" type="checkbox" data-toggle="toggle" data-on="Context" data-off="Context"
                  data-width="70px" data-size="mini">
           <input id="hide-del-toggle" class="pull-right" type="checkbox" data-toggle="toggle" data-on="Delete " data-off="Delete "
                  data-width="70px" data-size="mini">
         </div>
+      
         {% include 'articles/partial/partial_sentence.html' with author=user %}
         {% include 'articles/partial/partial_summary.html' %}
         {% for author in data.authors %}
           {% include 'articles/partial/partial_sentence.html' with author=author %}
         {% endfor %}
-        <!--<div class="panel-group" role="tablist">
-          <div class="panel panel-default">
-            <div id="collapseListGroup1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading1" aria-expanded="true">
-              <ul class="list-group">
-                <li class="list-group-item">Bootply</li>
-                <li class="list-group-item">One itmus ac facilin</li>
-                <li class="list-group-item">Second eros</li>
-              </ul>
-            </div>
-            <div class="panel-heading text-center" role="tab" id="collapseListGroupHeading1">
-              <a role="button" data-toggle="collapse" href="#collapseListGroup1" aria-expanded="true" aria-controls="collapseListGroup1">
-                Expand summarized edits by <span class="summary-number">3</span> users
-                <span class="glyphicon glyphicon-chevron-down"></span>
-              </a>
-            </div>
-          </div>
-        </div>-->
+
         <div id="hided-number-panel" class="panel-heading text-center">
           <i>Hided <span class="omitted-number">?</span> unchanged version</i>
         </div>

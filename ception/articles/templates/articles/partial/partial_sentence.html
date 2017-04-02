@@ -4,12 +4,15 @@
     {#      <a href="{% url 'profile' author.username %}"><img src="{{ author.profile.get_picture }}" class="sentence-portrait"></a>#}
     <div class="comment-text">
       <h5>
-        {# <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a> #}
-        <a>{{ author.profile.get_screen_name }}</a>
+<!-- {# <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a> #}
+        <a>{{ author.profile.get_screen_name }}</a> -->
       {% if author == user %}
-        <span class="label label-info">&nbsp;mine&nbsp;</span>
+        <span class="label label-default">{{ author.profile.get_screen_name }}</span>
       {% endif %}
-        <small class="time">editing now</small>
+      {% ifnotequal author user %}        
+        <span class="label label-primary">{{ author.profile.get_screen_name }}</span>
+      {% endifnotequal %}
+        <!-- <small class="time">editing now</small> -->
         <div style="display: inline-block; padding-right: 20px;">
           <span class="glyphicon glyphicon-comment sentence-comment-button sentence-vote"></span>
           <span class="comment-count">-</span>
@@ -43,19 +46,21 @@
       {% else %}
         <div class="sentence-content hide-del-class" id="current_sentence"></div>
       {% endifnotequal %}
+    
+      <div class="sentence-comment-block" style="display: none">
+        <form role="form" class="sentence-comment-form">
+          {% csrf_token %}
+          <input type="hidden" name="version_id" value="0">
+          <input type="hidden" name="sentence_id" value="0">
+          <textarea class="form-control sentence-comment-content" rows="1"
+                    placeholder="Write a comment... (Press Ctrl + Enter to post)"
+                    name="sentence-comment">
+          </textarea>
+        </form>
+        <div class="sentence-comment-list"></div>
+      </div>
+
     </div>
-  </div>
-  <div class="sentence-comment-block" style="display: none">
-    <form role="form" class="sentence-comment-form">
-      {% csrf_token %}
-      <input type="hidden" name="version_id" value="0">
-      <input type="hidden" name="sentence_id" value="0">
-      <textarea class="form-control sentence-comment-content" rows="1"
-                placeholder="Write a comment... (Press Ctrl + Enter to post)"
-                name="sentence-comment">
-      </textarea>
-    </form>
-    <div class="sentence-comment-list"></div>
   </div>
 </div>
 
