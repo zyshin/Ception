@@ -148,9 +148,12 @@ def init_edit_page(request, id, compare=False):
             'id': v.pk,
             'time': naturaltime(v.edit_date)
         }
+        print v.edit_user.profile.get_screen_name()
         if v.edit_user == request.user:
+            #print v.edit_user
             current_version_dict = dict_data
         else:
+            #print v.edit_user
             v_dict = dict_data
             authors.append(v.edit_user)
             version_jsons.append(json.dumps(v_dict))
@@ -180,6 +183,11 @@ def edit(request, id):
                 form = VersionForm(request.POST, instance=version)
                 if form.is_valid():
                     form.save()
+                '''form2 = ArticleForm(request.POST)
+                print 'ii'
+                if form2.is_valid():
+                    form2.save()
+                    print 'iii' '''
                 return HttpResponse("Success")
         else:
             return init_edit_page(request, id)

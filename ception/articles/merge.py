@@ -219,6 +219,13 @@ def merge_edit(origin_clean, user_clean, other_clean):
 
 from itertools import groupby
 
+def reversed_cmp(x, y):
+  if x > y:
+    return -1
+  if x < y:
+    return 1
+  return 0
+
 def summary_edit(sentence_list):
     # data = [
     #     [{'key': 'to replace', 'authors': [1, 2]}, {'key': 'to replace', 'authors': [3, 4]}],
@@ -245,12 +252,13 @@ def summary_edit(sentence_list):
         for dd, diffs in groupby(sorted(diff.iteritems(), key=lambda o: o[1]), key=lambda o: o[1]):
             o = {
                 'key': apply_diff2(wordArray, origin_clean, dd, start, end),
-                'authors': sorted([uid for uid, dd in diffs]),
+                'authors': sorted([uid for uid, dd in diffs],reversed_cmp),
+                #'authors': sorted([uid for uid, dd in diffs]),
             }
             o['word'] = '<i>(deleted)</i>' if o['key'].rfind('<del>') == 0 and o['key'].find('</del>') == (len(o['key']) - len('</del>')) else o['key']
             o['count'] = len(o['authors'])
             l.append(o)
-        l.sort(key=lambda o: (-o['count'], o['authors'][0]))
+        l.sort(key=lambda o: (-o['count'], o['authors'][0]), reverse=True)
         o = {
             'key': apply_diff2(wordArray, origin_clean, [], start, end),
             'authors': [],

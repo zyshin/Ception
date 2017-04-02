@@ -35,8 +35,27 @@ function generate_alert(alert_type, content) {
       '<strong>' + content + '</strong>' + '</div>'
 }
 
+function firm() { 
+        if (confirm("Do you want to save before you leave?")) {  
+            commit_ajax();
+            history.back();
+            //alert("点击了确定");  
+        }  
+        else {  
+          history.back();
+            //alert("点击了取消");  
+        }  
+}  
+
 $(function () {
 
+  console.log("ssss");
+  // window.onbeforeunload = function(event) {
+  //   alert("sssssswssss");
+  //   firm();
+  //  //return confirm("hhh？"); 
+  //  return "您的文章尚未保存！";
+  // }
   $.contextMenu({
     selector: '.replace',
     trigger: 'hover',
@@ -82,7 +101,6 @@ $(function () {
     }
   });
 
-
   var sentence_comment_content = $(".sentence-comment-content");
   sentence_comment_content.focus(function () {
     $(this).attr("rows", "2");
@@ -104,19 +122,37 @@ $(function () {
         cache: false,
         type: 'post',
         success: function (data) {
+          console.log("abc");
           var version_id = $("input[name='version_id']", block).val();
           var sentence_id = $("input[name='sentence_id']", block).val();
           var version = undefined;
           for (var i = 0; i < versions.length; i++) {
             if (versions[i].id == version_id) {
               version = versions[i];
+              //console.log(versions[i]);
             }
+            //console.log(versions.length);
           }
           content.val("").blur();
           $(".sentence-comment-list", block).html(data).removeAttr("hidden");
+          
+          // console.log(version_id);
+          // console.log("www");
+
+          // added
+          if(version != undefined){       
           version.comments[sentence_id]['html'] = data;
           version.comments[sentence_id]['count'] = $(".sentence-comment-list .sentence-comment", block).length;
           $(".comment-count", block).text(version.comments[sentence_id]['count']);
+          //console.log("abcdd");
+          }
+          else{
+              version = versions[0];
+              version.comments[sentence_id]['html'] = data;
+              version.comments[sentence_id]['count'] = $(".sentence-comment-list .sentence-comment", block).length;
+              $(".comment-count", block).text(version.comments[sentence_id]['count']);
+              //console.log("abcdd");
+          }
         }
       });
     }
@@ -169,9 +205,18 @@ $(function () {
         if (vote == "U" || vote == "D") {
           this_span.addClass("voted");
         }
-        version.vote[sentence_id]['state'] = vote;
-        $(".sentence-comment-vote-number", block).text(data);
-        version.vote[sentence_id]['count'] = data;
+
+        if(version != undefined){
+            version.vote[sentence_id]['state'] = vote;
+            $(".sentence-comment-vote-number", block).text(data);
+            version.vote[sentence_id]['count'] = data;
+        }
+        else{
+            version = versions[0];
+            version.vote[sentence_id]['state'] = vote;
+            $(".sentence-comment-vote-number", block).text(data);
+            version.vote[sentence_id]['count'] = data;
+        }
       }
     });
   });
@@ -190,7 +235,13 @@ $(function () {
   });
 
   $("#commit-button").click(function () {
+    //firm();
     commit_ajax();
+  });
+
+  $("#cancel-button").click(function () {
+    firm();
+    
   });
 
   $(document).on('keydown', function (e) {

@@ -59,7 +59,7 @@ function fixSpecificLineBug(editor, e) {
     } else if (ceptArming.hasEntered && keycode >= 33 && keycode <= 126) {
         var range = editor.getSelection().getRanges()[0];
         var startNode = range.startContainer;
-        if (editor.lite.isTracking) {
+        if (editor.lite && editor.lite.isTracking) {
             var parentString = startNode.getParent().getText();
             if (parentString.length == 1 && parentString.charCodeAt(0) == 8203) {
                 startNode.setText(CKEDITOR.INVISIABLECHAR);
@@ -141,6 +141,7 @@ function avoidPDtag(editor, e) {
     node = node.getParent();
   }
   if (node.getName && node.getName() == "pd") {
+    console.log("qas");
     var new_text_node = new CKEDITOR.dom.text("\x00");
     new_text_node.insertAfter(node);
     newRange.moveToPosition(new_text_node, CKEDITOR.POSITION_BEFORE_END);
@@ -169,22 +170,27 @@ sentenceEnding.ending = {
 //we treat all the insert as split
 function insertPDTag (editor, e) {
   var node = editor.getSelection().getRanges()[0].startContainer;
+  //console.log(node);
   var next_pd = node.getNextPDNode();
-  while (next_pd.getSentenceID() < 0) {
+  //console.log(next_pd.getSentenceID());
+  while (next_pd && next_pd.getSentenceID() < 0 && next_pd.getSentenceID() != -10) {
     next_pd = next_pd.getNextPDNode();
   }
   var rsid_array;
+  //console.log(next_pd);
   if (next_pd && (rsid_array = eval(next_pd.getAttribute("rsid"))) && rsid_array.length > 0) {
     editor.insertHtml("<pd sid='" + rsid_array.pop() + "' replaced='true'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
     next_pd.setAttribute("rsid", "[" + rsid_array + "]");
+    console.log(1);
   } else if (next_pd) {
     var sid = next_pd.getSentenceID();
     editor.insertHtml("<pd sid='" + CKEDITOR.SENTENCE_SPLIT + "' tsid='" + sid + "'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
+    console.log(2);
   } else {
     editor.insertHtml("<pd sid='" + CKEDITOR.SENTENCE_NEW + "'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
+    console.log(3);
   }
 }
-
 
 // We treat all the delete as merge
 function deletePDTag (editor, e) {
@@ -218,9 +224,15 @@ function ceptArming(editor) {
     if (isVisible(e.data.keyCode)) {
       avoidPDtag(editor, e);
     }
+
+    console.log(e);
+    console.log(e.data);
+    console.log(e.data.keyCode);
+
     //editor.getIDofSelectedSentence();
     if (sentenceEnding(e.data.keyCode)) {
       insertPDTag(editor, e);
+      console.log("insert");
       editor.fire('scyue_event');
       e.cancel();
     }
@@ -264,6 +276,7 @@ function initWithLite(name, isTracking, isShowing) {
     console.log('CKEditor lite loaded!');
   });
   ceptArming(editor);
+  console.log("hhhhhaaahhh");
   set_editor_update_function(editor);
   return editor;
 }

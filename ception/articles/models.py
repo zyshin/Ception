@@ -38,12 +38,14 @@ class Article(models.Model):
     class Meta:
         verbose_name = _("Article")
         verbose_name_plural = _("Articles")
+        #ordering = ("-update_date",)
         ordering = ("-create_date",)
 
     def __unicode__(self):
         return self.title
 
     def save(self, *args, **kwargs):
+        print 'hhhhhhhh'
         if not self.pk:
             super(Article, self).save(*args, **kwargs)
         else:
@@ -154,7 +156,7 @@ class ArticleVersion(models.Model):
             self.slug = slugify(slug_str)
 
         self.prepocess()
-        print "Saved:", self.__unicode__()
+        print "Saved:", self.__unicode__(),self.edit_date
 
         super(ArticleVersion, self).save(*args, **kwargs)
 
@@ -252,7 +254,7 @@ class ArticleSentenceComment(models.Model):
     class Meta:
         verbose_name = _("Article Sentence Comment")
         verbose_name_plural = _("Article Sentence Comments")
-        ordering = ("-date",)
+        ordering = ("date",)
 
     def __unicode__(self):
         return u'{0} - "{1}" - "{2}"'.format(self.user.username, self.parent, self.sentence_id)

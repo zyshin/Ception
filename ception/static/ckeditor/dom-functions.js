@@ -11,6 +11,7 @@
  -1: deleted PD;
  */
 CKEDITOR.dom.node.prototype.isPD = function () {
+  //console.log("ssssssssssssaa");
   if (this.getName && this.getName() == "pd") {
     if (this.getChildren().getItem(0) instanceof CKEDITOR.dom.text) {
       return 1;
@@ -35,6 +36,7 @@ CKEDITOR.dom.node.prototype.getUndergroundFirstNode = function () {
       if (this.getName() == "del" || this.isPD()) {
         return this;
       } else {
+        if(this.getLast())
         return this.getFirst().getUndergroundFirstNode();
       }
     } else {
@@ -53,6 +55,7 @@ CKEDITOR.dom.node.prototype.getUndergroundLastNode = function () {
       if (this.getName() == "del" || this.isPD()) {
         return this;
       } else {
+        if(this.getLast())
         return this.getLast().getUndergroundLastNode();
       }
     } else {
