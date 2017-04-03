@@ -2,6 +2,7 @@ from unipath import Path
 PROJECT_DIR = Path(__file__).parent
 ROOT_DIR = PROJECT_DIR.parent
 from decouple import config
+from django.utils.translation import ugettext_lazy as _
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -70,7 +71,7 @@ WSGI_APPLICATION = 'ception.wsgi.application'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -79,7 +80,10 @@ USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = (
-    'en',
+    ('en', _('English')),
+    ('zh-cn', _('Chinese Simplified')),
+    ('pt-br', _('Portuguese')),
+    ('es', _('Spanish')),
 )
 
 LOCALE_PATHS = (PROJECT_DIR.child('locale'), )
@@ -92,7 +96,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     PROJECT_DIR.child('static'),
-    # PROJECT_DIR.parent.child('media')
 )
 
 # MEDIA_ROOT = PROJECT_DIR.parent.child('media')
