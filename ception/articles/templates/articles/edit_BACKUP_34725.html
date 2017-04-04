@@ -46,11 +46,11 @@
           <span class="glyphicon glyphicon-pencil"></span>
           10 Edits
         </span>-->
-        <span class="select">
+<!--         <span class="select">
           {# <span class="glyphicon glyphicon-search"></span> #}
           <span class="glyphicon glyphicon-pencil"></span>
           <div id="selected-id" style="display: inline">Sentence ID</div>
-        </span>
+        </span> -->
       </div>
 
       <form id="edit_form" data-id="{{ form.instance.pk }}">
@@ -86,9 +86,23 @@
 
     </div>
 
+<!-- href="{% url 'articles' %}" -->
     <div class="col-md-6" id="sidebar">
       <div class="row" style="margin-top: 10px;">
+<<<<<<< HEAD
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+          <a class="btn btn-default btn-block" id="cancel-button">{% trans 'Exit' %}
+          </a>
+
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-primary btn-block" id="commit-button">{% trans 'Save' %}</button>
+        </div>
+=======
      
+>>>>>>> origin/sijia
       </div>
       <div id="sentence-list" hidden="hidden">
         <div class="sentence-list-header">
@@ -101,11 +115,9 @@
       
         {% include 'articles/partial/partial_sentence.html' with author=user %}
         {% include 'articles/partial/partial_summary.html' %}
-        <div id="others-list"><span>
         {% for author in data.authors %}
           {% include 'articles/partial/partial_sentence.html' with author=author %}
         {% endfor %}
-        </span></div>
 
         <div id="hided-number-panel" class="panel-heading text-center">
           <i>Hided <span class="omitted-number">?</span> unchanged version</i>

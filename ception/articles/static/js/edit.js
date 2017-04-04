@@ -36,32 +36,53 @@ function generate_alert(alert_type, content) {
       '<strong>' + content + '</strong>' + '</div>'
 }
 
-function firm() { 
-        if (confirm("Do you want to save before you leave?")) {  
-            commit_ajax();
-            history.back();
-            //alert("点击了确定");  
-        }  
-        else {  
-          history.back();
-            //alert("点击了取消");  
-        }  
-}   
+// function firm() { 
+//   if (confirm("Do you want to save before you leave?")) {  
+//     commit_ajax();
+//     history.back();
+//     //alert("点击了确定");  
+//   }  
+//   else {  
+//     history.back();
+//     //alert("点击了取消");  
+//   }  
+// }   
 
-function closeWin(){
- var exit = confirm("Do you want to save before you leave?");  
- console.log("sssswww");
-     if(exit==true){
-        commit_ajax();
-        //do something before closing;
-     }
-  } 
+// function closeWin(){
+//   var exit = confirm("Do you want to save before you leave?");  
+//   console.log("sssswww");
+//     if(exit==true){
+//       commit_ajax();
+//       //do something before closing;
+//     }
+// } 
+
+window.status=0;
+function check(){
+  if(window.status==0){
+    //window.location.href="http://www.google.com.hk";
+    //console.log("saved");
+    commit_ajax();
+  }
+  window.status=0;
+}
 
 $(function () {
+  
+  // listen to all the mouse and key events on the page 
+  // document.body.onmousedown=function(){
+  //   window.status++;
+  //   //console.log("shubiao");
+  // }
+  // document.onkeydown=function(){
+  //   window.status++;
+  //   //console.log("jianpan");
+  // }
+  setInterval("check()",30000);
+
   window.addEventListener("beforeunload", function (e) {
     var confirmationMessage = "\o/";
-    console.log("p");
-    window.open("http://www.baidu.com");
+    //console.log("p");
     e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
     return confirmationMessage;              // Gecko, WebKit, Chrome <34
   });
@@ -78,7 +99,7 @@ $(function () {
       // e is the original contextmenu event, containing e.pageX and e.pageY (amongst other data)
       var current_using_bank = bank;
       var pk = $(e.currentTarget).data('pk');
-      console.log("aaa");
+      //console.log("aaa");
       if ($(e.currentTarget).closest(".context-menu-activated").hasClass('summary-content')) {
         current_using_bank = summary_bank
       }
@@ -99,7 +120,7 @@ $(function () {
           return_menu[bundle.key] = {
             name: bundle.word,
             icon: function (opt, $itemElement, itemKey, item) {
-               console.log(bundle.word);
+              //console.log(bundle.word);
               // $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + (Number.isInteger(bundle.count)? 'origin' : bundle.count) + '</span>' + bundle.word + opt.selector);
        //       $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
                $itemElement.html( bundle.word + opt.selector + '<font color=black>(' + bundle.count + ')</font>');
@@ -402,6 +423,38 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     }
   };
 
+  function getByClass1(parent, cls){
+    var res = [];  //存放匹配结果的数组
+    var ele = parent.getElementsByTagName('*');
+    for(var i = 0; i < ele.length; i++){
+      if(ele[i].className == cls){
+        res.push(ele[i]);
+      }
+    }
+    return res;
+  }
+
+  var update_others_order = function (sid) {
+    for (var i = 0; i < versions.length; i++) {
+      var s = versions[i].info[sid];
+      var au = versions[i].author;
+      var auth = document.getElementById(au);
+      if (s.edited && s.single) {
+        document.getElementById("others-list").appendChild(auth);
+        //console.log(au);
+      } 
+    }
+    for (var i = 0; i < versions.length; i++) {
+      var s = versions[i].info[sid];
+      var au = versions[i].author;
+      var auth = document.getElementById(au);
+      if (s.edited && !s.single) {
+        document.getElementById("others-list").appendChild(auth);
+        //console.log(au);
+      } 
+    }
+  };
+
   var get_sentence_comment = function (version, sentence_id) {
     var list = $(".sentence-comment-list", version.block);
     list.html(version.comments[sentence_id]['html']);
@@ -443,6 +496,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
         get_sentence_comment(current_version, selected.id);
         get_sentence_vote(current_version, selected.id);
         update_summary(selected.id);
+        update_others_order(selected.id);
         //$(".cke_concise").css("display", "block");
         for (i = 0; i < versions.length; i++) {
           var version = versions[i];
@@ -465,6 +519,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             }
             version.block.removeAttr("hidden");
             get_sentence_comment(version, s.id);
+            //added
             get_sentence_vote(version, s.id);
             sentence_content.html(s.sentence);
             //version.block.data("sentence", s.sentence_without_span);
@@ -480,7 +535,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
               range.selectNodeContents(element);
               range.scrollIntoView();
             } catch (e) {
-              console.log(e);
+              //console.log(e);
               //TODO: ignore it
             }
           } else {
@@ -529,6 +584,8 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   var previous_selected_id = -1;
   editor.on('contentDom', function () {
     editor.editable().attachListener(editor.document, 'click', function () {
+      window.status++;
+      //console.log(window.status);
       update_comments_and_divs();
     });
   });

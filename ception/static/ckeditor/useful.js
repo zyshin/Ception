@@ -149,9 +149,6 @@ function avoidPDtag(editor, e) {
   }
 }
 
-
-
-
 function sentenceEnding (keyCode) {
   for (var key in sentenceEnding.ending) {
     if (keyCode == key)
@@ -181,14 +178,14 @@ function insertPDTag (editor, e) {
   if (next_pd && (rsid_array = eval(next_pd.getAttribute("rsid"))) && rsid_array.length > 0) {
     editor.insertHtml("<pd sid='" + rsid_array.pop() + "' replaced='true'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
     next_pd.setAttribute("rsid", "[" + rsid_array + "]");
-    console.log(1);
+    //console.log(1);
   } else if (next_pd) {
     var sid = next_pd.getSentenceID();
     editor.insertHtml("<pd sid='" + CKEDITOR.SENTENCE_SPLIT + "' tsid='" + sid + "'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
-    console.log(2);
+    //console.log(2);
   } else {
     editor.insertHtml("<pd sid='" + CKEDITOR.SENTENCE_NEW + "'>" + sentenceEnding.ending[e.data.keyCode] + "</pd>");
-    console.log(3);
+    //console.log(3);
   }
 }
 
@@ -215,6 +212,8 @@ function deletePDTag (editor, e) {
 
 function ceptArming(editor) {
   editor.on('key', function(e) {
+    window.status++;
+    //console.log(window.status);
     fixSpecificLineBug(editor, e);
     fixSpecificCutBug(editor, e);
     fixSpecificBsBug(editor, e);
@@ -224,10 +223,10 @@ function ceptArming(editor) {
     if (isVisible(e.data.keyCode)) {
       avoidPDtag(editor, e);
     }
-
-    console.log(e);
-    console.log(e.data);
-    console.log(e.data.keyCode);
+    
+    // console.log(e);
+    // console.log(e.data);
+    // console.log(e.data.keyCode);
 
     //editor.getIDofSelectedSentence();
     if (sentenceEnding(e.data.keyCode)) {
@@ -276,7 +275,7 @@ function initWithLite(name, isTracking, isShowing) {
     console.log('CKEditor lite loaded!');
   });
   ceptArming(editor);
-  console.log("hhhhhaaahhh");
+  //console.log("hhhhhaaahhh");
   set_editor_update_function(editor);
   return editor;
 }
