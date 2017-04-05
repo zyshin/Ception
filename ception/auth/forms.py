@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from ception.settings import ALLOWED_SIGNUP_DOMAINS
@@ -39,29 +38,19 @@ def UniqueUsernameIgnoreCaseValidator(value):
         raise ValidationError('User with this Username already exists.')
 
 class SignUpForm(forms.ModelForm):
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={'class':'form-control'}),
+    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),
         max_length=30,
         required=True,
         # label="Username (Must be your REAL NAME!)",
-        label=_("Username"),
-        help_text='Usernames may contain <strong>alphanumeric</strong>, <strong>_</strong> and <strong>.</strong> characters',
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class':'form-control'}),
-        label=_("Password"),
-    )
-    confirm_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class':'form-control'}), 
-        label=_("Confirm your password"),
+        label="Username",
+        help_text='Usernames may contain <strong>alphanumeric</strong>, <strong>_</strong> and <strong>.</strong> characters')
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}), 
+        label="Confirm your password",
+        required=True)
+    email = forms.CharField(widget=forms.EmailInput(attrs={'class':'form-control'}), 
         required=True,
-    )
-    email = forms.CharField(
-        widget=forms.EmailInput(attrs={'class':'form-control'}),
-        required=True,
-        max_length=75,
-        label=_("Email"),
-    )
+        max_length=75)
 
     class Meta:
         model = User
