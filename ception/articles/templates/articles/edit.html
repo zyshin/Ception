@@ -87,7 +87,17 @@
     </div>
 
     <div class="col-md-6" id="sidebar">
-      <div class="row" style="margin-top: 10px;">
+        <div class="row" style="margin-top: 10px;">
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+          <a class="btn btn-default btn-block" id="cancel-button"
+             href="{% url 'articles' %}">{% trans 'Exit' %}
+          </a>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-primary btn-block" id="commit-button">{% trans 'Save' %}</button>
+        </div>
      
       </div>
       <div id="sentence-list" hidden="hidden">
