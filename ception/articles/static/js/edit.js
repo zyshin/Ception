@@ -159,7 +159,6 @@ $(function () {
         cache: false,
         type: 'post',
         success: function (data) {
-          console.log("abc");
           var version_id = $("input[name='version_id']", block).val();
           var sentence_id = $("input[name='sentence_id']", block).val();
           var version = undefined;
@@ -174,7 +173,6 @@ $(function () {
           $(".sentence-comment-list", block).html(data).removeAttr("hidden");
           
           // console.log(version_id);
-          // console.log("www");
 
           // added
           if(version != undefined){       
@@ -196,7 +194,6 @@ $(function () {
   });
 
   $(".sentence-comment-button").click(function () {
-    console.log("aaa");
     var block = $(this).closest(".sentence-block");
     var comment_block = $(".sentence-comment-block", block);
     if (comment_block.css('display') == "none") {

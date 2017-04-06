@@ -231,7 +231,7 @@ function ceptArming(editor) {
     //editor.getIDofSelectedSentence();
     if (sentenceEnding(e.data.keyCode)) {
       insertPDTag(editor, e);
-      console.log("insert");
+      // console.log("insert");
       editor.fire('scyue_event');
       e.cancel();
     }
@@ -275,7 +275,6 @@ function initWithLite(name, isTracking, isShowing) {
     console.log('CKEditor lite loaded!');
   });
   ceptArming(editor);
-  //console.log("hhhhhaaahhh");
   set_editor_update_function(editor);
   return editor;
 }

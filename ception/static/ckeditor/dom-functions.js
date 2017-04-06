@@ -11,7 +11,6 @@
  -1: deleted PD;
  */
 CKEDITOR.dom.node.prototype.isPD = function () {
-  //console.log("ssssssssssssaa");
   if (this.getName && this.getName() == "pd") {
     if (this.getChildren().getItem(0) instanceof CKEDITOR.dom.text) {
       return 1;

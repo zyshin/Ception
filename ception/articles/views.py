@@ -148,7 +148,6 @@ def init_edit_page(request, id, compare=False):
             'id': v.pk,
             'time': naturaltime(v.edit_date)
         }
-        print v.edit_user.profile.get_screen_name()
         if v.edit_user == request.user:
             #print v.edit_user
             current_version_dict = dict_data
