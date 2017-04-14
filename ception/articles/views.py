@@ -64,6 +64,8 @@ def write(request):
             article.title = form.cleaned_data.get('title')
             article.content = form.cleaned_data.get('content').replace('\n', '').replace("\r", "")
             article.content, article.sentence_count = convert_period_to_pd(article.content)
+            #article.edits_count = 1
+            #article.votes_count = 2
             article.description = markdown.markdown(form.cleaned_data.get('description'))
             status = form.cleaned_data.get('status')
             if status in [Article.PUBLISHED, Article.DRAFT]:
@@ -132,6 +134,7 @@ def comment(request):
 
 def init_edit_page(request, id, compare=False):
     article = get_object_or_404(Article, pk=id)
+    #article.edits_count = 12
     version = article.get_or_create_version_by_user(request.user)
     form = VersionForm(instance=version)
     versions = ArticleVersion.get_versions(version.origin, version.edit_user)
@@ -148,6 +151,7 @@ def init_edit_page(request, id, compare=False):
             'id': v.pk,
             'time': naturaltime(v.edit_date)
         }
+        #print v.edit_user.profile.get_screen_name()
         if v.edit_user == request.user:
             #print v.edit_user
             current_version_dict = dict_data
@@ -169,7 +173,45 @@ def init_edit_page(request, id, compare=False):
     else:
         return render(request, 'articles/edit_compare.html', {'form': form, 'data': pass_data})
 
+def update_right_side(request, id):
+    #print id
+    article = get_object_or_404(Article, pk=id)
+    #article.edits_count = 12
+    version = article.get_or_create_version_by_user(request.user)
+    form = VersionForm(instance=version)
+    versions = ArticleVersion.get_versions(version.origin, version.edit_user)
+    version_jsons = []
+    authors = []
+    version_array = []
+    current_version_dict = {}
+    for v in versions:
+        dict_data = {
+            'comments': v.get_sentence_comments(),
+            'vote': v.get_sentence_vote(request.user),
+            'info': v.info_array_json,
+            'author': v.edit_user.profile.get_screen_name(),
+            'id': v.pk,
+            'time': naturaltime(v.edit_date)
+        }
+        print v.edit_user.profile.get_screen_name()
+        if v.edit_user == request.user:
+            #print v.edit_user
+            current_version_dict = dict_data
+        else:
+            #print v.edit_user
+            v_dict = dict_data
+            authors.append(v.edit_user)
+            version_jsons.append(json.dumps(v_dict))
+            version_array.append(v)
+    pass_data = {
+        'json': version_jsons,
+        'current_version_json': json.dumps(current_version_dict),
+        'summary': json.dumps(article.compute_summary(request.user))
+    }
+    return HttpResponse(json.dumps(pass_data));
+    #return render(request, 'articles/partial/partial_summary.html', {'form': form, 'data': pass_data})
 
+ID1 = 0
 @login_required
 def edit(request, id):
     try:
@@ -188,7 +230,18 @@ def edit(request, id):
                     form2.save()
                     print 'iii' '''
                 return HttpResponse("Success")
+            elif action == "update":
+                version = get_object_or_404(ArticleVersion, pk=id)
+                form = VersionForm(request.POST, instance=version)
+                if form.is_valid():
+                    form.save()
+                global ID1
+                print "this id = "+ID1
+                return update_right_side(request, ID1)
         else:
+            #print "id = "+id
+            ID1 = id
+            #print "id1 = "+ID1
             return init_edit_page(request, id)
     except Exception, e:
         print "Exception-Edit: ", repr(e)

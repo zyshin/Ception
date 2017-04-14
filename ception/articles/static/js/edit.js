@@ -1,4 +1,4 @@
-/**
+ /**
  * Created by scyue on 16/3/14.
  */
  // Fjllsjl;f
@@ -47,15 +47,6 @@ function generate_alert(alert_type, content) {
 //     //alert("点击了取消");  
 //   }  
 // }   
-
-// function closeWin(){
-//   var exit = confirm("Do you want to save before you leave?");  
-//   console.log("sssswww");
-//     if(exit==true){
-//       commit_ajax();
-//       //do something before closing;
-//     }
-// } 
 
 window.status=0;
 function check(){
@@ -171,8 +162,6 @@ $(function () {
           }
           content.val("").blur();
           $(".sentence-comment-list", block).html(data).removeAttr("hidden");
-          
-          // console.log(version_id);
 
           // added
           if(version != undefined){       
@@ -183,6 +172,7 @@ $(function () {
           }
           else{
               version = versions[0];
+              //console.log("version: "+version.id);
               version.comments[sentence_id]['html'] = data;
               version.comments[sentence_id]['count'] = $(".sentence-comment-list .sentence-comment", block).length;
               $(".comment-count", block).text(version.comments[sentence_id]['count']);
@@ -194,6 +184,7 @@ $(function () {
   });
 
   $(".sentence-comment-button").click(function () {
+    //console.log("aaa");
     var block = $(this).closest(".sentence-block");
     var comment_block = $(".sentence-comment-block", block);
     if (comment_block.css('display') == "none") {
@@ -256,27 +247,23 @@ $(function () {
     });
   });
 
-  $("#save-button").click(function () {
-    var form = $("#edit_form");
-    $.ajax({
-      url: '/articles/edit/' + form.data('id') + '/',
-      data: form.serialize() + "&action=save",
-      cache: false,
-      type: 'post',
-      success: function (data) {
-        console.log("Saved!");
-      }
-    });
-  });
+  // $("#save-button").click(function () {
+  //   var form = $("#edit_form");
+  //   $.ajax({
+  //     url: '/articles/edit/' + form.data('id') + '/',
+  //     data: form.serialize() + "&action=save",
+  //     cache: false,
+  //     type: 'post',
+  //     success: function (data) {
+  //       console.log("Saved!");
+  //     }
+  //   });
+  // });
 
   $("#commit-button").click(function () {
     //firm();
     commit_ajax();
   });
-
-  // $("#cancel-button").click(function () {
-  //   //firm();
-  // });
 
   $(document).on('keydown', function (e) {
     if (e.which == 83 && (e.metaKey || e.ctrlKey)) {
@@ -384,10 +371,11 @@ function merge_second_stage(new_sentence) {
     }
   })
 
-
 }
 
 function init_page(current_version, current_user, json_str_array, summary_list) {
+  //console.log("it is here");
+
   var update_summary = function (sid) {
     summary_block.removeClass("hidden");
     var edited_total = 0, merged_total = 0, unedited = 0;
@@ -453,9 +441,12 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   };
 
   var get_sentence_comment = function (version, sentence_id) {
+    //console.log(version);
     var list = $(".sentence-comment-list", version.block);
     list.html(version.comments[sentence_id]['html']);
     var count = version.comments[sentence_id]['count'];
+    //console.log(count);
+    //console.log("id: "+version.id);
     $(".comment-count", version.block).text(count);
     $(".sentence-comment-content", version.block).val("").blur();
     if (count == 0) {
@@ -476,6 +467,40 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     }
   };
 
+  var save_and_update_the_datas = function (callback) {
+      var form = $("#edit_form");
+      $.ajax({
+        url: '/articles/edit/' + form.data('id') + '/',
+        data: {
+          'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
+          'content': commit_ajax.editor.getData().replace(/\x00/g, ''),
+          'action': 'update'
+        },
+        cache: false,
+        type: 'post',
+        success: function (data) {
+          data = JSON.parse(data);
+          var json_str_array = data.json;
+          var summary_list = data.summary;
+          current_version = JSON.parse(data.current_version_json);
+          //console.log(current_version.comments);
+          versions = [];
+          for (var i = 0; i < json_str_array.length; i++) {
+            versions.push(JSON.parse(json_str_array[i]));
+            versions[i].info = JSON.parse(versions[i].info);
+          }
+          for (i = 0; i < versions.length; i++) {
+            versions[i].block = $(".sentence-block[data-author='" + versions[i].author + "']");
+            $("input[name='version_id']", versions[i].block).val(versions[i].id);
+          }
+          //console.log(versions);
+          //summary_list = summary_list1;
+          callback();
+        }
+      });
+      //callback();
+  };
+
   var update_comments_and_divs = function () {
     if (previous_selected_id == -1) $("#sentence-list").removeAttr("hidden");
 
@@ -488,65 +513,72 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     var backup_scoll = window.pageYOffset || document.documentElement.scrollTop;
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
-      if (selected.id > 0) {
-        //if (! $("#toggle-sentence-view").prop('checked')) $(".cke_concise").css("display", "none");
-        get_sentence_comment(current_version, selected.id);
-        get_sentence_vote(current_version, selected.id);
-        update_summary(selected.id);
-        update_others_order(selected.id);
-        //$(".cke_concise").css("display", "block");
-        for (i = 0; i < versions.length; i++) {
-          var version = versions[i];
-          $("input[name='sentence_id']", version.block).val(selected.id);
-          // $(".time", version.block).text(version.time);
-          if (version.author == current_user) continue;
-          var sentence_content = $(".sentence-content", version.block);
-          var s = version.info[selected.id];
-          if (s.edited) {
-            if (!s.single) {
-              $(".accept-button", version.block).css("display", "none");
-              version.block.css("border-left", "none");
-            } else {
-              $(".accept-button", version.block).css("display", "inline-block");
-              if (!summary_block.hasClass('hidden')) {
-                version.block.css("border-left", "10px solid white");   //lightblue
-              } else {
+      //console.log("change sentence");
+      save_and_update_the_datas(function () {
+        //var ls = JSON.parse(current_version)
+        //console.log("this one "+current_version.comments);
+        if (selected.id > 0) {
+          //if (! $("#toggle-sentence-view").prop('checked')) $(".cke_concise").css("display", "none");
+          //console.log("current_version is "+current_version.id);
+          get_sentence_comment(current_version, selected.id);
+          get_sentence_vote(current_version, selected.id);
+          update_summary(selected.id);
+          update_others_order(selected.id);
+          //$(".cke_concise").css("display", "block");
+          for (i = 0; i < versions.length; i++) {
+            var version = versions[i];
+            $("input[name='sentence_id']", version.block).val(selected.id);
+            // $(".time", version.block).text(version.time);
+            if (version.author == current_user) continue;
+            var sentence_content = $(".sentence-content", version.block);
+            var s = version.info[selected.id];
+            if (s.edited) {
+              if (!s.single) {
+                $(".accept-button", version.block).css("display", "none");
                 version.block.css("border-left", "none");
+              } else {
+                $(".accept-button", version.block).css("display", "inline-block");
+                if (!summary_block.hasClass('hidden')) {
+                  version.block.css("border-left", "10px solid white");   //lightblue
+                } else {
+                  version.block.css("border-left", "none");
+                }
               }
+              version.block.removeAttr("hidden");
+              get_sentence_comment(version, s.id);
+              //added
+              get_sentence_vote(version, s.id);
+              sentence_content.html(s.sentence);
+              //version.block.data("sentence", s.sentence_without_span);
+              //version.block.data("context", s.context_without_span);
+              var author_editor = CKEDITOR.instances["editor-" + version.author];
+              $("iframe", "#cke_editor-" + version.author).contents().find("body")
+                  .addClass("cke_concise_body")
+                  .addClass("hide-del-class")
+                  .html(s.context);
+              try {
+                var range = new CKEDITOR.dom.range(editor.document);
+                var element = author_editor.document.findOne("#current");
+                range.selectNodeContents(element);
+                range.scrollIntoView();
+              } catch (e) {
+                //console.log(e);
+                //TODO: ignore it
+              }
+            } else {
+              version.block.attr("hidden", "hidden");
             }
-            version.block.removeAttr("hidden");
-            get_sentence_comment(version, s.id);
-            //added
-            get_sentence_vote(version, s.id);
-            sentence_content.html(s.sentence);
-            //version.block.data("sentence", s.sentence_without_span);
-            //version.block.data("context", s.context_without_span);
-            var author_editor = CKEDITOR.instances["editor-" + version.author];
-            $("iframe", "#cke_editor-" + version.author).contents().find("body")
-                .addClass("cke_concise_body")
-                .addClass("hide-del-class")
-                .html(s.context);
-            try {
-              var range = new CKEDITOR.dom.range(editor.document);
-              var element = author_editor.document.findOne("#current");
-              range.selectNodeContents(element);
-              range.scrollIntoView();
-            } catch (e) {
-              //console.log(e);
-              //TODO: ignore it
-            }
-          } else {
-            version.block.attr("hidden", "hidden");
           }
+        } else {
+          for (i = 0; i < versions.length; i++) {
+            versions[i].block.attr("hidden", "hidden");
+          }
+          summary_block.addClass("hidden");
         }
-      } else {
-        for (i = 0; i < versions.length; i++) {
-          versions[i].block.attr("hidden", "hidden");
-        }
-        summary_block.addClass("hidden");
-      }
-      window.scrollTo(0, backup_scoll);
-      form_current_sentence_id.val(selected.id);
+        window.scrollTo(0, backup_scoll);
+        form_current_sentence_id.val(selected.id);
+      });
+
     }
     previous_selected_id = selected.id;
   };
@@ -567,8 +599,6 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   var summary_sentence = $(".sentence-content", ".summary-block");
   var summary_block = $(".summary-block");
   $("input[name='version_id']", ".summary-block").val($("#edit_form").data("id"));
-
-
 
   for (var i = 0; i < json_str_array.length; i++) {
     versions.push(JSON.parse(json_str_array[i]));
@@ -610,6 +640,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   });
   editor.on('change', function (e) {
     try {
+      console.log("here");
       update_comments_and_divs();
     } catch (e) {
       // ignore it
@@ -628,7 +659,18 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     CKEDITOR.config.liteShowHide = e.data.show;
   });
 
+  var test = function () {
+    console.log("test function");
+  };
 }
+
+// function init_right_side(current_version, current_user, json_str_array, summary_list) {
+//   console.log("current_user: "+current_user);
+//   var test = function () {
+//     console.log("test function");
+//   };
+//   test();
+// }
 
 function init_sidebar(info_str_array) {
   var editing_info_array = [];

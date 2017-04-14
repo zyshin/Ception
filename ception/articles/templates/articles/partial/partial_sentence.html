@@ -48,6 +48,7 @@
       {% endifnotequal %}
     
       <div class="sentence-comment-block" style="display: none">
+        <div class="sentence-comment-list"></div>
         <form role="form" class="sentence-comment-form">
           {% csrf_token %}
           <input type="hidden" name="version_id" value="0">
@@ -57,9 +58,7 @@
                     name="sentence-comment">
           </textarea>
         </form>
-        <div class="sentence-comment-list"></div>
       </div>
-
     </div>
   </div>
 </div>
