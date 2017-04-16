@@ -1,8 +1,6 @@
- /**
- * Created by scyue on 16/3/14.
- */
- // Fjllsjl;f
-
+/**
+* Created by scyue on 16/3/14.
+*/
 var versions = [];
 var bank = null;
 var summary_bank = null;
@@ -129,74 +127,7 @@ $(function () {
     }
   });
 
-  var sentence_comment_content = $(".sentence-comment-content");
-  sentence_comment_content.focus(function () {
-    $(this).attr("rows", "2");
-    $("#comment-helper").fadeIn();
-  });
-  sentence_comment_content.blur(function () {
-    $(this).attr("rows", "1");
-    $("#comment-helper").fadeOut();
-  });
-  sentence_comment_content.keydown(function (evt) {
-    var content = $(this);
-    var keyCode = evt.which ? evt.which : evt.keyCode;
-    if (evt.ctrlKey && (keyCode == 10 || keyCode == 13)) {
-      //console.log($("#comment-form").serialize());
-      var block = $(this).closest(".sentence-block");
-      $.ajax({
-        url: '/articles/sentence_comments/',
-        data: $(".sentence-comment-form", block).serialize(),
-        cache: false,
-        type: 'post',
-        success: function (data) {
-          var version_id = $("input[name='version_id']", block).val();
-          var sentence_id = $("input[name='sentence_id']", block).val();
-          var version = undefined;
-          for (var i = 0; i < versions.length; i++) {
-            if (versions[i].id == version_id) {
-              version = versions[i];
-              //console.log(versions[i]);
-            }
-            //console.log(versions.length);
-          }
-          content.val("").blur();
-          $(".sentence-comment-list", block).html(data).removeAttr("hidden");
-
-          // added
-          if(version != undefined){       
-          version.comments[sentence_id]['html'] = data;
-          version.comments[sentence_id]['count'] = $(".sentence-comment-list .sentence-comment", block).length;
-          $(".comment-count", block).text(version.comments[sentence_id]['count']);
-          //console.log("abcdd");
-          }
-          else{
-              version = versions[0];
-              //console.log("version: "+version.id);
-              version.comments[sentence_id]['html'] = data;
-              version.comments[sentence_id]['count'] = $(".sentence-comment-list .sentence-comment", block).length;
-              $(".comment-count", block).text(version.comments[sentence_id]['count']);
-              //console.log("abcdd");
-          }
-        }
-      });
-    }
-  });
-
-  $(".sentence-comment-button").click(function () {
-    //console.log("aaa");
-    var block = $(this).closest(".sentence-block");
-    var comment_block = $(".sentence-comment-block", block);
-    if (comment_block.css('display') == "none") {
-      $(this).addClass('hovered');
-      comment_block.fadeIn('normal');
-    } else {
-      $(this).removeClass('hovered');
-      comment_block.fadeOut('normal');
-    }
-  });
-
-  $(".sentence-vote").click(function () {
+  $('#right-update').on('click', '.sentence-vote', function () {
     var block = $(this).closest(".sentence-block");
     var this_span = $(this);
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
@@ -245,6 +176,52 @@ $(function () {
         }
       }
     });
+  });
+  $('#right-update').on('click', '.sentence-comment-button', function () {
+    //console.log("aaa");
+    var block = $(this).closest(".sentence-block");
+    var comment_block = $(".sentence-comment-block", block);
+    if (comment_block.css('display') == "none") {
+      $(this).addClass('hovered');
+      comment_block.fadeIn('normal');
+    } else {
+      $(this).removeClass('hovered');
+      comment_block.fadeOut('normal');
+    }
+  });
+  $('#right-update').on('keydown', '.sentence-comment-content', function (evt) {
+    var content = $(this);
+    var keyCode = evt.which ? evt.which : evt.keyCode;
+    if (evt.ctrlKey && (keyCode == 10 || keyCode == 13)) {
+      //console.log($("#comment-form").serialize());
+      var block = $(this).closest(".sentence-block");
+      $.ajax({
+        url: '/articles/sentence_comments/',
+        data: $(".sentence-comment-form", block).serialize(),
+        cache: false,
+        type: 'post',
+        success: function (data) {
+          var version_id = $("input[name='version_id']", block).val();
+          var sentence_id = $("input[name='sentence_id']", block).val();
+          var version = undefined;
+          for (var i = 0; i < versions.length; i++) {
+            if (versions[i].id == version_id) {
+              version = versions[i];
+              //console.log(versions[i]);
+            }
+            //console.log(versions.length);
+          }
+          content.val("").blur();
+          $(".sentence-comment-list", block).html(data).removeAttr("hidden");
+
+          // added
+          version = version || versions[0];
+          version.comments[sentence_id]['html'] = data;
+          version.comments[sentence_id]['count'] = $(".sentence-comment-list .sentence-comment", block).length;
+          $(".comment-count", block).text(version.comments[sentence_id]['count']);
+        }
+      });
+    }
   });
 
   // $("#save-button").click(function () {
@@ -300,9 +277,8 @@ $(function () {
     }
   });
 
-
   var modal = $("#merge-modal");
-  $(".accept-button").click(function () {
+  $('#right-update').on('click', '.accept-button', function () {
     var block = $(this).closest(".sentence-block");
     var my_sentence = $("#current_sentence").html();
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
@@ -335,7 +311,6 @@ $(function () {
       }
     });
   });
-
   $("#modal-confirm-button").click(function () {
     modal.modal('hide');
     merge_second_stage($(".modal-body", modal).html());
@@ -493,7 +468,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
           }
           for (i = 0; i < versions.length; i++) {
             versions[i].block = $(".sentence-block[data-author='" + versions[i].author + "']");
-            $("input[name='version_id']", versions[i].block).val(versions[i].id);
+            // $("input[name='version_id']", versions[i].block).val(versions[i].id);
           }
           //console.log(versions);
           //summary_list = summary_list1;
@@ -660,29 +635,4 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   editor.on('lite:showHide', function (e) {
     CKEDITOR.config.liteShowHide = e.data.show;
   });
-
-  var test = function () {
-    console.log("test function");
-  };
-}
-
-// function init_right_side(current_version, current_user, json_str_array, summary_list) {
-//   console.log("current_user: "+current_user);
-//   var test = function () {
-//     console.log("test function");
-//   };
-//   test();
-// }
-
-function init_sidebar(info_str_array) {
-  var editing_info_array = [];
-  for (var i = 0; i < info_str_array.length; i++) {
-    editing_info_array.push(JSON.parse(info_str_array[i]));
-  }
-  var sentence_array = $(".side-block");
-  for (var i = 0; i < sentence_array.length; i++) {
-    $(".side-sentence", $(sentence_array[i])).text(editing_info_array[i].content);
-    $(".edit-span", $(sentence_array[i])).text("Edit: " + editing_info_array[i].edit);
-    $(".delete-span", $(sentence_array[i])).text("Delete: " + editing_info_array[i].delete);
-  }
 }
