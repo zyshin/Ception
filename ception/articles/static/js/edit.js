@@ -469,12 +469,14 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
 
   var save_and_update_the_datas = function (callback) {
       var form = $("#edit_form");
+      //console.log(form.data('id1'));
       $.ajax({
         url: '/articles/edit/' + form.data('id') + '/',
         data: {
           'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
           'content': commit_ajax.editor.getData().replace(/\x00/g, ''),
-          'action': 'update'
+          'action': 'update',
+          'articleid': form.data('id1')
         },
         cache: false,
         type: 'post',

@@ -53,7 +53,7 @@
         </span>
       </div>
 
-      <form id="edit_form" data-id="{{ form.instance.pk }}">
+      <form id="edit_form" data-id="{{ form.instance.pk }}" data-id1="{{ data.articleid }}">
         {% csrf_token %}
         {% for field in form.visible_fields %}
           <div class="form-group{% if field.errors %} has-error{% endif %}">

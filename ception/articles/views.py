@@ -166,7 +166,8 @@ def init_edit_page(request, id, compare=False):
         'authors': authors,
         'versions': version_array,
         'current_version_json': json.dumps(current_version_dict),
-        'summary': json.dumps(article.compute_summary(request.user))
+        'summary': json.dumps(article.compute_summary(request.user)),
+        'articleid':id
     }
     if not compare:
         return render(request, 'articles/edit.html', {'form': form, 'data': pass_data})
@@ -193,7 +194,7 @@ def update_right_side(request, id):
             'id': v.pk,
             'time': naturaltime(v.edit_date)
         }
-        print v.edit_user.profile.get_screen_name()
+        #print v.edit_user.profile.get_screen_name()
         if v.edit_user == request.user:
             #print v.edit_user
             current_version_dict = dict_data
@@ -211,7 +212,6 @@ def update_right_side(request, id):
     return HttpResponse(json.dumps(pass_data));
     #return render(request, 'articles/partial/partial_summary.html', {'form': form, 'data': pass_data})
 
-ID1 = 0
 @login_required
 def edit(request, id):
     try:
@@ -231,17 +231,14 @@ def edit(request, id):
                     print 'iii' '''
                 return HttpResponse("Success")
             elif action == "update":
+                id1 = request.POST.get("articleid")
+                #print "this id1 = "+id1
                 version = get_object_or_404(ArticleVersion, pk=id)
                 form = VersionForm(request.POST, instance=version)
                 if form.is_valid():
                     form.save()
-                global ID1
-                print "this id = "+ID1
-                return update_right_side(request, ID1)
+                return update_right_side(request, id1)
         else:
-            #print "id = "+id
-            ID1 = id
-            #print "id1 = "+ID1
             return init_edit_page(request, id)
     except Exception, e:
         print "Exception-Edit: ", repr(e)
