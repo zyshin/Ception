@@ -12,12 +12,13 @@
       {% ifnotequal author user %}        
         <span class="label label-primary">{{ author.profile.get_screen_name }}</span>
       {% endifnotequal %}
+      <span class="label label-danger hidden" id="new-label-{{ author }}" >New</span>
         <!-- <small class="time">editing now</small> -->
-        <div style="display: inline-block; padding-right: 20px;">
+        <div style="display: inline-block; padding-right: 10px;">
           <span class="glyphicon glyphicon-comment sentence-comment-button sentence-vote"></span>
           <span class="comment-count">-</span>
         </div>
-        <div class="vote-div">
+        <div class="vote-div" style="display: inline-block; padding-right: 5px;">
           <span class="glyphicon glyphicon-thumbs-up sentence-vote up-vote"></span>
           <span class="sentence-comment-vote-number">-</span>
           <span class="glyphicon glyphicon-thumbs-down sentence-vote down-vote"></span>

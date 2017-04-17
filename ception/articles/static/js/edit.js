@@ -4,8 +4,9 @@
 var versions = [];
 var bank = null;
 var summary_bank = null;
+var debug = 0;
 
-var commit_ajax = function () {
+var commit_ajax = function (kind) {
   var form = $("#edit_form");
   $.ajax({
     url: '/articles/edit/' + form.data('id') + '/',
@@ -17,10 +18,12 @@ var commit_ajax = function () {
     cache: false,
     type: 'post',
     success: function (data) {
-      $("header").append(generate_alert('success', 'Successfully Committed!'));
-      $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+      if(kind == 1){
+        $("header").append(generate_alert('success', 'Successfully Committed!'));
+        $(".alert").fadeTo(2000, 500).slideUp(500, function () {
         $(".alert").alert('close');
-      });
+        });
+      }
     }
   });
 };
@@ -49,32 +52,22 @@ function generate_alert(alert_type, content) {
 window.status=0;
 function check(){
   if(window.status==0){
-    //window.location.href="http://www.google.com.hk";
+    commit_ajax(2);
     //console.log("saved");
-    commit_ajax();
   }
   window.status=0;
 }
 
 $(function () {
-  
-  // listen to all the mouse and key events on the page 
-  // document.body.onmousedown=function(){
-  //   window.status++;
-  //   //console.log("shubiao");
-  // }
-  // document.onkeydown=function(){
-  //   window.status++;
-  //   //console.log("jianpan");
-  // }
   setInterval("check()",30000);
 
-  window.addEventListener("beforeunload", function (e) {
-    var confirmationMessage = "\o/";
-    //console.log("p");
-    e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
-    return confirmationMessage;              // Gecko, WebKit, Chrome <34
-  });
+  if(debug == 1){
+    window.addEventListener("beforeunload", function (e) {
+      var confirmationMessage = "\o/";
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    });
+  }
 
   $.contextMenu({
     selector: '.replace',
@@ -239,12 +232,12 @@ $(function () {
 
   $("#commit-button").click(function () {
     //firm();
-    commit_ajax();
+    commit_ajax(1);
   });
 
   $(document).on('keydown', function (e) {
     if (e.which == 83 && (e.metaKey || e.ctrlKey)) {
-      commit_ajax();
+      commit_ajax(1);
       e.preventDefault();
     }
   });
@@ -447,10 +440,9 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     }
   };
 
-  var save_and_update_the_datas = function (callback) {
+  var save_and_update_the_datas = function (ssid, callback) {
       var form = $("#edit_form");
       var authors = $('.sentence-block[data-author]').map(function(i,o){ return $(o).attr('data-author')}).get();
-      //console.log(authors);
       $.ajax({
         url: '/articles/edit/' + form.data('id') + '/',
         data: {
@@ -467,19 +459,33 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
           var json_str_array = data.json;
           summary_list = JSON.parse(data.summary);
           current_version = JSON.parse(data.current_version_json);
-          versions = [];
+          // if versions[i].info[ssid].sentence changes, update it
           for (var i = 0; i < json_str_array.length; i++) {
-            versions.push(JSON.parse(json_str_array[i]));
-            versions[i].info = JSON.parse(versions[i].info);
-            if(versions[i].sentence_block){
-              var new_right = $(versions[i].sentence_block);
-              var parent = $("#others-list");
-              parent.append(new_right);
+            var version = JSON.parse(json_str_array[i]);
+            version.info = JSON.parse(version.info);
+            // new blocks added
+            if (version.sentence_block) {
+              var new_right = $(version.sentence_block);
+              $("#others-list").append(new_right);
+              var new_version = {id: version.id, info: new Array(version.info.length)};
+              new_version.block = new_right;  // $(".sentence-block[data-author='" + version.author + "']");
+              $("input[name='version_id']", new_version.block).val(new_version.id);
+              versions.push(new_version);
             }
-          }
-          for (i = 0; i < versions.length; i++) {
-            versions[i].block = $(".sentence-block[data-author='" + versions[i].author + "']");
-            $("input[name='version_id']", versions[i].block).val(versions[i].id);
+            for (var j = 0; j< versions.length; j++) {
+              if (versions[j].id != version.id)
+                continue;
+              versions[j].comments = version.comments;
+              versions[j].vote = version.vote;
+              versions[j].time = version.time;
+              if (JSON.stringify(versions[j].info[ssid].sentence) != JSON.stringify(version.info[ssid].sentence)) {
+                versions[j].info[ssid] = version.info[ssid];
+                $('#new-label-'+versions[j].author).removeClass("hidden");
+              }
+              else{
+                $('#new-label-'+versions[j].author).addClass("hidden");
+              }
+            }
           }
           callback();
         }
@@ -499,7 +505,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
       //console.log("change sentence");
-      save_and_update_the_datas(function () {
+      save_and_update_the_datas(selected.id,function () {
         //var ls = JSON.parse(current_version)
         //console.log("this one "+current_version.comments);
         if (selected.id > 0) {
@@ -525,7 +531,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
               } else {
                 $(".accept-button", version.block).css("display", "inline-block");
                 if (!summary_block.hasClass('hidden')) {
-                  version.block.css("border-left", "10px solid white");   //lightblue
+                  version.block.css("border-left", "20px solid white");   //lightblue
                 } else {
                   version.block.css("border-left", "none");
                 }
@@ -610,7 +616,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
       }, 50);
 
     } else if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
-      commit_ajax();
+      commit_ajax(1);
       e.cancel();
     } else if (e.data.keyCode == CKEDITOR.BACKSPACE) {
       var current_node = editor.getSelection().getRanges()[0].endContainer;
@@ -637,7 +643,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   });
 
   editor.on('save', function (e) {
-    commit_ajax();
+    commit_ajax(1);
     e.cancel();
   });
 
