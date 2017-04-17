@@ -132,7 +132,6 @@
       (function () {
         var current_version = {{ data.current_version_json | safe }};
         var current_user = "{{ user }}";
-        //console.log(current_user);
         var json_str_array = {{ data.json|safe }};
         var summary_list = {{ data.summary|safe }};
         init_page(current_version, current_user, json_str_array, summary_list);

@@ -364,12 +364,16 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
       }
     }
     if (sid > 0 && summary_list[sid].html_str) {
+      //console.log(1);
+      //console.log(summary_list[sid].html_str);
       summary_bank = summary_list[sid].data;
       summary_sentence.html(summary_list[sid].html_str);
       summary_block.removeClass('hidden');
       $('#summary-merge-button').removeClass('hidden');
       $('#summary-span').text(merged_total + " / " + edited_total + " merged");
     } else {
+      //console.log(2);
+      //console.log(summary_list[sid].html_str);
       summary_block.addClass('hidden');
       $('#summary-merge-button').addClass('hidden');
       summary_sentence.html('');
@@ -400,6 +404,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
       var au = versions[i].author;
       var auth = document.getElementById(au);
       if (s.edited && s.single) {
+        //console.log(auth);
         document.getElementById("others-list").appendChild(auth);
         //console.log(au);
       } 
@@ -444,38 +449,41 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
 
   var save_and_update_the_datas = function (callback) {
       var form = $("#edit_form");
-      //console.log(form.data('id1'));
+      var authors = $('.sentence-block[data-author]').map(function(i,o){ return $(o).attr('data-author')}).get();
+      //console.log(authors);
       $.ajax({
         url: '/articles/edit/' + form.data('id') + '/',
         data: {
           'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
           'content': commit_ajax.editor.getData().replace(/\x00/g, ''),
           'action': 'update',
-          'articleid': form.data('id1')
+          'articleid': form.data('id1'),
+          'authors': JSON.stringify(authors)
         },
         cache: false,
         type: 'post',
         success: function (data) {
           data = JSON.parse(data);
           var json_str_array = data.json;
-          var summary_list = data.summary;
+          summary_list = JSON.parse(data.summary);
           current_version = JSON.parse(data.current_version_json);
-          //console.log(current_version.comments);
           versions = [];
           for (var i = 0; i < json_str_array.length; i++) {
             versions.push(JSON.parse(json_str_array[i]));
             versions[i].info = JSON.parse(versions[i].info);
+            if(versions[i].sentence_block){
+              var new_right = $(versions[i].sentence_block);
+              var parent = $("#others-list");
+              parent.append(new_right);
+            }
           }
           for (i = 0; i < versions.length; i++) {
             versions[i].block = $(".sentence-block[data-author='" + versions[i].author + "']");
-            // $("input[name='version_id']", versions[i].block).val(versions[i].id);
+            $("input[name='version_id']", versions[i].block).val(versions[i].id);
           }
-          //console.log(versions);
-          //summary_list = summary_list1;
           callback();
         }
       });
-      //callback();
   };
 
   var update_comments_and_divs = function () {
@@ -501,6 +509,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
           get_sentence_vote(current_version, selected.id);
           update_summary(selected.id);
           update_others_order(selected.id);
+
           //$(".cke_concise").css("display", "block");
           for (i = 0; i < versions.length; i++) {
             var version = versions[i];
@@ -617,7 +626,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   });
   editor.on('change', function (e) {
     try {
-      console.log("here");
+      //console.log("here");
       update_comments_and_divs();
     } catch (e) {
       // ignore it

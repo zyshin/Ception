@@ -174,7 +174,7 @@ def init_edit_page(request, id, compare=False):
     else:
         return render(request, 'articles/edit_compare.html', {'form': form, 'data': pass_data})
 
-def update_right_side(request, id):
+def update_right_side(request, id, author_list):
     #print id
     article = get_object_or_404(Article, pk=id)
     #article.edits_count = 12
@@ -194,56 +194,47 @@ def update_right_side(request, id):
             'id': v.pk,
             'time': naturaltime(v.edit_date)
         }
-        # print v.edit_user.profile.get_screen_name()
         if v.edit_user == request.user:
-            #print v.edit_user
             current_version_dict = dict_data
         else:
-            #print v.edit_user
             v_dict = dict_data
-            authors.append(v.edit_user)
+
+            if str(v.edit_user) not in author_list:
+                web_page_string = render_to_string('articles/partial/partial_sentence.html', {'author': v.edit_user})
+                v_dict['sentence_block'] = web_page_string
             version_jsons.append(json.dumps(v_dict))
-            version_array.append(v)
+
     pass_data = {
         'json': version_jsons,
         'current_version_json': json.dumps(current_version_dict),
         'summary': json.dumps(article.compute_summary(request.user))
     }
     return HttpResponse(json.dumps(pass_data));
-    #return render(request, 'articles/partial/partial_summary.html', {'form': form, 'data': pass_data})
 
 @login_required
 def edit(request, id):
     try:
         if request.method == "POST":
             action = request.POST.get("action")
-            if action == "save":
-                return HttpResponse("Not Implemented")
-            elif action == "commit":
+            if action == "commit":
                 version = get_object_or_404(ArticleVersion, pk=id)
                 form = VersionForm(request.POST, instance=version)
                 if form.is_valid():
                     form.save()
-                '''form2 = ArticleForm(request.POST)
-                print 'ii'
-                if form2.is_valid():
-                    form2.save()
-                    print 'iii' '''
                 return HttpResponse("Success")
             elif action == "update":
                 id1 = request.POST.get("articleid")
-                #print "this id1 = "+id1
+                author_list = json.loads(request.POST.get("authors"))
                 version = get_object_or_404(ArticleVersion, pk=id)
                 form = VersionForm(request.POST, instance=version)
                 if form.is_valid():
                     form.save()
-                return update_right_side(request, id1)
+                return update_right_side(request, id1, author_list)
         else:
             return init_edit_page(request, id)
     except Exception, e:
         print "Exception-Edit: ", repr(e)
         return HttpResponseBadRequest()
-
 
 @login_required
 def edit_compare(request, id):
