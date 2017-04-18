@@ -7,12 +7,16 @@ class Activity(models.Model):
     LIKE = 'L'
     UP_VOTE = 'U'
     DOWN_VOTE = 'D'
+    UPDATE = 'G'
+    SAVE = 'S'
     ACTIVITY_TYPES = (
         (FAVORITE, 'Favorite'),
         (LIKE, 'Like'),
         (UP_VOTE, 'Up Vote'),
         (DOWN_VOTE, 'Down Vote'),
-        )
+        (UPDATE, 'Update Log'),
+        (SAVE, 'Save Log'),
+    )
 
     user = models.ForeignKey(User)
     activity_type = models.CharField(max_length=1, choices=ACTIVITY_TYPES)
@@ -22,6 +26,7 @@ class Activity(models.Model):
     answer = models.IntegerField(null=True, blank=True)
     sentence_id = models.IntegerField(null=True, blank=True)
     version_id = models.IntegerField(null=True, blank=True)
+    update_log = models.TextField()
 
 
     class Meta:

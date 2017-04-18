@@ -13,7 +13,8 @@ var commit_ajax = function (kind) {
     data: {
       'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']", form).val(),
       'content': commit_ajax.editor.getData().replace(/\x00/g, ''),
-      'action': 'commit'
+      'action': 'commit',
+      'version': form.data('id')
     },
     cache: false,
     type: 'post',
@@ -440,9 +441,11 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     }
   };
 
-  var save_and_update_the_datas = function (ssid, callback) {
+  var save_and_update_the_datas = function (ssid, current_user, callback) {
       var form = $("#edit_form");
       var authors = $('.sentence-block[data-author]').map(function(i,o){ return $(o).attr('data-author')}).get();
+      //var version_id = $('#block-'+current_user).attr("value");
+      //console.log(version_id);
       $.ajax({
         url: '/articles/edit/' + form.data('id') + '/',
         data: {
@@ -450,7 +453,9 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
           'content': commit_ajax.editor.getData().replace(/\x00/g, ''),
           'action': 'update',
           'articleid': form.data('id1'),
-          'authors': JSON.stringify(authors)
+          'authors': JSON.stringify(authors),
+          'sid': ssid,
+          'version': form.data('id')
         },
         cache: false,
         type: 'post',
@@ -505,7 +510,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     id_div.text(selected.id);
     if (selected.id != previous_selected_id) {
       //console.log("change sentence");
-      save_and_update_the_datas(selected.id,function () {
+      save_and_update_the_datas(selected.id, current_user, function () {
         //var ls = JSON.parse(current_version)
         //console.log("this one "+current_version.comments);
         if (selected.id > 0) {

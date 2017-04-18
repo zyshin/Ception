@@ -182,6 +182,9 @@ CKEDITOR.editor.prototype.updateSentenceStyle = function (referNode, currentPDNo
   pd_tags.removeClass('current').removeClass('previous');
   current.addClass('current');
   previous.addClass('previous');
+  // When there are more than one paragraph
+  parent.siblings().removeClass('current').removeClass('previous');
+  parent.siblings().find('pd').removeClass('current').removeClass('previous');
 };
 
 CKEDITOR.editor.prototype.getSelectedSentence = function () {

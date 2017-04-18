@@ -217,12 +217,20 @@ def edit(request, id):
         if request.method == "POST":
             action = request.POST.get("action")
             if action == "commit":
+                user = request.user
+                version_id = int(request.POST.get('version'))
+                activity = Activity(activity_type='S', user=user,version_id=version_id, update_log = request.POST.get("content"))
+                activity.save()
                 version = get_object_or_404(ArticleVersion, pk=id)
                 form = VersionForm(request.POST, instance=version)
                 if form.is_valid():
                     form.save()
                 return HttpResponse("Success")
             elif action == "update":
+                user = request.user
+                version_id = int(request.POST.get('version'))
+                activity = Activity(activity_type='G', user=user, sentence_id=request.POST.get("sid"), version_id=version_id, update_log = request.POST.get("content"))
+                activity.save()
                 id1 = request.POST.get("articleid")
                 author_list = json.loads(request.POST.get("authors"))
                 version = get_object_or_404(ArticleVersion, pk=id)
