@@ -193,7 +193,7 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
     node = this.getSelection().getRanges()[0].getBoundaryNodes().startNode;
     CKEDITOR.editor.prototype.getSelectedSentence.previous_selected_node = node;
   } catch (e) {
-    console.log(e);
+    //console.log(e);
     node = CKEDITOR.editor.prototype.getSelectedSentence.previous_selected_node
   }
   if (node.getParent().getName && node.getParent().getName() == "del") {

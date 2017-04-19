@@ -272,7 +272,7 @@ function initWithLite(name, isTracking, isShowing) {
     editor.lite = e.data.lite;
     editor.lite.toggleTracking(isTracking);
     editor.lite.toggleShow(CKEDITOR.config.liteShowHide, false);
-    console.log('CKEditor lite loaded!');
+    //console.log('CKEditor lite loaded!');
   });
   ceptArming(editor);
   set_editor_update_function(editor);

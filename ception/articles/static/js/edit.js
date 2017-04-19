@@ -278,6 +278,9 @@ $(function () {
     var csrf = $("input[name='csrfmiddlewaretoken']", block).val();
     var version_id = $("input[name='version_id']", block).val();
     var sentence_id = $("input[name='sentence_id']", block).val();
+    var form = $("#edit_form");
+    var this_id = form.data('id');
+    //console.log($(".sentence-content", block).html());
 
     $.ajax({
       url: '/articles/merge_api/',
@@ -293,7 +296,35 @@ $(function () {
       success: function (json) {
         var data = JSON.parse(json);
         bank = data.data;
+        var str = data.str;
+        //console.log(str);
+        if (version_id == this_id){
+          var sen = $(".sentence-content", block).html().toString();
+          //console.log("1: "+sen);
+          sen = sen.replace(/<div[^>]+>\s/g,"");
+          sen = sen.replace(/<div[^>]+>/g,"");
+          sen = sen.replace(/\s<\/div\>/g,"");
+          sen = sen.replace(/<\/div\>/g,"");
+          sen = sen.replace(/<ins>\s/g,"<ins>");
+          sen = sen.replace(/\s<\/ins\>/g,"</ins>");
+          if(sen.substring(sen.length-1,sen.length) == " ") {
+            sen = sen.substring(0,sen.length-1);
+          }
+          var str2 = my_sentence.toString();
+          str2 = str2.replace(/<[^>]+>/g,"")
+          //console.log(str2);
+          str2 = str2.substring(str2.length-1,str2.length);
+          if (str2 == '.' | str2 == '?' | str2 =='!') {
+            sen = sen + str2;
+          }
+          //console.log("2: "+sen);
+        }
+        else {
+          var sen = $(".sentence-content", block).html();
+        }
+        data.str = my_sentence+"<p></p><p>will be changed to</p>"+"<p>"+sen+"</p>"+"<p></p><p>Please press the <b>Confirm</b> button to accept this change.</p>"; 
         $(".modal-body", modal).html(data.str);
+        //console.log(str);
         merge_second_stage.csrf = csrf;
         merge_second_stage.ver_id = version_id;
         merge_second_stage.sen_id = sentence_id;
@@ -305,9 +336,37 @@ $(function () {
       }
     });
   });
+
   $("#modal-confirm-button").click(function () {
     modal.modal('hide');
-    merge_second_stage($(".modal-body", modal).html());
+    var form = $("#edit_form");
+    var this_id = form.data('id');
+    //old one
+    //merge_second_stage($(".modal-body", modal).html());
+    //new one
+    if (merge_second_stage.ver_id == this_id) {
+      var block = $('.summary-block');
+      var sen = $(".sentence-content", block).html().toString();
+      sen = sen.replace(/<div[^>]+>\s/g,"");
+      sen = sen.replace(/<div[^>]+>/g,"");
+      sen = sen.replace(/\s<\/div\>/g,"");
+      sen = sen.replace(/<\/div\>/g,"");
+      sen = sen.replace(/<ins>\s/g,"<ins>");
+      sen = sen.replace(/\s<\/ins\>/g,"</ins>");
+      if (sen.substring(sen.length-1,sen.length) == " ") {
+        sen = sen.substring(0,sen.length-1);
+      }
+      var str1 = sen;
+      //console.log("str1:"+str1);
+    }
+    else {
+      var block = $('.sentence-block').has('input[name="version_id"][value="' + merge_second_stage.ver_id.toString() + '"]');
+      var str = $(".sentence-content", block).html();
+      var str1 = str.toString();
+      str1 = str1.substring(0,str.length-1);
+    }
+
+    merge_second_stage(str1);
     // Auto Up-vote
     var vote_button = $('.sentence-block').has('input[name="version_id"][value="' + merge_second_stage.ver_id.toString() + '"]').find('.up-vote');
     if (!vote_button.hasClass("voted")) {
@@ -332,11 +391,15 @@ function merge_second_stage(new_sentence) {
     success: function (json) {
       var data = JSON.parse(json);
       try {
+        //console.log("here");
         editor.setData(data.content);
+        //console.log("here1");
       } catch (e) {
+        //console.log("here2");
         // ignore
       }
       $("#current_sentence").html(data.formal);
+      //console.log("here4");
     }
   })
 
@@ -483,12 +546,14 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
               versions[j].comments = version.comments;
               versions[j].vote = version.vote;
               versions[j].time = version.time;
-              if (JSON.stringify(versions[j].info[ssid].sentence) != JSON.stringify(version.info[ssid].sentence)) {
-                versions[j].info[ssid] = version.info[ssid];
-                $('#new-label-'+versions[j].author).removeClass("hidden");
-              }
-              else{
-                $('#new-label-'+versions[j].author).addClass("hidden");
+              if (ssid > 0) {
+                if (JSON.stringify(versions[j].info[ssid].sentence) != JSON.stringify(version.info[ssid].sentence)) {
+                  versions[j].info[ssid] = version.info[ssid];
+                  $('#new-label-'+versions[j].author).removeClass("hidden");
+                }
+                else{
+                  $('#new-label-'+versions[j].author).addClass("hidden");
+                }
               }
             }
           }
