@@ -532,13 +532,16 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             var version = JSON.parse(json_str_array[i]);
             version.info = JSON.parse(version.info);
             // new blocks added
-            if (version.sentence_block) {
+            if (version.sentence_block ) {
               var new_right = $(version.sentence_block);
               $("#others-list").append(new_right);
-              var new_version = {id: version.id, info: new Array(version.info.length)};
-              new_version.block = new_right;  // $(".sentence-block[data-author='" + version.author + "']");
-              $("input[name='version_id']", new_version.block).val(new_version.id);
-              versions.push(new_version);
+              //var new_version = {id: version.id, info: new Array(version.info.length)};
+              //new_version.info[ssid] = {sentence:"1"};
+              version.block = $(".sentence-block[data-author='" + version.author + "']");
+              $("input[name='version_id']", version.block).val(version.id);
+              $('#new-label-'+versions[j].author).removeClass("hidden");
+              //console.log("here1");
+              versions.push(version);
             }
             for (var j = 0; j< versions.length; j++) {
               if (versions[j].id != version.id)
@@ -547,7 +550,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
               versions[j].vote = version.vote;
               versions[j].time = version.time;
               if (ssid > 0) {
-                if (JSON.stringify(versions[j].info[ssid].sentence) != JSON.stringify(version.info[ssid].sentence)) {
+                if ((!version.sentence_block) && (JSON.stringify(versions[j].info[ssid].sentence) != JSON.stringify(version.info[ssid].sentence)) ) {
                   versions[j].info[ssid] = version.info[ssid];
                   $('#new-label-'+versions[j].author).removeClass("hidden");
                 }
@@ -636,6 +639,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             versions[i].block.attr("hidden", "hidden");
           }
           summary_block.addClass("hidden");
+          $("#hided-number-panel").addClass("hidden");
         }
         window.scrollTo(0, backup_scoll);
         form_current_sentence_id.val(selected.id);
