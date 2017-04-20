@@ -539,7 +539,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
               //new_version.info[ssid] = {sentence:"1"};
               version.block = $(".sentence-block[data-author='" + version.author + "']");
               $("input[name='version_id']", version.block).val(version.id);
-              $('#new-label-'+versions[j].author).removeClass("hidden");
+              $('#new-label-'+version.author).removeClass("hidden");
               //console.log("here1");
               versions.push(version);
             }
