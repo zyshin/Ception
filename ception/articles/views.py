@@ -41,6 +41,8 @@ def _articles(request, articles):
 @login_required
 def articles(request):
     all_articles = Article.get_published()
+    for article in all_articles:
+        article.num_editors = len(ArticleVersion.get_versions(article, request.user)) - 1
     return _articles(request, all_articles)
 
 

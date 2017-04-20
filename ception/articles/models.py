@@ -60,7 +60,7 @@ class Article(models.Model):
 
     @staticmethod
     def get_published():
-        articles = Article.objects.filter(status=Article.PUBLISHED)
+        articles = Article.objects.filter(status=Article.PUBLISHED).order_by('pk')
         return articles
 
     def create_tags(self, tags):
