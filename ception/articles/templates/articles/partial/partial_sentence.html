@@ -6,28 +6,23 @@
       <h5>
 <!-- {# <a href="{% url 'profile' author.username %}">{{ author.profile.get_screen_name }}</a> #}
         <a>{{ author.profile.get_screen_name }}</a> -->
-      {% if author == user %}
-        <span class="label label-default">{{ author.profile.get_screen_name }}</span>
-      {% endif %}
-      {% ifnotequal author user %}        
-        <span class="label label-primary">{{ author.profile.get_screen_name }}</span>
-      {% endifnotequal %}
-      <span class="label label-danger hidden" id="new-label-{{ author }}" >New</span>
+        <span class="label {% if author == user %}label-default{% else %}label-primary{% endif %}">{{ author.profile.get_screen_name }}</span>
+        <span class="label label-danger hidden" id="new-label-{{ author }}" >New</span>
         <!-- <small class="time">editing now</small> -->
-        <div style="display: inline-block; padding-right: 10px;">
-          <span class="glyphicon glyphicon-comment sentence-comment-button sentence-vote"></span>
-          <span class="comment-count">-</span>
-        </div>
-        <div class="vote-div" style="display: inline-block; padding-right: 5px;">
-          <span class="glyphicon glyphicon-thumbs-up sentence-vote up-vote"></span>
-          <span class="sentence-comment-vote-number">-</span>
-          <span class="glyphicon glyphicon-thumbs-down sentence-vote down-vote"></span>
-        </div>
-        {% ifnotequal author user %}
-          <div style="display: inline-block; float: right; margin-right: 10px;">
-            <span type="button" class="glyphicon glyphicon-ok accept-button"></span>
+        <div class="pull-right">
+          <div style="display: inline-block; padding-right: 10px;">
+            <span class="glyphicon glyphicon-comment sentence-comment-button sentence-vote"></span>
+            <span class="comment-count">-</span>
           </div>
-        {% endifnotequal %}
+          <div class="vote-div" style="display: inline-block; padding-right: 10px;">
+            <span class="glyphicon glyphicon-thumbs-up sentence-vote up-vote"></span>
+            <span class="sentence-comment-vote-number">-</span>
+            <span class="glyphicon glyphicon-thumbs-down sentence-vote down-vote"></span>
+          </div>
+          <div class="accept-button {% ifequal author user %}invisible{% endifequal %}" style="display: inline-block; margin-right: 20px;">
+            <span type="button" class="glyphicon glyphicon-ok"></span>
+          </div>
+        </div>
       </h5>
       {% ifnotequal author user %}
         <div class="sentence-content sentence-content-others hide-del-class"></div>

@@ -532,7 +532,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             var version = JSON.parse(json_str_array[i]);
             version.info = JSON.parse(version.info);
             // new blocks added
-            if (version.sentence_block ) {
+            if (version.sentence_block) {
               var new_right = $(version.sentence_block);
               $("#others-list").append(new_right);
               //var new_version = {id: version.id, info: new Array(version.info.length)};
@@ -599,10 +599,10 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             var s = version.info[selected.id];
             if (s.edited) {
               if (!s.single) {
-                $(".accept-button", version.block).css("display", "none");
+                $(".accept-button", version.block).addClass("invisible");
                 version.block.css("border-left", "none");
               } else {
-                $(".accept-button", version.block).css("display", "inline-block");
+                $(".accept-button", version.block).removeClass("invisible");
                 if (!summary_block.hasClass('hidden')) {
                   version.block.css("border-left", "20px solid white");   //lightblue
                 } else {
