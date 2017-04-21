@@ -11,9 +11,11 @@
 {% block main %}
   <div class="page-header">
     <a href="{% url 'write' %}" class="btn btn-primary pull-right">
-      <span class="glyphicon glyphicon-pencil"></span> {% trans 'Write Article' %}
+      <span class="glyphicon glyphicon-pencil"></span> {% trans 'Upload Article' %}
     </a>
+  {% if show_drafts %}
     <a href="{% url 'drafts' %}" class="btn btn-default pull-right" style="margin-right: .8em">{% trans 'Drafts' %}</a>
+  {% endif %}
     <h1>{% trans 'Articles' %}</h1>
   </div>
   <div class="row">
