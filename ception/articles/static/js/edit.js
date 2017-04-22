@@ -322,9 +322,13 @@ $(function () {
         else {
           var sen = $(".sentence-content", block).html();
         }
-        data.str = my_sentence+"<p></p><p>will be changed to</p>"+"<p>"+sen+"</p>"+"<p></p><p>Please press the <b>Confirm</b> button to accept this change.</p>"; 
+        data.str = "<p><b>"+ my_sentence + "</b></p>" + 
+        "<p></p><p style='color:#AAAAAA'><i>will be changed to</i></p>"+"<p>"+
+        "<p><b>" + sen + "</b></p>" + 
+        "</p>"+"<p></p><p style='color:#AAAAAA'><i>Please press </i><b>Confirm</b><i> to accept this change.</i></p>"; 
+        
         $(".modal-body", modal).html(data.str);
-        //console.log(str);
+
         merge_second_stage.csrf = csrf;
         merge_second_stage.ver_id = version_id;
         merge_second_stage.sen_id = sentence_id;
