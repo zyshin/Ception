@@ -191,9 +191,19 @@ def set_mapping_array(info_array, origin_count, text):
                 if i > 0:
                     sentence = ""
 
+                    origin_s = 0
                     for ss in current_sentence_array:
                         if positive_sentence_count > 1 and (ss.sid == i or (ss.sid < 0 and ss.origin_sid == i)):
                             # sentence += "<span class='highlight'>" + ss.content + "</span>"
+                            # print "here"
+                            # print ss.sid
+                            sentence += "<span class='highlight'>" + ss.content + "</span>"
+                        elif ss.sid < 0 and ss.origin_sid == i:
+                            # print "here2"
+                            # print ss.sid
+                            origin_s = i
+                            sentence += ss.content
+                        elif ss.sid == origin_s:
                             sentence += "<span class='highlight'>" + ss.content + "</span>"
                         else:
                             sentence += ss.content
