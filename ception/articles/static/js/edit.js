@@ -460,24 +460,65 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   }
 
   var update_others_order = function (sid) {
-    for (var i = 0; i < versions.length; i++) {
-      var s = versions[i].info[sid];
-      var au = versions[i].author;
-      var auth = document.getElementById(au);
-      if (s.edited && s.single) {
-        //console.log(auth);
-        document.getElementById("others-list").appendChild(auth);
-        //console.log(au);
+    /*** Copyright 2013 Teun Duynstee Licensed under the Apache License, Version 2.0 ***/
+    var firstBy=function(){function n(n){return n}function t(n){return"string"==typeof n?n.toLowerCase():n}function r(r,e){if(e="number"==typeof e?{direction:e}:e||{},"function"!=typeof r){var u=r;r=function(n){return n[u]?n[u]:""}}if(1===r.length){var i=r,o=e.ignoreCase?t:n;r=function(n,t){return o(i(n))<o(i(t))?-1:o(i(n))>o(i(t))?1:0}}return-1===e.direction?function(n,t){return-r(n,t)}:r}function e(n,t){return n=r(n,t),n.thenBy=u,n}function u(n,t){var u=this;return n=r(n,t),e(function(t,r){return u(t,r)||n(t,r)})}return e}();
+    
+    // single or cross-sentence
+    function compare1(v1, v2){
+      if(v1.info[sid].single && !v2.info[sid].single) {
+        return -1;
       } 
+      else if (!v1.info[sid].single && v2.info[sid].single) {
+        return 1;
+      }
+      else {
+        return 0;
+      }
     }
+
+    // new or not
+    function compare2(v1, v2){
+      if(!$('#new-label-'+v1.author).hasClass("hidden") && $('#new-label-'+v2.author).hasClass("hidden")) {
+        return -1;
+      } 
+      else if (!$('#new-label-'+v2.author).hasClass("hidden") && $('#new-label-'+v1.author).hasClass("hidden")) {
+        return 1;
+      }
+      else {
+        return 0;
+      }
+    }
+
+    // numbers of edit
+    function compare3(v1, v2){
+      var v1_sen = '<p>'+v1.info[sid].sentence+'</p>';
+      var v2_sen = '<p>'+v2.info[sid].sentence+'</p>';
+      var v1_edit_num = $(v1_sen).find('del').length + $(v1_sen).find('ins').length;
+      var v2_edit_num = $(v2_sen).find('del').length + $(v2_sen).find('ins').length
+      if (v1_edit_num > v2_edit_num) {
+        return -1;
+      } 
+      else if (v1_edit_num < v2_edit_num) {
+        return 1;
+      }
+      else {
+        return 0;
+      }
+    }
+
+    var order_list = [];
     for (var i = 0; i < versions.length; i++) {
       var s = versions[i].info[sid];
-      var au = versions[i].author;
+      if (s.edited) {
+        order_list.push(versions[i]);
+      }
+    }
+    order_list.sort(firstBy(compare1).thenBy(compare2).thenBy(compare3));
+    for (var i = 0; i < order_list.length; i++) {
+      var s = order_list[i].info[sid];
+      var au = order_list[i].author;
       var auth = document.getElementById(au);
-      if (s.edited && !s.single) {
-        document.getElementById("others-list").appendChild(auth);
-        //console.log(au);
-      } 
+      document.getElementById("others-list").appendChild(auth);
     }
   };
 
@@ -536,7 +577,9 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
             var version = JSON.parse(json_str_array[i]);
             version.info = JSON.parse(version.info);
             // new blocks added
-            if (version.sentence_block) {
+            // console.log(version.author+" "+version.info[ssid].edited);
+            // console.log(version.info[ssid].edited == "true");
+            if (version.sentence_block && version.info[ssid].edited == true) {
               var new_right = $(version.sentence_block);
               $("#others-list").append(new_right);
               //var new_version = {id: version.id, info: new Array(version.info.length)};
