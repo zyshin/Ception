@@ -25,22 +25,23 @@
         {% csrf_token %}
         <div class="form-group{% if form.username.errors %} has-error{% endif %}">
           <label for="username">{% trans 'Username' %}</label>
-          <input type="text" class="form-control" id="username" name="username" value="guest">
+          <input type="text" class="form-control" id="username" name="username" value="">
           {% for error in form.username.errors %}
             <label class="control-label">{{ error }}</label>
           {% endfor %}
         </div>
         <div class="form-group{% if form.password.errors %} has-error{% endif %}">
           <label for="password">{% trans 'Password' %}</label>
-          <input type="password" class="form-control" id="password" name="password" value="a">
+          <input type="password" class="form-control" id="password" name="password" value="">
           {% for error in form.password.errors %}
             <label class="control-label">{{ error }}</label>
           {% endfor %}
         </div>
         <div class="form-group" style="margin-top: 25px;">
-          <button type="submit" class="btn btn-default"><b>{% trans 'Try CEPT!' %}</b></button>
-          <a href="{% url 'signup' %}" class="btn btn-link">{% trans 'Sign up' %} <i>(Expert user)</i></a>
+          <button type="submit" class="btn btn-default"><b>{% trans 'Start!' %}</b></button>
+          <!-- <a href="{% url 'signup' %}" class="btn btn-link">{% trans 'Sign up' %} <i>(Expert user)</i></a> -->
         </div>
+        <input type="hidden" name="next" value="{{ next }}" />
       </form>
     </div>
     <!-- Borrowed from http://ivolver.cs.st-andrews.ac.uk/ -->

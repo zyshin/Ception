@@ -4,7 +4,7 @@
 var versions = [];
 var bank = null;
 var summary_bank = null;
-var debug = 0;
+var debug = 1;
 
 var commit_ajax = function (kind) {
   var form = $("#edit_form");

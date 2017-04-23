@@ -21,7 +21,7 @@
   <ol class="breadcrumb">
     <li><a href="{% url 'articles' %}">{% trans 'Articles' %}</a></li>
     <li>{{ form.instance.origin.title }}</li>
-    <li class="active">{% trans 'Edit' %}</li>    
+    <li class="active">{% trans 'Edit' %}</li>
     <!-- <a class="btn btn-default btn-block" id="cancel-button" href="{% url 'articles' %}" > {% trans 'Exit' %}</a> -->
 
   </ol>
@@ -46,11 +46,11 @@
           <span class="glyphicon glyphicon-pencil"></span>
           10 Edits
         </span>-->
-        <span class="select">
+        <!--<span class="select">
           {# <span class="glyphicon glyphicon-search"></span> #}
           <span class="glyphicon glyphicon-pencil"></span>
           <div id="selected-id" style="display: inline">Sentence ID</div>
-        </span>
+        </span>-->
       </div>
 
       <form id="edit_form" data-id="{{ form.instance.pk }}" data-id1="{{ data.articleid }}">
