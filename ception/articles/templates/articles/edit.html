@@ -103,10 +103,12 @@
       <div id="sentence-list" hidden="hidden">
         <div class="sentence-list-header">
           <!-- <div class="header-text h4">Current sentence</div> -->
-          <input id="hide-del-toggle" class="pull-right" type="checkbox" data-toggle="toggle" data-on="hide delete " data-off="show delete "
+          <input id="toggle-sentence-view" class="pull-right" type="checkbox" data-toggle="toggle" data-on="Hide context" data-off="Show context"
+                 data-width="95px" data-size="mini">
+          <input id="hide-del-toggle" class="pull-right" type="checkbox" data-toggle="toggle" data-on="Hide delete " data-off="Show delete "
                  data-width="90px" data-size="mini">
         </div>
-      
+
         <div id="right-update">
         {% include 'articles/partial/partial_summary.html' %}
         </div>

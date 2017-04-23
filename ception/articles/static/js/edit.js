@@ -95,7 +95,7 @@ $(function () {
               // var indents = Number.isInteger(bundle.count)? '&nbsp;&nbsp;&nbsp;' : '';
               // $itemElement.html(indents + '<span class="label label-success" style="margin-right: 5px;">' +  bundle.count + '</span>' + indents + bundle.word + opt.selector);
              // $itemElement.html('<span class="label label-success" style="margin-right: 5px;">' +  bundle.count + '</span>' + bundle.word + opt.selector);
-              $itemElement.html( bundle.word + opt.selector + '<font color=black>(' + bundle.count + ')</font>');
+              $itemElement.html('<span class="label label-danger" style="margin-right: 5px;">&nbsp;Edited&nbsp;&nbsp;</span>' + bundle.word + opt.selector + ' <font color=black>(' + bundle.count + ')</font>');
 
             }
           };
@@ -106,7 +106,7 @@ $(function () {
               //console.log(bundle.word);
               // $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + (Number.isInteger(bundle.count)? 'origin' : bundle.count) + '</span>' + bundle.word + opt.selector);
        //       $itemElement.html('<span class="label label-info" style="margin-right: 5px;">' + bundle.count + '</span>' + bundle.word + opt.selector);
-               $itemElement.html( bundle.word + opt.selector + '<font color=black>(' + bundle.count + ')</font>');
+               $itemElement.html('<span class="label label-default" style="margin-right: 5px;">Original</span>' + bundle.word + opt.selector + ' <font color=black>(' + bundle.count + ')</font><br>');
 
             }
           };
@@ -668,6 +668,8 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
                   .addClass("cke_concise_body")
                   .addClass("hide-del-class")
                   .html(s.context);
+              /*
+              //TODO: Conflicted with update_others_order()
               try {
                 var range = new CKEDITOR.dom.range(editor.document);
                 var element = author_editor.document.findOne("#current");
@@ -675,8 +677,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
                 range.scrollIntoView();
               } catch (e) {
                 //console.log(e);
-                //TODO: ignore it
-              }
+              }*/
             } else {
               version.block.attr("hidden", "hidden");
             }
@@ -731,15 +732,14 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   });
   editor.on('key', function (e) {
     var key = sanitizeKeyCode(e.data.keyCode);
-    if (key > 36 && key <= 40) {
+    if (key > 36 && key <= 40) {  // L R U D arrows
       setTimeout(function () {
         update_comments_and_divs();
       }, 50);
-
     } else if (e.data.keyCode == CKEDITOR.SAVE_KEY) {
       commit_ajax(1);
       e.cancel();
-    } else if (e.data.keyCode == CKEDITOR.BACKSPACE) {
+    } else if (e.data.keyCode == CKEDITOR.BACKSPACE || e.data.keyCode == CKEDITOR.DELETE) {
       var current_node = editor.getSelection().getRanges()[0].endContainer;
       if (current_node instanceof CKEDITOR.dom.text) {
         var parent = current_node.getParent();
@@ -749,8 +749,11 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
           }
         }
       }
+    } else if (e.data.keyCode == 13) {  // Enter
+      e.cancel();
     }
   });
+  /* TODO: makes undo after mouse click invalid
   editor.on('change', function (e) {
     try {
       //console.log("here");
@@ -758,7 +761,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     } catch (e) {
       // ignore it
     }
-  });
+  });*/
   editor.on('drop', function (e) {
     e.cancel();
   });

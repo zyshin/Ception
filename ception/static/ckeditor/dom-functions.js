@@ -180,11 +180,11 @@ CKEDITOR.editor.prototype.updateSentenceStyle = function (referNode, currentPDNo
     previous = (previousPDNode && (previousPDNode = previousPDNode.getPDNodeIfExist()))? $(previousPDNode.$) : parent;
   parent.removeClass('current').removeClass('previous');
   pd_tags.removeClass('current').removeClass('previous');
-  current.addClass('current');
-  previous.addClass('previous');
   // When there are more than one paragraph
   parent.siblings().removeClass('current').removeClass('previous');
   parent.siblings().find('pd').removeClass('current').removeClass('previous');
+  current.addClass('current');
+  previous.addClass('previous');
 };
 
 CKEDITOR.editor.prototype.getSelectedSentence = function () {
@@ -194,7 +194,7 @@ CKEDITOR.editor.prototype.getSelectedSentence = function () {
     CKEDITOR.editor.prototype.getSelectedSentence.previous_selected_node = node;
   } catch (e) {
     //console.log(e);
-    node = CKEDITOR.editor.prototype.getSelectedSentence.previous_selected_node
+    node = CKEDITOR.editor.prototype.getSelectedSentence.previous_selected_node;
   }
   if (node.getParent().getName && node.getParent().getName() == "del") {
     node = node.getPreviousUndergroundNode();
