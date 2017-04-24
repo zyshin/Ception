@@ -23,7 +23,7 @@ from utils import stadardlize_text
 
 
 def _articles(request, articles):
-    paginator = Paginator(articles, 10)
+    paginator = Paginator(articles, 100)
     page = request.GET.get('page')
     try:
         articles = paginator.page(page)
@@ -42,7 +42,7 @@ def _articles(request, articles):
 def articles(request):
     all_articles = Article.get_published()
     for article in all_articles:
-        article.num_editors = len(ArticleVersion.get_versions(article, request.user)) - 1
+        article.num_editors = max(len(ArticleVersion.get_versions(article, request.user)) - 1, 0)
     return _articles(request, all_articles)
 
 

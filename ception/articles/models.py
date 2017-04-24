@@ -38,14 +38,13 @@ class Article(models.Model):
     class Meta:
         verbose_name = _("Article")
         verbose_name_plural = _("Articles")
-        #ordering = ("-update_date",)
-        ordering = ("-create_date",)
+        # ordering = ("-update_date",)
+        ordering = ("title",)
 
     def __unicode__(self):
         return self.title
 
     def save(self, *args, **kwargs):
-        print 'hhhhhhhh'
         if not self.pk:
             super(Article, self).save(*args, **kwargs)
         else:
@@ -60,7 +59,7 @@ class Article(models.Model):
 
     @staticmethod
     def get_published():
-        articles = Article.objects.filter(status=Article.PUBLISHED).order_by('pk')
+        articles = Article.objects.filter(status=Article.PUBLISHED)
         return articles
 
     def create_tags(self, tags):
