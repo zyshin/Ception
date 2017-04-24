@@ -1,5 +1,5 @@
 import json
-
+import logging
 import markdown
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -145,6 +145,15 @@ def init_edit_page(request, id, compare=False):
     version_array = []
     current_version_dict = {}
     for v in versions:
+        try:
+            info_array = json.loads(v.info_array_json)
+        except Exception, e:
+            print repr(e)
+            print 'Load json failed:', repr(v.info_array_json)
+            continue
+        if len(info_array) != article.sentence_count + 1:
+            print "Invalid version_info: ", repr(version_info)
+            continue
         dict_data = {
             'comments': v.get_sentence_comments(),
             'vote': v.get_sentence_vote(request.user),
@@ -188,6 +197,15 @@ def update_right_side(request, id, author_list):
     version_array = []
     current_version_dict = {}
     for v in versions:
+        try:
+            info_array = json.loads(v.info_array_json)
+        except Exception, e:
+            print repr(e)
+            print 'Load json failed:', repr(v.info_array_json)
+            continue
+        if len(info_array) != article.sentence_count + 1:
+            print "Invalid version_info: ", repr(version_info)
+            continue
         dict_data = {
             'comments': v.get_sentence_comments(),
             'vote': v.get_sentence_vote(request.user),
@@ -243,7 +261,7 @@ def edit(request, id):
         else:
             return init_edit_page(request, id)
     except Exception, e:
-        print "Exception-Edit: ", repr(e)
+        logging.exception("Exception-Edit: " + repr(e))
         return HttpResponseBadRequest()
 
 @login_required
