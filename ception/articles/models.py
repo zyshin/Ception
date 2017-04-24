@@ -1,5 +1,5 @@
 import json
-
+import logging
 import markdown
 from django.contrib.auth.models import User
 from django.db import models
@@ -114,11 +114,16 @@ class Article(models.Model):
                 print 'Load json failed:', repr(v.info_array_json)
                 version_info_array.append([{'single': '', 'edited': ''}] * (self.sentence_count + 1))
         summary_list = [{'Error': 'Error'}]
-        for i in range(1, self.sentence_count + 1):
+        for i in xrange(1, self.sentence_count + 1):
             sentence_list = [origin_sentences[i]]
-            for j in xrange(len(version_info_array)):
-                if version_info_array[j][i] and version_info_array[j][i]["single"] and version_info_array[j][i]["edited"]:
-                    sentence_list.append(CleanParser.get_clean_text(version_info_array[j][i]["sentence"]))
+            for version_info in version_info_array:
+                if len(version_info) != self.sentence_count + 1:
+                    logging.error("Invalid version_info: " + repr(version_info))
+                    continue
+                else:
+                    sentence = version_info[i]
+                    if sentence and sentence["single"] and sentence["edited"]:
+                        sentence_list.append(CleanParser.get_clean_text(sentence["sentence"]))
             if len(sentence_list) <= 2:
                 html_str = ""
                 data = {}
