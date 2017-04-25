@@ -5,16 +5,14 @@
 {% block head %}
   <link href="{% static 'contextmenu/jquery.contextMenu.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/bootstrap-toggle.min.css' %}" rel="stylesheet">
-  <link href="{% static 'css/articles.css' %}" rel="stylesheet">
-  <link href="{% static 'css/edit.css' %}" rel="stylesheet">
+  <link href="{% static 'css/articles.css' %}?v={% now 'Ymd' %}" rel="stylesheet">
+  <link href="{% static 'css/edit.css' %}?v={% now 'Ymd' %}" rel="stylesheet">
   <link href="{% static 'css/callout.css' %}" rel="stylesheet">
   <script src="{% static 'contextmenu/jquery.contextMenu.min.js' %}"></script>
   <script src="{% static 'contextmenu/jquery.ui.position.min.js' %}"></script>
   <script src="{% static 'js/bootstrap-toggle.min.js' %}"></script>
-  <script src="{% static 'js/articles.js' %}"></script>
-  <script src="{% static 'js/edit.js' %}"></script>
-
-
+  <script src="{% static 'js/articles.js' %}?v={% now 'Ymd' %}"></script>
+  <script src="{% static 'js/edit.js' %}?v={% now 'Ymd' %}"></script>
 {% endblock head %}
 
 {% block main %}
