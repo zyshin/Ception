@@ -206,7 +206,7 @@ $(function () {
             //console.log(versions.length);
           }
           content.val("").blur();
-          $(".sentence-comment-list", block).html(data).removeAttr("hidden");
+          $(".sentence-comment-list", block).html(data).removeClass("hidden");
 
           // added
           version = version || versions[0];
@@ -237,7 +237,7 @@ $(function () {
   });
 
   $(document).on('keydown', function (e) {
-    if (e.which == 83 && (e.metaKey || e.ctrlKey)) {
+    if (e.which == 83 && (e.metaKey || e.ctrlKey)) {  // Ctrl + S to Save
       commit_ajax(1);
       e.preventDefault();
     }
@@ -532,9 +532,9 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
     $(".comment-count", version.block).text(count);
     $(".sentence-comment-content", version.block).val("").blur();
     if (count == 0) {
-      list.attr("hidden", "hidden");
+      list.addClass("hidden");
     } else {
-      list.removeAttr("hidden");
+      list.removeClass("hidden");
     }
   };
 
@@ -613,7 +613,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
   };
 
   var update_comments_and_divs = function () {
-    if (previous_selected_id == -1) $("#sentence-list").removeAttr("hidden");
+    if (previous_selected_id == -1) $("#sentence-list").removeClass("hidden");
 
     var selected = editor.getSelectedSentence();
     if (selected.id > 0) {
@@ -656,7 +656,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
                   version.block.css("border-left", "none");
                 }
               }
-              version.block.removeAttr("hidden");
+              version.block.removeClass("hidden");
               get_sentence_comment(version, s.id);
               //added
               get_sentence_vote(version, s.id);
@@ -679,12 +679,12 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
                 //console.log(e);
               }*/
             } else {
-              version.block.attr("hidden", "hidden");
+              version.block.addClass("hidden");
             }
           }
         } else {
           for (i = 0; i < versions.length; i++) {
-            versions[i].block.attr("hidden", "hidden");
+            versions[i].block.addClass("hidden");
           }
           summary_block.addClass("hidden");
           $("#hided-number-panel").addClass("hidden");
@@ -749,7 +749,7 @@ function init_page(current_version, current_user, json_str_array, summary_list) 
           }
         }
       }
-    } else if (e.data.keyCode == 13) {  // Enter
+    } else if (e.data.keyCode == 13) {  // Enter, TODO: Shift + Enter
       e.cancel();
     }
   });

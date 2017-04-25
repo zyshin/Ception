@@ -1,6 +1,6 @@
 {% include 'articles/partial/partial_sentence.html' with author=user author_name='Myself' %}
 
-<div class="sentence-block summary-block">
+<div class="sentence-block summary-block hidden">
   {% csrf_token %}
   <input type="hidden" name="version_id" value="0">
   <input type="hidden" name="sentence_id" value="0">
@@ -23,6 +23,6 @@
 
 <div id="others-list"><span>
   {% for author in data.authors %}
-    {% include 'articles/partial/partial_sentence.html' with author=author %}
+    {% include 'articles/partial/partial_sentence.html' with author=author hidden='hidden' %}
   {% endfor %}
 </span></div>
