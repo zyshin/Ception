@@ -20,7 +20,7 @@ var commit_ajax = function (kind) {
     type: 'post',
     success: function (data) {
       if(kind == 1){
-        $("header").append(generate_alert('success', 'Successfully Committed!'));
+        $("header").append(generate_alert('success', 'Successfully saved!'));
         $(".alert").fadeTo(2000, 500).slideUp(500, function () {
         $(".alert").alert('close');
         });
